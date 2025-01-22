@@ -1,4 +1,4 @@
-import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, AlertTriangle } from "lucide-react";
+import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, AlertTriangle , ArrowRightLeft} from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -11,11 +11,13 @@ const SIDEBAR_ITEMS = [
 		href: "/",
 	},
 	{ name: "Products", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
+	{ name: "Low Stock", icon: AlertTriangle, color: "#F59E0B", href: "/lowstock" },
 	{ name: "Sales", icon: DollarSign, color: "#10B981", href: "/sales" },
 	{ name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
-	{ name: "Low Stock", icon: AlertTriangle, color: "#F59E0B", href: "/lowstock" },
+	{ name: "Transfers", icon: ArrowRightLeft, color: "#6EE7B7", href: "/transfers" },
 	{ name: "Analytics", icon: TrendingUp, color: "#3B82F6", href: "/analytics" },
 	{ name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
+	
 ];
 
 const Sidebar = () => {
@@ -59,6 +61,17 @@ const Sidebar = () => {
 						</Link>
 					))}
 				</nav>
+				<Link className="flex  w-full" key="/add" to="/add" >
+				<button className="mb-[40px] ml-auto   w-[60px] group cursor-pointer outline-none hover:rotate-90 duration-300" title="Add New">
+				<svg className="stroke-sky-500 fill-none group-hover:fill-white group-active:stroke-sky-200 group-active:fill-sky-600 group-active:duration-0 duration-300" viewBox="0 0 24 24" height="60px" width="60px" xmlns="http://www.w3.org/2000/svg">
+					<path strokeWidth="1.5" d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" />
+					<path strokeWidth="1.5" d="M8 12H16" />
+					<path strokeWidth="1.5" d="M12 16V8" />
+				</svg>
+				</button>
+				</Link>
+				
+	
 			</div>
 		</motion.div>
 	);

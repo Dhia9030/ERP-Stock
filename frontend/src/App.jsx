@@ -4,7 +4,7 @@ import Sidebar from "./components/common/Sidebar";
 import {OrderProvider} from './OrderProvider';
 import { ProductProvider, useProducts } from "./ProductProvider";
 import { useState , useRef , useEffect, useMemo} from "react";
-
+import AddAdmin from "./pages/AddAdmin";
 import OverviewPage from "./pages/OverviewPage";
 import ProductsPage from "./pages/ProductsPage";
 import SalesPage from "./pages/SalesPage";
@@ -13,6 +13,7 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
 import CustomerOrder from "./pages/CustomerOrder";
 import LowStock  from "./pages/LowStock";
+import Transfers from "./pages/Transfers"
 import { ToastContainer , toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -27,7 +28,7 @@ const notifiedProducts = useRef(new Set());
 
 const products = useProducts();
 console.log("products:", products); // Debugging log
-const memorizedProducts = products//useMemo(() => products, [products]);
+const memorizedProducts = useMemo(() => products, [products]);
 console.log("memorizedProducts:", memorizedProducts); // Debugging log
 
 
@@ -58,7 +59,7 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 
   //-------------------------------------------------
 
-  
+
 
 
 	
@@ -101,9 +102,10 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 				<Route path='/orders' element={<OrdersPage  />} />
 				<Route path='/orders/:orderId' element={<CustomerOrder />} />
 				<Route path='/lowstock' element={<LowStock />} />
-
+				<Route path='/transfers' element={<Transfers />} />
 				<Route path='/analytics' element={<AnalyticsPage />} />
 				<Route path='/settings' element={<SettingsPage />} />
+				<Route path='/add' element={<AddAdmin />} />
 			</Routes>
 		</div>
 		</div>

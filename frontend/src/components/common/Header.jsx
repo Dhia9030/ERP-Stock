@@ -5,10 +5,11 @@
 
 // const item = { name: "Log Out", icon: logOut, color: "#8B5CF6", href: "/products" }
 
-const Header = ({ title }) => {
+const Header = ({ icon ,title }) => {
 	return (
 		<header className='flex justify-between items-center bg-gradient-to-br from-sky-800 to-sky-900 bg-opacity-50 backdrop-blur-md shadow-lg border-b rounded-bl-[30px] '>
 			<div className='max-w-7xl  py-7 px-4 sm:px-6 lg:px-8 ' >
+{/* {			<icon size={20} style={{ color: "green", minWidth: "20px" }} /> */}
 				<h1 className='font-montserrat text-2xl font-semibold text-gray-100'>{title}</h1>
 			</div>
 			<div className='mx-[70px] flex items-center'>

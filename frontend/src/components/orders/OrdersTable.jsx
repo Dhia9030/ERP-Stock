@@ -77,7 +77,7 @@ const OrdersTable = () => {
 
                     <tbody className='divide divide-gray-700'>
                         {filteredOrders.map((order) => (
-                            <motion.tr
+                            order.status!='Delivered' && <motion.tr
                                 key={order.id}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
