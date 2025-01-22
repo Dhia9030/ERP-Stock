@@ -1,6 +1,8 @@
 import { BarChart2, ShoppingBag, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect , useRef} from "react";
+import { useProducts } from "../ProductProvider";
+import {toast} from "react-toastify";
 
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
@@ -11,6 +13,11 @@ import Category from "../components/overview/Category";
 import StockChart from "../components/overview/StockChart";
 
 const OverviewPage = () => {
+
+//notification
+// {const PRODUCT_DATA = useProducts();
+
+
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // 

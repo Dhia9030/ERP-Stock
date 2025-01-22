@@ -2,8 +2,8 @@ import { Route, Routes } from "react-router-dom";
 
 import Sidebar from "./components/common/Sidebar";
 import {OrderProvider} from './OrderProvider';
-import { ProductProvider } from "./ProductProvider";
-import { useState } from "react";
+import { ProductProvider, useProducts } from "./ProductProvider";
+import { useState , useRef , useEffect, useMemo} from "react";
 
 import OverviewPage from "./pages/OverviewPage";
 import ProductsPage from "./pages/ProductsPage";
@@ -13,19 +13,60 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
 import CustomerOrder from "./pages/CustomerOrder";
 import LowStock  from "./pages/LowStock";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer , toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {NotificationProvider} from "./NotificationProvider";
 
 //import { BackgroundGradientAnimation } from "./components/ui/background-gradient-animation";
 
 
 function App() {
+
+	
+// Low Stock Notifications
+const notifiedProducts = useRef(new Set());
+
+const products = useProducts();
+console.log("products:", products); // Debugging log
+const memorizedProducts = products//useMemo(() => products, [products]);
+console.log("memorizedProducts:", memorizedProducts); // Debugging log
+
+
+  useEffect(() => {
+    console.log("notifiedProducts (before):", notifiedProducts.current); // Debugging log
+
+
+    if (memorizedProducts && memorizedProducts.length > 0) {
+      memorizedProducts.forEach((product) => {
+        if (product.stock <= 5 ) {
+          //console.log(`Low stock: ${product.name}`); // Debugging log
+          toast.warn(`Low stock: ${product.name}`, {
+            position: "top-right",
+            autoClose: 5000, // Auto close after 5 seconds
+          });
+          notifiedProducts.current.add(product.id);
+          console.log("notifiedProducts (after):", notifiedProducts.current); // Debugging log
+
+        }
+      });
+
+    }
+  }, [memorizedProducts]);
+  //-----------------------------------------------
+
+
+  //Orders Notifications
+
+  //-------------------------------------------------
+
+  
+
+
+	
 	return (
-		
-		<OrderProvider>
-			<ProductProvider>
-			<NotificationProvider>
+
+			
+			
+			
 
 		
 		<div>
@@ -66,12 +107,11 @@ function App() {
 			</Routes>
 		</div>
 		</div>
-		</NotificationProvider>
-
-		</ProductProvider>
-
-		</OrderProvider>
 		
+
+
+
+
 		
 		
 	);
