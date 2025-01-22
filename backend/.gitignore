@@ -1,0 +1,16 @@
+# Ignore les fichiers binaires
+bin/
+obj/
+
+# Ignore les fichiers de configuration IDE
+.vscode/
+.idea/
+
+# Ignore les fichiers de log
+*.log
+
+# Ignore les fichiers compilés
+*.dll
+*.exe
+
+.vs/
