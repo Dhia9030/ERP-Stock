@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+.stock-chart {
+  width: 600px;
+  height: 300px;
+}
+.no-product {
+  width: 200px;
+  height: 200px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  font-family: "Montserrat", sans-serif;
+}
+.filter {
+  width: 200px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  font-family: "Montserrat", sans-serif;
+}
+
+.dropdown {
+  max-height: 150px;
+  overflow-y: auto;
+  color: #000000;
+}
+
+.option {
+  height: 30px;
+  color: #000000;
+}

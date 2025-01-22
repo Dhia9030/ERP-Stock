@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+.buttons-container {
+  display: grid;
+  flex-direction: column;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  padding: 2px;
+  max-width: 400px;
+  width: 100%;
+  border: none;
+}
+.button-box {
+  border-radius: 10px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fefefe;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+}
+.bg-dark {
+  background: linear-gradient(#101820 50%, crimson 50%);
+}
+.bg-gray {
+  background: rgb(214, 214, 214);
+}
+.button {
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 30px;
+  border-radius: 36px;
+  transition: all 0.3s ease;
+
+  height: 100px;
+}
+
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #3ce7dc;
+  --tertiary-color: #2ecc71;
+  --accent-color: #9b59b6;
+  --background-color: #f4f4f4;
+  --dark-color: #282936;
+}
+
+/* Button 1: Simple Gradient Button */
+.gradient-button {
+  background: linear-gradient(
+    45deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  transition: transform 0.5s ease;
+  border: 1px solid #1651b0;
+}
+.gradient-button:hover {
+  transform: scale(1.02);
+}
+
+.bw-button {
+  background: linear-gradient(45deg, #605a5a, #b7b7b7);
+  filter: grayscale(100%);
+}
+
+.title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-size: 40px;
+  color: #3f3f3f;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.dropdown {
+  max-height: 50px; /* Adjust this value as needed */
+  overflow-y: auto;
+  border: 1px solid #ccc; /* Add border */
+  border-radius: 5px; /* Add border-radius */
+  padding: 5px; /* Add padding for better appearance */
+  font-size: 16px; /* Adjust font size */
+  background-color: #fff; /* Set background color */
+  outline: none; /* Remove default outline */
+}
+
+.dropdown:focus {
+  border-color: #4996e8; /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+}
