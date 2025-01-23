@@ -14,11 +14,7 @@
         "outputPath": "C:\\Users\\medini\\OneDrive\\Desktop\\ERP\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-<<<<<<< HEAD
           "C:\\Users\\medini\\AppData\\Roaming\\NuGet\\NuGet.Config"
-=======
-          "C:\\Users\\Mega-PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
->>>>>>> 6b7046edc6f6a1ff7590534cb91d53f57c88c8d2
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -107,11 +103,7 @@
               "privateAssets": "all"
             }
           },
-<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
-=======
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
->>>>>>> 6b7046edc6f6a1ff7590534cb91d53f57c88c8d2
         }
       }
     }
