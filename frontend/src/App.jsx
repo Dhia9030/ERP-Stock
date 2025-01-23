@@ -7,7 +7,6 @@ import { useState , useRef , useEffect, useMemo} from "react";
 import AddAdmin from "./pages/AddAdmin";
 import OverviewPage from "./pages/OverviewPage";
 import ProductsPage from "./pages/ProductsPage";
-import SalesPage from "./pages/SalesPage";
 import OrdersPage from "./pages/OrdersPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -98,7 +97,6 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 			<Routes>
 				<Route path='/' element={<OverviewPage />} />
 				<Route path='/products' element={<ProductsPage />} />
-				<Route path='/sales' element={<SalesPage />} />
 				<Route path='/orders' element={<OrdersPage  />} />
 				<Route path='/orders/:orderId' element={<CustomerOrder />} />
 				<Route path='/lowstock' element={<LowStock />} />
