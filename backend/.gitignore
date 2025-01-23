@@ -1,7 +1,7 @@
 # Ignore binary files
 bin/
 obj/
-
+backend/obj/
 # Ignore NuGet packages
 *.nupkg
 *.snupkg
