@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public enum OrderStatus
 {
@@ -20,6 +21,8 @@ namespace StockManagement.Models
     {
         public int OrderId { get; set; } // Unique identifier for the order
         public DateTime OrderDate { get; set; } // Date of the order
+        
+        [Column(TypeName = "decimal(18, 3)")]
         public decimal TotalAmount { get; set; } // Total amount of the order
 
         [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")]
@@ -41,6 +44,8 @@ namespace StockManagement.Models
         public ICollection<OrderProduct>? OrderProducts { get; set; } // each item represents a different product in the order
 
         // Relationship: An order can contain multiple product items
-        public ICollection<ProductItem>? ProductItems { get; set; } // it has all the product items in the order
+        public ICollection<ProductItem>? PurchaseProductItems { get; set; } // it has all the Pruchase product items in the order
+        
+        public ICollection<ProductItem>? SaleProductItems { get; set; } // it has all the Sale product items in the order
     }
 }

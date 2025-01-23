@@ -91,13 +91,13 @@ namespace StockManagement.Data
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
 
             modelBuilder.Entity<Order>()
-                .HasMany(o => o.ProductItems) // An Order can have many ProductItems
+                .HasMany(o => o.PurchaseProductItems) // An Order can have many ProductItems
                 .WithOne(pi => pi.PurchaseOrder) // A ProductItem belongs to one Order
                 .HasForeignKey(pi => pi.PurchaseOrderId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete; // Foreign key in ProductItem
 
             modelBuilder.Entity<Order>()
-                .HasMany(o => o.ProductItems) // An Order can have many ProductItems
+                .HasMany(o => o.SaleProductItems) // An Order can have many ProductItems
                 .WithOne(pi => pi.SaleOrder) // A ProductItem belongs to one Order
                 .HasForeignKey(pi => pi.SaleOrderId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete; // Foreign key in ProductItem
