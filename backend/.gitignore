@@ -15,4 +15,5 @@ obj/
 
 .vs/
 
-/Migrations
+# Ignore Entity Framework Core Migrations folder
+/Migrations/
