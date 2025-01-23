@@ -1,4 +1,6 @@
 ﻿
+using StockManagement.Models;
+
 public class PercentageDiscountStrategy 
 {
     public static decimal CalculateDiscount(decimal price, double discountPercentage)
@@ -7,7 +9,7 @@ public class PercentageDiscountStrategy
         {
             return 0;
         }
-        return price * discountPercentage / 100;
+        return price * (decimal)discountPercentage / 100;
     }
 }
 

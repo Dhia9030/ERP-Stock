@@ -1,4 +1,6 @@
-﻿public abstract class ProductFactory
+﻿using StockManagement.Models;
+
+public abstract class ProductFactory
 {
     public abstract Product CreateProduct();
 }
