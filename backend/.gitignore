@@ -1,14 +1,8 @@
 # Ignore binary files
 bin/
 obj/
-backend/obj
-# Ignore NuGet packages
-*.nupkg
-*.snupkg
-packages/
-*.pdb
 
-# Ignore IDE configuration files
+# Ignore les fichiers de configuration IDE
 .vscode/
 .idea/
 .vs/
