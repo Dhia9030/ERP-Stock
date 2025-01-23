@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-
+import LowStockTable from "../components/lowstock/LowStockTable";
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
 
@@ -21,7 +21,7 @@ const LowStock = () => {
 				{/* STATS */}
 				
 
-				<ProductsTable selectedList = {selectedList} />
+				<LowStockTable/>
 
 				{/* CHARTS */}
 				<div className='grid grid-col-1 lg:grid-cols-2 gap-8'>
