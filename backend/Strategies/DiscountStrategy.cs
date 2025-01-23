@@ -1,20 +1,12 @@
-﻿public interface IDiscountStrategy
-{
-    decimal CalculateDiscount(decimal price);
-}
-
-public class NoDiscountStrategy : IDiscountStrategy
-{
-    public decimal CalculateDiscount(decimal price)
-    {
-        return 0;
-    }
-}
-
-public class PercentageDiscountStrategy : IDiscountStrategy
+﻿
+public class PercentageDiscountStrategy 
 {
     public static decimal CalculateDiscount(decimal price, double discountPercentage)
     {
+        if (discountPercentage == 0)
+        {
+            return 0;
+        }
         return price * discountPercentage / 100;
     }
 }
