@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using StockManagement.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        DataSeeder.Seed(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
+}
+
 // Run the application
 app.Run();
-
