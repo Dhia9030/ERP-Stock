@@ -15,7 +15,5 @@ namespace StockManagement.Models
         public int WarehouseId { get; set; }
         public Warehouse Warehouse { get; set; }
 
-        // Stock total pour cet emplacement
-        public List<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
     }
 }

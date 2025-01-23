@@ -1,5 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+public enum ClothingProductStatus
+{
+    S,
+    M,
+    L
+}
+
+
 namespace StockManagement.Models
 {
     public class ClothingProduct : Product
@@ -10,6 +18,6 @@ namespace StockManagement.Models
 
         [Required(ErrorMessage = "La taille est requise.")]
         [MaxLength(5)]
-        public string Size { get; set; } // Ex: "S", "M", "L", etc.
+        public ClothingProductStatus Size { get; set; } 
     }
 }

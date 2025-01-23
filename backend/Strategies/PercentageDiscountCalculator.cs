@@ -11,12 +11,12 @@ public class PercentageDiscountCalculator
         return price * (decimal)discountPercentage / 100;
     }
     
-    public static decimal CalculateTotal(List<Product> products, double discountPercentageOrder)
+    public static decimal CalculateTotal(List<ProductItem> products, double discountPercentageOrder)
     {
         decimal total = 0;
-        foreach (var product in products)
+        foreach (var productItem in products)
         {
-            total += product.Price - PercentageDiscountCalculator.CalculateDiscount(product.Price, product.DiscountPercentage);
+            total += productItem.Product.Price - PercentageDiscountCalculator.CalculateDiscount(productItem.Product.Price, productItem.DiscountPercentage);
         }
 
         return total - PercentageDiscountCalculator.CalculateDiscount(total, discountPercentageOrder);

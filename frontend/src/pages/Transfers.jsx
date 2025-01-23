@@ -1,12 +1,12 @@
 import Heading from "../components/transfers/Heading.jsx"
 import Header from "../components/common/Header.jsx"
-import TransferTable from "../components/transfers/TransferTable.jsx"
+import TransferTable from "../components/transfers/TrabsferTable.jsx"
 const Transfers = ()=>{
     return (
         <div className="flex-1 overflow-auto relative z-10">
             <Header title="Transfers"/>
             {/* 0 = sold*/}
-            <Heading  change= {0} title="Dispatched Products"/> 
+            <Heading  change= {0} title="Dispatched Orders"/> 
             <TransferTable type={"OUT"}/>
 
             {/* 1 = bought*/}
