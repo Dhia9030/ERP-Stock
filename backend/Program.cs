@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using StockManagement.Data;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Required for MySqlServerVersion
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuration du DbContext
+// Register DbContext with MySQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
-    ServiceLifetime.Singleton);
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))); // Specify your MySQL version
+});
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -24,14 +26,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
+var summaries = new[] {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
