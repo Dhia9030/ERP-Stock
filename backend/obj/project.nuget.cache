@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "jEhAAZwmkzk=",
+=======
+  "dgSpecHash": "XCGdxG1OPto=",
+>>>>>>> afe6f1e43add07ae019306facf0c70ab7f8ded6d
   "success": true,
   "projectFilePath": "C:\\Users\\Mega-PC\\Desktop\\ERP-Stock\\backend\\backend.csproj",
   "expectedPackageFiles": [
