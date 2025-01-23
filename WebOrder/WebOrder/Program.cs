@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using WebOrder.Data;
 
+using WebOrder.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
