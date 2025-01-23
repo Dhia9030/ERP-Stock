@@ -9,9 +9,11 @@ obj/
 # Ignore les fichiers de log
 *.log
 
-# Ignore les fichiers compilés
+# Ignore les fichiers compilï¿½s
 *.dll
 *.exe
 
 .vs/
 
+# Ignore Entity Framework Core Migrations folder
+/Migrations/
