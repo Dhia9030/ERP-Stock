@@ -20,8 +20,8 @@ namespace StockManagement.Models
         public Location Location { get; set; }
 
         [Required(ErrorMessage = "L'id de commande est requis.")]
-        public int CommandeIdId { get; set; }
-        public Commande Commande { get; set; }
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
 
 
         [Required(ErrorMessage = "La quantité est requise.")]

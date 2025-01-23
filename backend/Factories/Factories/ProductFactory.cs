@@ -1,4 +1,6 @@
-﻿public abstract class ProductFactory
+﻿using StockManagement.Models;
+
+public abstract class ProductFactory
 {
     public abstract Product CreateProduct();
 }
@@ -23,7 +25,7 @@ public class FoodProductFactory : ProductFactory
 {
     public override Product CreateProduct()
     {
-        return new ElectronicsProduct();
+        return new FoodProduct();
     }
 }
 
@@ -43,6 +45,10 @@ public class ProductCreator
         else if (type == "Electronics")
         {
             factory = new ElectronicsProductFactory();
+        }
+        else
+        {
+            throw new ArgumentException("Invalid product type", "type");
         }
 
         return factory.CreateProduct();

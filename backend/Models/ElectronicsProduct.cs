@@ -1,4 +1,6 @@
-﻿namespace StockManagement.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace StockManagement.Models
 {
     public class ElectronicsProduct : Product
     {

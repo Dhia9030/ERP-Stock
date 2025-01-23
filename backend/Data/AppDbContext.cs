@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StockManagement.Models;
+using MySql.EntityFrameworkCore.Extensions;
+
 
 namespace StockManagement.Data
 {
@@ -16,32 +19,26 @@ namespace StockManagement.Data
         public DbSet<StockMovement> StockMovements { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Fournisseur> Fournisseurs { get; set; }
-        public DbSet<Commande> Commandes { get; set; }
-        public DbSet<CommandeProduit> CommandeProduits { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProduct { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // Replace with your MySQL connection string
+            optionsBuilder.UseMySql("Server=localhost;Database=stockDB;User=root;Password=;",
+                new MySqlServerVersion(new Version(8, 0, 30))); // Specify your MySQL version
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<OrderProduct>()
+                .HasKey(op => new { op.OrderId, op.ProductId });
+            
             base.OnModelCreating(modelBuilder);
 
-            // Configurations supplémentaires (facultatif)
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Location)
-                .WithMany(l => l.Products)
-                .HasForeignKey(p => p.LocationId);
-
-            modelBuilder.Entity<StockMovement>()
-                .HasOne(sm => sm.SourceLocation)
-                .WithMany()
-                .HasForeignKey(sm => sm.SourceLocationId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<StockMovement>()
-                .HasOne(sm => sm.DestinationLocation)
-                .WithMany()
-                .HasForeignKey(sm => sm.DestinationLocationId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<OrderProduct>()
+            .HasKey(op => new { op.OrderId, op.ProductId });
         }
     }
 }
