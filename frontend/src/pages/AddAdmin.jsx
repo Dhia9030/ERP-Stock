@@ -1,9 +1,11 @@
 
-
+import { div } from 'framer-motion/client';
+import Form from '../components/addAdmin/Form';
 const AddAdmin = () => {
     return (
-        <div>
-            <h1>Add Admin</h1>
+        
+        <div className='flex justify-center w-full items-center h-screen bg-gray-100'>
+            <Form />
         </div>
     )
 }
