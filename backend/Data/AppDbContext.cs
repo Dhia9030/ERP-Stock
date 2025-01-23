@@ -27,7 +27,7 @@ namespace StockManagement.Data
         {
             // Replace with your MySQL connection string
             optionsBuilder.UseMySql("Server=localhost;Database=stockDB;User=root;Password=;",
-                new MySqlServerVersion(new Version(8, 0, 30))); // Specify your MySQL version
+                 new MySqlServerVersion(new Version(8, 0, 30))); // Specify your MySQL version
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
