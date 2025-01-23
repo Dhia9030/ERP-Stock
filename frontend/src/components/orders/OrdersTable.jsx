@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Search, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {useOrder} from "../../OrderProvider"
+import { ShoppingCart } from "lucide-react";
 const OrdersTable = () => {
     const{orderData} = useOrder();
 
@@ -37,7 +38,9 @@ const OrdersTable = () => {
 			transition={{ duration: 0.4 }}
         >
             <div className='flex justify-between items-center mb-6'>
-                <h2 className='text-xl font-semibold text-gray-100'>Order List</h2>
+            <ShoppingCart size={50} style={{ color: "#F59E0B", minWidth: "50px" }} />
+
+                <h2 className='text-4xl font-semibold text-gray-100'>Order List</h2>
                 <div className='relative'>
                     <input
                         type='text'
@@ -46,7 +49,9 @@ const OrdersTable = () => {
                         value={searchTerm}
                         onChange={handleSearch}
                     />
+            
                     <Search className='absolute left-3 top-2.5 text-gray-400' size={18} />
+                    
                 </div>
             </div>
 

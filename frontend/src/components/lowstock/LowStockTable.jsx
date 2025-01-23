@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { AlertTriangle, Search } from 'lucide-react';
 
 const lowproducts = [
   {
@@ -36,17 +36,20 @@ const LowStockTable = () => {
 
   return (
     <div className="ml-14 mt-2 w-11/12 bg-gradient-to-br from-sky-800 to-sky-900 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border mb-8">
-      <div className="relative flex justify-end mb-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="pl-10 p-2 rounded-xl bg-gray-800 text-gray-100"
-        />
-        <Search className='absolute right-[220px] top-2.5 text-gray-400' size={18} />
+      <div className="relative mb-10">
+        <AlertTriangle size={50} style={{ color: "#F59E0B", minWidth: "50px" }} className="absolute top-0 left-0" />
+        <h2 className='text-4xl font-semibold text-gray-100 text-center'>Low Stock</h2>
+        <div className="absolute top-0 right-0 flex items-center">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="pl-10 p-2 rounded-xl bg-gray-800 text-gray-100"
+          />
+          <Search className='absolute right-3 top-2.5 text-gray-400' size={18} />
+        </div>
       </div>
-      
       <div className="overflow-x-auto">
         <table className="min-w-full border-spacing-y-4">
           <thead>

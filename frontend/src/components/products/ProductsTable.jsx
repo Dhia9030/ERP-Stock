@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useProducts } from "../../ProductProvider";
 import { ToastContainer, toast } from 'react-toastify';
@@ -56,7 +56,8 @@ const handleSearch = (e) => {
 			transition={{ duration: 0.4 }}
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-100">{selectedList.toLowerCase()==="all"? 'All Products' : capitalize(selectedList)+' Products'}</h2>
+      <ShoppingBag size={50} style={{ color: "#8B5CF6", minWidth: "50px" }} />
+        <h2 className="text-4xl font-semibold text-gray-100">{selectedList.toLowerCase()==="all"? 'All Products' : capitalize(selectedList)+' Products'}</h2>
         <div className="relative">
           <input
             type="text"
