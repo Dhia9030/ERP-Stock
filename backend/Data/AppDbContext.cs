@@ -24,6 +24,9 @@ namespace StockManagement.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<OrderProduct>()
+                .HasKey(op => new { op.OrderId, op.ProductId });
+            
             base.OnModelCreating(modelBuilder);
 
             
