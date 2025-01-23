@@ -5499,7 +5499,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "backend depends on Microsoft.Extensions.Caching.Memory (>= 8.0.2) but Microsoft.Extensions.Caching.Memory 8.0.2 was not found. An approximate best match of Microsoft.Extensions.Caching.Memory 9.0.0 was resolved.",
+      "message": "backend depends on Microsoft.Extensions.Caching.Memory (>= 8.0.2) but Microsoft.Extensions.Caching.Memory 8.0.2 was not found. Microsoft.Extensions.Caching.Memory 9.0.0 was resolved instead.",
       "libraryId": "Microsoft.Extensions.Caching.Memory",
       "targetGraphs": [
         "net8.0"

@@ -2,7 +2,7 @@
 
 namespace StockManagement.Models
 {
-    public class Product
+    public abstract class Product
     {
         [Key]
         public int ProductId { get; set; }
@@ -20,13 +20,17 @@ namespace StockManagement.Models
         [Range(0, int.MaxValue, ErrorMessage = "La quantité en stock doit être au moins 0.")]
         public int StockQuantity { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Le pourcentage de réduction doit être entre 0 et 100.")]
-        public double DiscountPercentage { get; set; }
-
         // Relation avec Category
         [Required(ErrorMessage = "Une catégorie est requise.")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+        
+        // Foreign key to Manufacturer
+        [Required(ErrorMessage = "Le fabricant est requis.")]
+        public int ManufacturerId { get; set; }
+        public Manufacturer Manufacturer { get; set; }
+        
+        public ICollection<ProductItem> ProductItems { get; set; }
 
     }
 }
