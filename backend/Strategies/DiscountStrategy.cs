@@ -1,5 +1,4 @@
-﻿
-using StockManagement.Models;
+﻿using StockManagement.Models;
 
 public class PercentageDiscountStrategy 
 {
@@ -10,20 +9,5 @@ public class PercentageDiscountStrategy
             return 0;
         }
         return price * (decimal)discountPercentage / 100;
-    }
-}
-
-
-public class Commande
-{
-    public decimal CalculateTotal(List<Product> products, double discountPercentageOrder)
-    {
-        decimal total = 0;
-        foreach (var product in products)
-        {
-            total += product.Price - PercentageDiscountStrategy.CalculateDiscount(product.Price, product.DiscountPercentage);
-        }
-
-        return total - PercentageDiscountStrategy.CalculateDiscount(total, discountPercentageOrder);
     }
 }

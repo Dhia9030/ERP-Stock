@@ -18,6 +18,17 @@ namespace StockManagement.Models
 
         // Relationship: An order can contain multiple products
         public ICollection<OrderProduct> OrderProducts { get; set; }
+
+        public decimal CalculateTotal(List<Product> products, double discountPercentageOrder)
+        {
+            decimal total = 0;
+            foreach (var product in products)
+            {
+                total += product.Price - PercentageDiscountStrategy.CalculateDiscount(product.Price, product.DiscountPercentage);
+            }
+
+            return total - PercentageDiscountStrategy.CalculateDiscount(total, discountPercentageOrder);
+        }
     }
 
     // Linking class between Order and Product (many-to-many relationship)
@@ -32,4 +43,5 @@ namespace StockManagement.Models
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
     }
+
 }
