@@ -17,9 +17,9 @@ namespace StockManagement.Data
         public DbSet<StockMovement> StockMovements { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Supplier> Fournisseurs { get; set; }
-        public DbSet<Commande> Commandes { get; set; }
-        public DbSet<OrderProduct> CommandeProduits { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProduct { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
