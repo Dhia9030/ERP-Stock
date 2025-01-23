@@ -1,19 +1,85 @@
-# Ignore les fichiers binaires
+# Ignore binary files
 bin/
 obj/
 
-# Ignore les fichiers de configuration IDE
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.pdb
+
+# Ignore IDE configuration files
 .vscode/
 .idea/
-
-# Ignore les fichiers de log
-*.log
-
-# Ignore les fichiers compil�s
-*.dll
-*.exe
-
 .vs/
 
-# Ignore Entity Framework Core Migrations folder
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore log files
+*.log
+
+# Ignore compiled files
+*.dll
+*.exe
+*.cache
+*.ilk
+*.lib
+*.iobj
+*.ipdb
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Ignore database and test files
+*.mdf
+*.ldf
+*.sdf
+*.sqlite
+*.sqlite3
+*.coverage
+*.testresult
+
+# Ignore Entity Framework Core migrations folder
 /Migrations/
+
+# Ignore build files
+*.csproj.user
+*.rsuser
+*.sln.dotsettings
+*.sln.ide
+project.lock.json
+project.fragment.lock.json
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Ignore Rider IDE files
+.idea/
+*.iml
+*.ipr
+
+# Ignore JetBrains ReSharper files
+*.DotSettings.user
+
+# Ignore Visual Studio Code extensions and settings
+.vscode/
+
+# Ignore secrets files
+secrets.json
+
+# Ignore file-locking or temporary files
+~$*
+
+# Ignore git-ignored tracking file (just in case it was accidentally staged before)
+.gitignore~
