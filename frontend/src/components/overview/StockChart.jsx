@@ -139,7 +139,7 @@ const StockChart = ({ selectedCategory }) => {
       <div className="filters">
         <label className="filter  pb-6">
           <span className="text-4xl">Product:</span>
-          <select className="dropdown text-center text-sky-600" value={selectedProduct} onChange={handleProductChange}>
+          <select className=" dropdown text-2xl text-center text-sky-600" value={selectedProduct} onChange={handleProductChange}>
             {filteredProducts.map(product => (
               <option className="option text-start " key={product.name} value={product.name}>
                 {product.name}

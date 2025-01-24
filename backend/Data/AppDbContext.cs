@@ -22,7 +22,6 @@ namespace StockManagement.Data
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductItem> ProductItems { get; set; }
-        public DbSet<ProductItemFood> ProductItemFoods { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
 
@@ -36,11 +35,6 @@ namespace StockManagement.Data
                 .HasValue<ClothingProduct>("Clothing")
                 .HasValue<ElectronicsProduct>("Electronics")
                 .HasValue<FoodProduct>("Food");
-
-            // Configure TPH for ProductItem inheritance
-            modelBuilder.Entity<ProductItem>()
-                .HasDiscriminator<string>("ProductItemType")
-                .HasValue<ProductItemFood>("Food");
 
             // Configure many-to-many relationship between Order and Product
             modelBuilder.Entity<OrderProduct>()

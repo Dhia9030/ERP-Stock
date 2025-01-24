@@ -1,4 +1,4 @@
-import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, AlertTriangle , ArrowRightLeft} from "lucide-react";
+import { BarChart2, Clock, Menu, Settings, ShoppingBag, ShoppingCart, TrendingUp, AlertTriangle , ArrowRightLeft} from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -12,9 +12,11 @@ const SIDEBAR_ITEMS = [
 	},
 	{ name: "Products", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
 	{ name: "Low Stock", icon: AlertTriangle, color: "#F59E0B", href: "/lowstock" },
+	{ name: "Expiration", icon: Clock, color: "red", href: "/delay" },
+
 	{ name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
 	{ name: "Transfers", icon: ArrowRightLeft, color: "#6EE7B7", href: "/transfers" },
-	{ name: "Analytics", icon: TrendingUp, color: "#3B82F6", href: "/analytics" },
+	// { name: "Analytics", icon: TrendingUp, color: "#3B82F6", href: "/analytics" },
 	{ name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
 	
 ];
@@ -61,11 +63,11 @@ const Sidebar = () => {
 					))}
 				</nav>
 				<div className="flex justify-center items-center">
-				<Link className="flex  mb-12 justify-center items-center w-full" key="/add" to="/add" >
+				<Link className="flex  mb-12 justify-center items-center min-w-full" key="/add" to="/add" >
 				
-				<button className=" mb-[40px] ml-auto max-h-12  w-[60px] group cursor-pointer outline-none " title="Add New">
-					{isSidebarOpen && <span className=" text-lg font-bold">Add Admin</span>}
-				<svg className="stroke-sky-500 fill-none hover:rotate-90 duration-300 group-hover:fill-white group-active:stroke-sky-200 group-active:fill-sky-600 group-active:duration-0 duration-300" viewBox="0 0 24 24" height="60px" width="60px" xmlns="http://www.w3.org/2000/svg">
+				<button className=" mb-[40px] ml-auto max-h-12  min-w-[60px] group cursor-pointer outline-none " title="Add New">
+					{isSidebarOpen && <span className=" text-lg w-96 ">Add Admin</span>}
+				<svg className="ml-auto mr-auto stroke-sky-500 fill-none hover:rotate-90 duration-300 group-hover:fill-white group-active:stroke-sky-200 group-active:fill-sky-600 group-active:duration-0 duration-300" viewBox="0 0 24 24" height="60px" width="60px" xmlns="http://www.w3.org/2000/svg">
 					<path strokeWidth="1.5" d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" />
 					<path strokeWidth="1.5" d="M8 12H16" />
 					<path strokeWidth="1.5" d="M12 16V8" />
