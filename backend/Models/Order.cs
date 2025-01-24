@@ -20,7 +20,9 @@ namespace StockManagement.Models
     public class Order
     {
         public int OrderId { get; set; } // Unique identifier for the order
-        public DateTime OrderDate { get; set; } // Date of the order
+        
+        public int? StockMovementId {get; set;}
+        public StockMovement StockMovement {get; set;}
         
         [Column(TypeName = "decimal(18, 3)")]
         public decimal TotalAmount { get; set; } // Total amount of the order
@@ -28,9 +30,9 @@ namespace StockManagement.Models
         [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")]
         public double DiscountPercentage { get; set; }
 
-        public OrderStatus Status { get; set; } // Status of the order
+        public OrderStatus Status { get; set; } 
 
-        public OrderType Type { get; set; } // Type of the order (Purchase or Sales)
+        public OrderType Type { get; set; } 
 
         // Foreign key for Supplier (if the order is a purchase order)
         public int? SupplierId { get; set; }
