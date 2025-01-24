@@ -105,7 +105,7 @@ const TransferTable = ({type}) => {
                       alt="Product img"
                       className="w-10 h-10 rounded-full mr-4"
                     />
-                    {transfer.name}
+                    <span className='font-bold text-lg'>{transfer.name}</span><span className='ml-3 text-xs'>click for details</span>
                   </td>
                   <td className="px-6 py-4 text-sm">{transfer.quantity}</td>
                   <td className="px-6 py-4 text-sm">{transfer.manufacturer}</td>

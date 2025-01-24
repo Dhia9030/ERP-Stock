@@ -51,7 +51,7 @@ const OverviewPage = () => {
           <StockChart selectedCategory={selectedCategory} />
           
           <CategoryDistributionChart />
-          <SalesChannelChart />
+          {/* {<SalesChannelChart />} */}
           </div>
       </main>
     </div>
