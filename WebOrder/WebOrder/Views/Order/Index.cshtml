@@ -1,0 +1,21 @@
+@model Client
+<body>
+<div>
+    <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="ClientId" class="control-label">Client</label>
+            <select asp-for="ClientId" class="form-control">
+                
+                @foreach (var client in ViewBag.Clients as List<Client>)
+                {
+                    <option value="@client.ClientId">@client.FirstName @client.LastName</option>
+                }
+            </select>
+            <span asp-validation-for="ClientId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+</body>
