@@ -5,7 +5,8 @@ public enum ProductItemStatus
 {
         InStock,
         Sold,
-        Returned
+        Returned,
+        Expired
 }
 
 namespace StockManagement.Models
@@ -13,11 +14,17 @@ namespace StockManagement.Models
     public class ProductItem
     {
         [Key] 
-        public int StockItemId { get; set; }
+        public int ProductItemId { get; set; }
 
         [Required(ErrorMessage = "The status is required.")] 
         [Display(Name = "Status")] 
         public ProductItemStatus Status { get; set; }
+        
+        public int? PurchaseOrderId { get; set; }
+        [ForeignKey("PurchaseOrderId")] 
+        [Display(Name = "Purchase Order")] 
+        public Order? PurchaseOrder { get; set; }
+        
         public int? SaleOrderId { get; set; }
         [ForeignKey("SaleOrderId")] 
         [Display(Name = "Sale Order")] 
@@ -27,5 +34,9 @@ namespace StockManagement.Models
         [ForeignKey("ProductBlockId")] 
         [Display(Name = "Product Block")] 
         public ProductBlock? ProductBlock { get; set; }
+        
+        [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")] 
+        [Display(Name = "Discount Percentage")] 
+        public double DiscountPercentage { get; set; }
     }
 }

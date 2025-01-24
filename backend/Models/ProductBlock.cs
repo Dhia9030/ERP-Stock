@@ -22,20 +22,11 @@ public class ProductBlock
     public int LocationId { get; set; }
     [ForeignKey("LocationId")] 
     public Location Location { get; set; }
-    
-    public int? PurchaseOrderId { get; set; }
-    [ForeignKey("PurchaseOrderId")] 
-    [Display(Name = "Purchase Order")] 
-    public Order? PurchaseOrder { get; set; }
 
     [Display(Name = "Exit Date")]
     [NotMapped]
     [DataType(DataType.Date)] 
     public DateTime? ExitDate { get; set; } 
-    
-    [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")] 
-    [Display(Name = "Discount Percentage")] 
-    public double DiscountPercentage { get; set; }
     
     public int Quantity { get; set; } 
     

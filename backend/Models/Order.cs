@@ -42,12 +42,6 @@ namespace StockManagement.Models
         public int? ClientId { get; set; }
         public Client? Client { get; set; }
 
-        // Relationship: An order can contain multiple products
-        public ICollection<OrderProduct>? OrderProducts { get; set; } // each item represents a different product in the order
-
-        // Relationship: An order can contain multiple product items
-        public ICollection<ProductItem>? PurchaseProductItems { get; set; } // it has all the Pruchase product items in the order
-        
-        public ICollection<ProductItem>? SaleProductItems { get; set; } // it has all the Sale product items in the order
+        public ICollection<StockMovementPerItem>? StockMovementPerItem { get; set; }
     }
 }
