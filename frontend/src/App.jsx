@@ -13,6 +13,7 @@ import SettingsPage from "./pages/SettingsPage";
 import CustomerOrder from "./pages/CustomerOrder";
 import LowStock  from "./pages/LowStock";
 import Transfers from "./pages/Transfers"
+import DelayPage from "./pages/DelayPage";
 import { ToastContainer , toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -104,6 +105,7 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 				<Route path='/analytics' element={<AnalyticsPage />} />
 				<Route path='/settings' element={<SettingsPage />} />
 				<Route path='/add' element={<AddAdmin />} />
+				<Route path='/delay' element={<DelayPage />} />
 			</Routes>
 		</div>
 		</div>
