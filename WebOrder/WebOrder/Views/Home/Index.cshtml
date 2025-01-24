@@ -1,8 +1,35 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p class="display-4">Welcome @User.Identity?.Name!</p>
+   
+    <p class="text-decoration-underline">you are an admin of this page!, you are a sale manager</p>
+     
+    <p> <a asp-controller="Order" asp-action="CreateOrder">Create order</a>.</p>
+    <p> <a asp-controller="Order" asp-action="getOrders">get order</a>.</p>
+
+    <p> <a asp-controller="Order" asp-action="Products">Product</a>.</p>
+        
+    
+    
+    
+        
+
+   
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p class="display-5 bg-warning">you are not signed in</p>
+        <p>the accout of the sale manager is</p>
+        <p> username = sahbi</p>
+        <p> password = Sahbi2003* </p>
+    </div>
+
+}
