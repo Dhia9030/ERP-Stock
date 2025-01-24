@@ -33,6 +33,10 @@ namespace StockManagement.Models
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; }
         
+        // Foreign key to Supplier
+        public int? SupplierId { get; set; }
+        public Supplier? Supplier { get; set; }
+        
         public ICollection<ProductItem> ProductItems { get; set; }
 
     }

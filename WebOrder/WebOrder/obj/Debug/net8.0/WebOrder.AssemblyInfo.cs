@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebOrder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7aaab9695a388aa1e986ec38386dc88658b182c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cddbc349394b4da331d6142cdceca9f6f60cffe2")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebOrder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebOrder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
