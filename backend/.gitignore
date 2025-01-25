@@ -7,7 +7,8 @@ backend/obj
 *.snupkg
 packages/
 *.pdb
-
+backend/appsettings.Development.json
+backend/appsettings.json
 # Ignore les fichiers de configuration IDE
 .vscode/
 .idea/
