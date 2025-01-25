@@ -33,7 +33,7 @@ namespace StockManagement.Models
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; }
         
-        public ICollection<ProductBlock> ProductBlocks { get; set; }
+        public ICollection<ProductBlock> ProductBlocks { get; set; } = new List<ProductBlock>();
 
     }
 }

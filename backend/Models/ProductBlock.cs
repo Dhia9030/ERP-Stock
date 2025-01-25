@@ -28,9 +28,13 @@ public class ProductBlock
     [DataType(DataType.Date)] 
     public DateTime? ExitDate { get; set; } 
     
+    [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")] 
+    [Display(Name = "Discount Percentage")] 
+    public double DiscountPercentage { get; set; }
+    
     public int Quantity { get; set; } 
     
     public ProductBlockStatus Status { get; set; }
     
-    public ICollection<ProductItem> ProductItems { get; set; }
+    public ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
 }

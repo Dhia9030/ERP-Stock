@@ -35,8 +35,6 @@ namespace StockManagement.Models
         [Display(Name = "Product Block")] 
         public ProductBlock? ProductBlock { get; set; }
         
-        [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")] 
-        [Display(Name = "Discount Percentage")] 
-        public double DiscountPercentage { get; set; }
+      
     }
 }

@@ -9,5 +9,5 @@ public class Manufacturer
     public string Phone { get; set; } // Contact phone number of the manufacturer
 
     // Relationship: A manufacturer can produce multiple products
-    public ICollection<Product> Products { get; set; }
+    public ICollection<Product> Products { get; set; } = new List<Product>();
 }

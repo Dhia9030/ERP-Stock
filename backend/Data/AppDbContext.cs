@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using StockManagement.Models;
 
 namespace StockManagement.Data
@@ -19,16 +18,18 @@ namespace StockManagement.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductItem> ProductItems { get; set; }
+        public DbSet<ProductBlock> ProductBlocks { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<StockMovement> StockMovements { get; set; }
+        public DbSet<StockMovementPerItem> StockMovementPerItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             // Configure TPH (Table-per-Hierarchy) for Product inheritance
             modelBuilder.Entity<Product>()
                 .HasDiscriminator<string>("ProductType")
@@ -36,71 +37,47 @@ namespace StockManagement.Data
                 .HasValue<ElectronicsProduct>("Electronics")
                 .HasValue<FoodProduct>("Food");
 
-            // Configure many-to-many relationship between Order and Product
-            modelBuilder.Entity<OrderProduct>()
-                .HasKey(op => new { op.OrderId, op.ProductId });
-
-            modelBuilder.Entity<OrderProduct>()
-                .HasOne(op => op.Order)
-                .WithMany(o => o.OrderProducts)
-                .HasForeignKey(op => op.OrderId);
-
-            modelBuilder.Entity<OrderProduct>()
-                .HasOne(op => op.Product)
-                .WithMany()
-                .HasForeignKey(op => op.ProductId);
-
             // Configure relationships for ProductItem
             modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.Product)
-                .WithMany(p => p.ProductItems)
-                .HasForeignKey(pi => pi.ProductId);
+                .HasOne(pi => pi.ProductBlock)
+                .WithMany(pb => pb.ProductItems)
+                .HasForeignKey(pi => pi.ProductBlockId);
 
             modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.Location)
-                .WithMany()
-                .HasForeignKey(pi => pi.LocationId);
+                .HasOne(pi => pi.PurchaseOrder)
+                .WithMany(o => o.PurchaseProductItems)
+                .HasForeignKey(pi => pi.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.Client)
-                .WithMany()
-                .HasForeignKey(pi => pi.ClientId);
+                .HasOne(pi => pi.SaleOrder)
+                .WithMany(o => o.SaleProductItems)
+                .HasForeignKey(pi => pi.SaleOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.Supplier)
-                .WithMany()
-                .HasForeignKey(pi => pi.SupplierId);
-          
             // Configure relationships for Order
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Supplier)
                 .WithMany(s => s.Orders)
                 .HasForeignKey(o => o.SupplierId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Client)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.ClientId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
-                .HasMany(o => o.PurchaseProductItems) // An Order can have many ProductItems
-                .WithOne(pi => pi.PurchaseOrder) // A ProductItem belongs to one Order
-                .HasForeignKey(pi => pi.PurchaseOrderId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete; // Foreign key in ProductItem
+                .HasOne(o => o.StockMovement)
+                .WithMany()
+                .HasForeignKey(o => o.StockMovementId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.SaleProductItems) // An Order can have many ProductItems
-                .WithOne(pi => pi.SaleOrder) // A ProductItem belongs to one Order
-                .HasForeignKey(pi => pi.SaleOrderId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete; // Foreign key in ProductItem
-
-            
             // Configure relationships for Location
             modelBuilder.Entity<Location>()
                 .HasOne(l => l.Warehouse)
-                .WithMany()
+                .WithMany(w => w.Locations)
                 .HasForeignKey(l => l.WarehouseId);
 
             // Configure relationships for Product
@@ -113,8 +90,49 @@ namespace StockManagement.Data
                 .HasOne(p => p.Manufacturer)
                 .WithMany(m => m.Products)
                 .HasForeignKey(p => p.ManufacturerId);
-            
-           
+
+            // Configure relationships for ProductBlock
+            modelBuilder.Entity<ProductBlock>()
+                .HasOne(pb => pb.Product)
+                .WithMany(p => p.ProductBlocks)
+                .HasForeignKey(pb => pb.ProductId);
+
+            modelBuilder.Entity<ProductBlock>()
+                .HasOne(pb => pb.Location)
+                .WithMany()
+                .HasForeignKey(pb => pb.LocationId);
+
+            // Configure relationships for StockMovement
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.SourceLocation)
+                .WithMany()
+                .HasForeignKey(sm => sm.SourceLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.DestinationLocation)
+                .WithMany()
+                .HasForeignKey(sm => sm.DestinationLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.Order)
+                .WithMany()
+                .HasForeignKey(sm => sm.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure relationships for StockMovementPerItem
+            modelBuilder.Entity<StockMovementPerItem>()
+                .HasOne(smi => smi.Product)
+                .WithMany()
+                .HasForeignKey(smi => smi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StockMovementPerItem>()
+                .HasMany(smi => smi.ProductItems)
+                .WithOne()
+                .HasForeignKey(pi => pi.StockMovementPerItemId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

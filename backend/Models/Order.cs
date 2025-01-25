@@ -3,45 +3,63 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public enum OrderStatus
 {
-    Pending,    // Order is created but not yet processed
-    Processing, // Order is being processed
-    Delivered,  // Order has been delivered
-    Cancelled   // Order has been cancelled
+    Pending,
+    Processing,
+    Delivered,
+    Cancelled
 }
 
 public enum OrderType
 {
-    Purchase, // Order from a supplier
-    Sales     // Order to a client
+    Purchase,
+    Sales
 }
 
 namespace StockManagement.Models
 {
     public class Order
     {
-        public int OrderId { get; set; } // Unique identifier for the order
-        
-        public int? StockMovementId {get; set;}
-        public StockMovement StockMovement {get; set;}
-        
-        [Column(TypeName = "decimal(18, 3)")]
-        public decimal TotalAmount { get; set; } // Total amount of the order
+        [Key]
+        public int OrderId { get; set; }
 
+        [Display(Name = "Stock Movement ID")]
+        public int? StockMovementId { get; set; }
+
+        [ForeignKey("StockMovementId")]
+        public StockMovement? StockMovement { get; set; }
+
+        [Required(ErrorMessage = "The total amount is required.")]
+        [Column(TypeName = "decimal(18, 3)")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "The total amount must be greater than 0.")]
+        [Display(Name = "Total Amount")]
+        public decimal TotalAmount { get; set; }
+
+        [Required(ErrorMessage = "The discount percentage is required.")]
         [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")]
+        [Display(Name = "Discount Percentage")]
         public double DiscountPercentage { get; set; }
 
-        public OrderStatus Status { get; set; } 
+        [Required(ErrorMessage = "The order status is required.")]
+        [Display(Name = "Order Status")]
+        public OrderStatus Status { get; set; }
 
-        public OrderType Type { get; set; } 
+        [Required(ErrorMessage = "The order type is required.")]
+        [Display(Name = "Order Type")]
+        public OrderType Type { get; set; }
 
-        // Foreign key for Supplier (if the order is a purchase order)
+        [Display(Name = "Supplier ID")]
         public int? SupplierId { get; set; }
+
+        [ForeignKey("SupplierId")]
         public Supplier? Supplier { get; set; }
 
-        // Foreign key for Client (if the order is a sales order)
+        [Display(Name = "Client ID")]
         public int? ClientId { get; set; }
+
+        [ForeignKey("ClientId")]
         public Client? Client { get; set; }
 
+        [Display(Name = "Stock Movement Per Item")]
         public ICollection<StockMovementPerItem>? StockMovementPerItem { get; set; }
     }
 }
