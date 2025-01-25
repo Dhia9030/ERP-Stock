@@ -45,13 +45,13 @@ namespace StockManagement.Data
 
             modelBuilder.Entity<ProductItem>()
                 .HasOne(pi => pi.PurchaseOrder)
-                .WithMany(o => o.PurchaseProductItems)
+                .WithMany()
                 .HasForeignKey(pi => pi.PurchaseOrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductItem>()
                 .HasOne(pi => pi.SaleOrder)
-                .WithMany(o => o.SaleProductItems)
+                .WithMany()
                 .HasForeignKey(pi => pi.SaleOrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -128,11 +128,22 @@ namespace StockManagement.Data
                 .HasForeignKey(smi => smi.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Configure the many-to-many relationship between StockMovementPerItem and ProductItem
+            
+            // Configure the intermediate table
+            modelBuilder.Entity<StockMovementPerItemProductItem>()
+                .HasKey(p => new { p.StockMovementPerItemId, p.ProductItemId }); // Clé primaire composite
+            
+            // Configure the relationship between StockMovementPerItem and ProductItem
             modelBuilder.Entity<StockMovementPerItem>()
                 .HasMany(smi => smi.ProductItems)
-                .WithOne()
-                .HasForeignKey(pi => pi.StockMovementPerItemId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(pi => pi.StockMovementPerItems)
+                .UsingEntity<StockMovementPerItemProductItem>(
+                    j => j.HasOne(pi => pi.ProductItem).WithMany().HasForeignKey(pi => pi.ProductItemId),
+                    j => j.HasOne(smi => smi.StockMovementPerItem).WithMany().HasForeignKey(smi => smi.StockMovementPerItemId)
+                );
+            
+            
         }
     }
 }

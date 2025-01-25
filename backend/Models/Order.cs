@@ -60,6 +60,6 @@ namespace StockManagement.Models
         public Client? Client { get; set; }
 
         [Display(Name = "Stock Movement Per Item")]
-        public ICollection<StockMovementPerItem>? StockMovementPerItem { get; set; }
+        public ICollection<StockMovementPerItem>? StockMovementPerItems { get; set; }
     }
 }

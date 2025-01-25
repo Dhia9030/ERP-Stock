@@ -49,7 +49,7 @@ public class StockMovement
     [Required(ErrorMessage = "L'utilisateur qui a créé le mouvement est obligatoire")]
     [StringLength(50, ErrorMessage = "Le nom de l'utilisateur ne peut pas dépasser 50 caractères")]
     [Display(Name = "Créé par")]
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     [ForeignKey("Order")]
     [Display(Name = "ID Commande")]
@@ -57,7 +57,7 @@ public class StockMovement
 
     [ValidateNever]
     [Display(Name = "Commande")]
-    public Order Order { get; set; }
+    public Order? Order { get; set; }
 
     [Required(ErrorMessage = "La date du mouvement est obligatoire")]
     [DataType(DataType.DateTime)]
