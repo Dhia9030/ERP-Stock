@@ -34,7 +34,6 @@ namespace StockManagement.Models
         [ForeignKey("ProductBlockId")] 
         [Display(Name = "Product Block")] 
         public ProductBlock? ProductBlock { get; set; }
-        
       
     }
 }

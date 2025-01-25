@@ -18,13 +18,14 @@ namespace StockManagement.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProducts> OrderProducts { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductItem> ProductItems { get; set; }
         public DbSet<ProductBlock> ProductBlocks { get; set; }
+        public DbSet<ProductItem> ProductItems { get; set; }
+        public DbSet<StockMovement> StockMovements { get; set; }
+        public DbSet<StockMovementItems> StockMovementItems { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<StockMovement> StockMovements { get; set; }
-        public DbSet<StockMovementPerItem> StockMovementPerItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +37,19 @@ namespace StockManagement.Data
                 .HasValue<ClothingProduct>("Clothing")
                 .HasValue<ElectronicsProduct>("Electronics")
                 .HasValue<FoodProduct>("Food");
+            
+            // Configuration de l'héritage TPH pour Order, SellOrder, et BuyOrder
+            modelBuilder.Entity<Order>()
+                .HasDiscriminator<string>("OrderType")
+                .HasValue<SellOrder>("SellOrder") // Valeur pour SellOrder
+                .HasValue<BuyOrder>("BuyOrder"); // Valeur pour BuyOrder
+            
+            // Configure TPH (Table-per-Hierarchy) for ProductBlock inheritance
+            modelBuilder.Entity<ProductBlock>()
+                .HasDiscriminator<string>("ProductBlockType")
+                .HasValue<ProductBlock>("ProductBlock")
+                .HasValue<FoodProductBlock>("FoodProductBlock");
+           
 
             // Configure relationships for ProductItem
             modelBuilder.Entity<ProductItem>()
@@ -45,34 +59,28 @@ namespace StockManagement.Data
 
             modelBuilder.Entity<ProductItem>()
                 .HasOne(pi => pi.PurchaseOrder)
-                .WithMany(o => o.PurchaseProductItems)
+                .WithMany()
                 .HasForeignKey(pi => pi.PurchaseOrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ProductItem>()
                 .HasOne(pi => pi.SaleOrder)
-                .WithMany(o => o.SaleProductItems)
+                .WithMany()
                 .HasForeignKey(pi => pi.SaleOrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure relationships for Order
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Supplier)
-                .WithMany(s => s.Orders)
-                .HasForeignKey(o => o.SupplierId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Client)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.StockMovement)
-                .WithMany()
-                .HasForeignKey(o => o.StockMovementId)
-                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<BuyOrder>()
+                .HasOne(bo => bo.Supplier)
+                .WithMany(s => s.Orders)
+                .HasForeignKey(bo => bo.SupplierId);
 
             // Configure relationships for Location
             modelBuilder.Entity<Location>()
@@ -90,6 +98,7 @@ namespace StockManagement.Data
                 .HasOne(p => p.Manufacturer)
                 .WithMany(m => m.Products)
                 .HasForeignKey(p => p.ManufacturerId);
+            
 
             // Configure relationships for ProductBlock
             modelBuilder.Entity<ProductBlock>()
@@ -103,36 +112,72 @@ namespace StockManagement.Data
                 .HasForeignKey(pb => pb.LocationId);
 
             // Configure relationships for StockMovement
+            
             modelBuilder.Entity<StockMovement>()
-                .HasOne(sm => sm.SourceLocation)
+                .HasOne(sm => sm.Order)
+                .WithMany(o => o.StockMovements)
+                .HasForeignKey(sm => sm.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.SourceProductBlock)
                 .WithMany()
-                .HasForeignKey(sm => sm.SourceLocationId)
+                .HasForeignKey(sm => sm.SourceProductBlockId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<StockMovement>()
-                .HasOne(sm => sm.DestinationLocation)
+                .HasOne(sm => sm.DestinationProductBlock)
                 .WithMany()
-                .HasForeignKey(sm => sm.DestinationLocationId)
+                .HasForeignKey(sm => sm.DestinationProductBlockId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<StockMovement>()
                 .HasOne(sm => sm.Order)
-                .WithMany()
+                .WithMany(o => o.StockMovements)
                 .HasForeignKey(sm => sm.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            // Configuration de la relation many-to-many entre Product et Order via OrderProducts
+            modelBuilder.Entity<OrderProducts>()
+                .HasKey(op => op.OrderProductId); // Clé primaire de la table de jointure
 
-            // Configure relationships for StockMovementPerItem
-            modelBuilder.Entity<StockMovementPerItem>()
-                .HasOne(smi => smi.Product)
+            modelBuilder.Entity<OrderProducts>()
+                .HasOne(op => op.Product)
+                .WithMany() // Un Product peut être dans plusieurs OrderProducts
+                .HasForeignKey(op => op.ProductId);
+
+            modelBuilder.Entity<OrderProducts>()
+                .HasOne(op => op.Order)
+                .WithMany(o => o.OrderProducts) // Un Order peut contenir plusieurs OrderProducts
+                .HasForeignKey(op => op.OrderId);
+            
+            // Configuration de la relation many-to-many entre StockMovement et ProductItem via StockMovementItems
+            modelBuilder.Entity<StockMovementItems>()
+                .HasKey(smi => smi.StockMovementItemId); // Clé primaire de la table de jointure
+
+            modelBuilder.Entity<StockMovementItems>()
+                .HasOne(smi => smi.ProductItem)
+                .WithMany() 
+                .HasForeignKey(smi => smi.ProductItemId);
+
+            modelBuilder.Entity<StockMovementItems>()
+                .HasOne(smi => smi.StockMovement)
                 .WithMany()
-                .HasForeignKey(smi => smi.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(smi => smi.StockMovementId);
+            
+            // Configuration de la relation many-to-many entre Product et Supplier
+            modelBuilder.Entity<ProductSupplier>()
+                .HasKey(ps => ps.ProductSupplierId);
 
-            modelBuilder.Entity<StockMovementPerItem>()
-                .HasMany(smi => smi.ProductItems)
-                .WithOne()
-                .HasForeignKey(pi => pi.StockMovementPerItemId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ProductSupplier>()
+                .HasOne(ps => ps.Product)
+                .WithMany()
+                .HasForeignKey(ps => ps.ProductId);
+
+            modelBuilder.Entity<ProductSupplier>()
+                .HasOne(ps => ps.Supplier)
+                .WithMany()
+                .HasForeignKey(ps => ps.SupplierId);
         }
     }
 }

@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace StockManagement.Models;
 
-public class StockMovementPerItem
+public class OrderProducts
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int StockMovementPerItemId { get; set; }
+    public int OrderProductId { get; set; }
 
     [Required(ErrorMessage = "Le produit est obligatoire")]
-    [ForeignKey("Product")]
+    [ForeignKey("ProductId")]
     [Display(Name = "Produit")]
     public int ProductId { get; set; }
 
@@ -24,8 +24,15 @@ public class StockMovementPerItem
     [Range(0, int.MaxValue, ErrorMessage = "La quantité ne peut pas être négative")]
     [Display(Name = "Quantité")]
     public int Quantity { get; set; }
-
+    
+    [Required(ErrorMessage = "L'OrderId est obligatoire")]
+    [ForeignKey("OrderId")]
+    [Display(Name = "Produit")]
+    public int OrderId { get; set; }
+    
     [ValidateNever]
-    [Display(Name = "Items de produit")]
-    public ICollection<ProductItem>? ProductItems { get; set; }
+    [Required(ErrorMessage = "Le Order doit être associé")]
+    [Display(Name = "Order")]
+    public Order Order { get; set; }
+    
 }

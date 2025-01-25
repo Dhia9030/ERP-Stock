@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 
 import Sidebar from "./components/common/Sidebar";
-import {OrderProvider} from './OrderProvider';
-import { ProductProvider, useProducts } from "./ProductProvider";
+import {OrderProvider} from './context/OrderProvider';
+import { ProductProvider, useProducts } from "./context/ProductProvider";
 import { useState , useRef , useEffect, useMemo} from "react";
 import AddAdmin from "./pages/AddAdmin";
 import OverviewPage from "./pages/OverviewPage";

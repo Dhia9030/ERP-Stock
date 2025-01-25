@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { ProductProvider } from "./ProductProvider";
-import { OrderProvider } from "./OrderProvider";
+import { ProductProvider } from "./context/ProductProvider.jsx";
+import { OrderProvider } from "./context/OrderProvider.jsx";
 
 import { BrowserRouter } from "react-router-dom";
 

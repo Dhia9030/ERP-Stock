@@ -5,7 +5,7 @@ import DailyOrders from "../components/orders/DailyOrders";
 import OrderDistribution from "../components/orders/OrderDistribution";
 import OrdersTable from "../components/orders/OrdersTable";
 import CustomerOrder from './CustomerOrder';
-import {useOrder} from "../OrderProvider"
+import {useOrder} from "../context/OrderProvider"
 
 
 const OrdersPage = () => {

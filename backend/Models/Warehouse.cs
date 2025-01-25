@@ -13,5 +13,7 @@ namespace StockManagement.Models
 
         [MaxLength(300, ErrorMessage = "L'adresse ne peut pas dépasser 300 caractères.")]
         public string? Location { get; set; }
+        
+        public ICollection<Location>? Locations { get; set; }
     }
 }
