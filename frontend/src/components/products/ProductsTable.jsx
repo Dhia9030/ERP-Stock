@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Search, ShoppingBag } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useProducts } from "../../ProductProvider";
+import { useProducts } from "../../context/ProductProvider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

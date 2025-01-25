@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../components/common/Header';
 import { CheckCircle, X } from 'lucide-react';
-import { useOrder } from "../OrderProvider";
+import { useOrder } from "../context/OrderProvider";
 
 const CustomerOrder = () => {
   const { orderData, markAsDelivered } = useOrder();

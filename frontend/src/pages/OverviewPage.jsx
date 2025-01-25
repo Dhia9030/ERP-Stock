@@ -1,7 +1,7 @@
 import { BarChart2, ShoppingBag, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect , useRef} from "react";
-import { useProducts } from "../ProductProvider";
+import { useProducts } from "../context/ProductProvider";
 import {toast} from "react-toastify";
 
 import Header from "../components/common/Header";

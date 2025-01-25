@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {useOrder} from "../../OrderProvider"
+import {useOrder} from "../../context/OrderProvider"
 import { ShoppingCart } from "lucide-react";
 const OrdersTable = () => {
     const{orderData} = useOrder();
