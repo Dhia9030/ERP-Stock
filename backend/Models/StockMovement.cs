@@ -53,13 +53,10 @@ public class StockMovement
     [ValidateNever]
     [Required(ErrorMessage = "Le block de destination est obligatoire")]
     [Display(Name = "Block de Destination")]
-    public Location DestinationProductBlock { get; set; }
+    public ProductBlock DestinationProductBlock { get; set; }
     
-    [Required(ErrorMessage = "Le produit est obligatoire")]
-    [ForeignKey("ProductId")]
-    [Display(Name = "Produit")]
-    public int ProductId { get; set; }
-
+  
+    [NotMapped]
     [ValidateNever]
     [Required(ErrorMessage = "Le produit doit être associé")]
     [Display(Name = "Produit")]

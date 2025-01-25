@@ -15,3 +15,6 @@ packages/
 # Ignore binary files
 bin/
 obj/
+
+Program.cs
+appsettings.json
