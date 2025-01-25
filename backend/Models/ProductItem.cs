@@ -36,7 +36,7 @@ namespace StockManagement.Models
         public ProductBlock? ProductBlock { get; set; }
         
         // Propriété de navigation pour la relation many-to-many avec StockMovementPerItem
-        public ICollection<StockMovementPerItem> StockMovementPerItems { get; set; } = new List<StockMovementPerItem>();
+        public ICollection<OrderProducts> StockMovementPerItems { get; set; } = new List<OrderProducts>();
       
     }
 }

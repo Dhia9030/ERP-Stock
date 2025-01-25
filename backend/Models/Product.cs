@@ -34,6 +34,11 @@ namespace StockManagement.Models
         public Manufacturer Manufacturer { get; set; }
         
         public ICollection<ProductBlock> ProductBlocks { get; set; } = new List<ProductBlock>();
+        
+        [NotMapped]
+        public ICollection<Supplier> Suppliers { get; set; } = new List<Supplier>();
+        
+        
 
     }
 }

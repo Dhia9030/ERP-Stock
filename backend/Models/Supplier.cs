@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StockManagement.Models
 {
@@ -13,7 +14,9 @@ namespace StockManagement.Models
         public DateTime RegistrationDate { get; set; } // Supplier's registration date
 
         // Relationship: A supplier can supply multiple products
+        [NotMapped]
         public ICollection<Product> Products { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        
+        public ICollection<BuyOrder> Orders { get; set; }
     }
 }
