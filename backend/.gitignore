@@ -7,8 +7,8 @@ backend/obj
 *.snupkg
 packages/
 *.pdb
-backend/appsettings.Development.json
-backend/appsettings.json
+appsettings.Development.json
+appsettings.json
 # Ignore les fichiers de configuration IDE
 .vscode/
 .idea/
@@ -16,3 +16,6 @@ backend/appsettings.json
 # Ignore binary files
 bin/
 obj/
+
+Program.cs
+appsettings.json
