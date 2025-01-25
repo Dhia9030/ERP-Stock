@@ -66,14 +66,11 @@ obj/
 /Migrations/
 
 # Ignore build files
-*.csproj.user
 *.rsuser
 *.sln.dotsettings
 *.sln.ide
 project.lock.json
 project.fragment.lock.json
-*.csproj.nuget.g.props
-*.csproj.nuget.g.targets
 
 # Ignore OS-specific files
 .DS_Store
@@ -88,11 +85,9 @@ $RECYCLE.BIN/
 *.ipr
 *.rsp
 *.sln
-*.csproj
 *.vbproj
 *.vcxproj
 *.vcxproj.filters
-*.csproj.user
 *.vbproj.user
 *.vcxproj.user
 *.suo
@@ -378,7 +373,6 @@ appsettings.LocalCircle
 /Migrations/
 
 # Ignore build files
-*.csproj.user
 *.rsuser
 *.sln.dotsettings
 *.sln.ide
