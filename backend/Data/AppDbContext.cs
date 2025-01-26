@@ -57,18 +57,6 @@ namespace StockManagement.Data
                 .WithMany(pb => pb.ProductItems)
                 .HasForeignKey(pi => pi.ProductBlockId);
 
-            modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.PurchaseOrder)
-                .WithMany()
-                .HasForeignKey(pi => pi.PurchaseOrderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.SaleOrder)
-                .WithMany()
-                .HasForeignKey(pi => pi.SaleOrderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Configure relationships for Order
 
             modelBuilder.Entity<Order>()

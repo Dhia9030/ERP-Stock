@@ -20,13 +20,11 @@ namespace StockManagement.Models
         [Display(Name = "Status")] 
         public ProductItemStatus Status { get; set; }
         
-        public int? PurchaseOrderId { get; set; }
-        [ForeignKey("PurchaseOrderId")] 
+        [NotMapped]
         [Display(Name = "Purchase Order")] 
         public Order? PurchaseOrder { get; set; }
         
-        public int? SaleOrderId { get; set; }
-        [ForeignKey("SaleOrderId")] 
+        [NotMapped]
         [Display(Name = "Sale Order")] 
         public Order? SaleOrder { get; set; }
         
