@@ -11,12 +11,27 @@ namespace StockManagement.Data
                 serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
             {
                 // Look for any existing data.
-                if (context.Clients.Any() || context.Categories.Any() || context.Manufacturers.Any() || context.Suppliers.Any() || context.Products.Any())
+                if (context.Clients.Any() || context.Categories.Any() || context.Manufacturers.Any() || context.Suppliers.Any() || context.Products.Any() || context.Warehouses.Any())
                 {
                     return;   // DB has been seeded
                 }
 
                 // Add initial data
+                context.Warehouses.AddRange(
+                    new Warehouse
+                    {
+                        Name = "Main Warehouse", Location = "123 Main St, City, Country",
+                        Locations = GenerateLocations("Main Warehouse") // Generate 40 locations
+                        
+                    },
+                    new Warehouse
+                    {
+                        Name = "Secondary Warehouse",
+                        Location = "456 Secondary St, City, Country",
+                        Locations = GenerateLocations("Secondary Warehouse") // Generate 40 locations
+                    }
+                );
+                
                 context.Clients.AddRange(
                     new Client { LastName = "Doe", FirstName = "John", Email = "john.doe@example.com", Address = "123 Main St", PhoneNumber = "123-456-7890", RegistrationDate = DateTime.Now },
                     new Client { LastName = "Smith", FirstName = "Jane", Email = "jane.smith@example.com", Address = "456 Elm St", PhoneNumber = "987-654-3210", RegistrationDate = DateTime.Now },
@@ -61,6 +76,39 @@ namespace StockManagement.Data
 
                 context.SaveChanges();
             }
+        }
+        
+        private static List<Location> GenerateLocations(string warehouseName)
+        {
+            var locations = new List<Location>();
+
+            // Add specific locations for suppliers, buyers, and expired products
+            locations.Add(new Location { Name = $"{warehouseName} - Supplier Area" });
+            locations.Add(new Location { Name = $"{warehouseName} - Buyer Area" });
+            locations.Add(new Location { Name = $"{warehouseName} - Expired Products Area" });
+
+            // Add 40 additional locations
+            for (int i = 1; i <= 10; i++)
+            {
+                locations.Add(new Location { Name = $"{warehouseName} - Location A-{i}" });
+            }
+            
+            for (int i = 1; i <= 10; i++)
+            {
+                locations.Add(new Location { Name = $"{warehouseName} - Location B-{i}" });
+            }
+         
+            for (int i = 1; i <= 10; i++)
+            {
+                locations.Add(new Location { Name = $"{warehouseName} - Location C-{i}" });
+            }
+            
+            for (int i = 1; i <= 10; i++)
+            {
+                locations.Add(new Location { Name = $"{warehouseName} - Location D-{i}" });
+            }
+            
+            return locations;
         }
     }
 }
