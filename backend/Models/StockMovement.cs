@@ -44,17 +44,36 @@ public class StockMovement
     [Display(Name = "Block Source")]
     public ProductBlock SourceProductBlock { get; set; }
 
-    // Relation avec l'emplacement de destination
+    // Relation avec le block de destination
     [Required(ErrorMessage = "L'ID du block de destination est obligatoire")]
     [ForeignKey("DestinationBlock")]
     [Display(Name = "ID Block de Destination")]
     public int DestinationProductBlockId { get; set; }
-
     [ValidateNever]
     [Required(ErrorMessage = "Le block de destination est obligatoire")]
     [Display(Name = "Block de Destination")]
     public ProductBlock DestinationProductBlock { get; set; }
     
+    // Relation avec l'emplacement source
+    [Required(ErrorMessage = "L'ID du Location  source est obligatoire")]
+    [ForeignKey("SourceLocation")]
+    [Display(Name = "ID Location Source")]
+    public int SourceLocationId { get; set; }
+
+    [ValidateNever]
+    [Required(ErrorMessage = "Le Location source est obligatoire")]
+    [Display(Name = "Location Source")]
+    public Location SourceLocation { get; set; }
+
+    // Relation avec l'emplacement de destination
+    [Required(ErrorMessage = "L'ID du Location de destination est obligatoire")]
+    [ForeignKey("DestinationLocation")]
+    [Display(Name = "ID Location de Destination")]
+    public int DestinationLocationId { get; set; }
+    [ValidateNever]
+    [Required(ErrorMessage = "Le block de destination est obligatoire")]
+    [Display(Name = "Block de Destination")]
+    public Location DestinationLocation { get; set; }
   
     [NotMapped]
     [ValidateNever]

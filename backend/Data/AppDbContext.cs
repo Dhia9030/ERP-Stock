@@ -125,6 +125,18 @@ namespace StockManagement.Data
                 .HasForeignKey(sm => sm.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
             
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.DestinationLocation)
+                .WithMany()
+                .HasForeignKey(sm => sm.DestinationLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.SourceLocation)
+                .WithMany()
+                .HasForeignKey(sm => sm.SourceLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
             // Configuration de la relation many-to-many entre Product et Order via OrderProducts
             modelBuilder.Entity<OrderProducts>()
                 .HasKey(op => op.OrderProductId); // Clé primaire de la table de jointure

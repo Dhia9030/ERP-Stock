@@ -312,25 +312,11 @@ namespace backend.Migrations
                     ProductItemId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    PurchaseOrderId = table.Column<int>(type: "int", nullable: true),
-                    SaleOrderId = table.Column<int>(type: "int", nullable: true),
                     ProductBlockId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductItems", x => x.ProductItemId);
-                    table.ForeignKey(
-                        name: "FK_ProductItems_Orders_PurchaseOrderId",
-                        column: x => x.PurchaseOrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductItems_Orders_SaleOrderId",
-                        column: x => x.SaleOrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ProductItems_ProductBlocks_ProductBlockId",
                         column: x => x.ProductBlockId,
@@ -351,12 +337,26 @@ namespace backend.Migrations
                     MovementDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     SourceProductBlockId = table.Column<int>(type: "int", nullable: false),
                     DestinationProductBlockId = table.Column<int>(type: "int", nullable: false),
+                    SourceLocationId = table.Column<int>(type: "int", nullable: false),
+                    DestinationLocationId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StockMovements", x => x.StockMovementId);
+                    table.ForeignKey(
+                        name: "FK_StockMovements_Locations_DestinationLocationId",
+                        column: x => x.DestinationLocationId,
+                        principalTable: "Locations",
+                        principalColumn: "LocationId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StockMovements_Locations_SourceLocationId",
+                        column: x => x.SourceLocationId,
+                        principalTable: "Locations",
+                        principalColumn: "LocationId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_StockMovements_Orders_OrderId",
                         column: x => x.OrderId,
@@ -446,16 +446,6 @@ namespace backend.Migrations
                 column: "ProductBlockId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductItems_PurchaseOrderId",
-                table: "ProductItems",
-                column: "PurchaseOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductItems_SaleOrderId",
-                table: "ProductItems",
-                column: "SaleOrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
@@ -486,6 +476,11 @@ namespace backend.Migrations
                 column: "StockMovementId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StockMovements_DestinationLocationId",
+                table: "StockMovements",
+                column: "DestinationLocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StockMovements_DestinationProductBlockId",
                 table: "StockMovements",
                 column: "DestinationProductBlockId");
@@ -494,6 +489,11 @@ namespace backend.Migrations
                 name: "IX_StockMovements_OrderId",
                 table: "StockMovements",
                 column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockMovements_SourceLocationId",
+                table: "StockMovements",
+                column: "SourceLocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StockMovements_SourceProductBlockId",
