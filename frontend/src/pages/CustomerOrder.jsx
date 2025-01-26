@@ -7,9 +7,9 @@ import { useOrder } from "../context/OrderProvider";
 const CustomerOrder = () => {
   const { orderData, markAsDelivered } = useOrder();
   const { orderId } = useParams();
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const order = orderData.find(o => o.id === orderId);
+  const [selectedProduct, setSelectedProduct] = useState(order.products[0]);
 
   if (!order) {
     return <div>Order not found</div>;
@@ -49,18 +49,18 @@ const CustomerOrder = () => {
         </div>
         {selectedProduct && (
           <div className='max-h-48 overflow-y-scroll mt-4'>
-            <h3 className='text-xl font-semibold text-violet-300 mb-2'>Product Details</h3>
+            <h3 className='text-xl font-semibold text-violet-300 mb-2'><span className='underline text-2xl'>{selectedProduct.name}</span> Details</h3>
             <table className='min-w-full border-spacing-y-4'>
               <thead>
-                <tr className='text-gray-100'>
-                  <th className='px-6 py-3 text-left text-sm font-medium uppercase'>Product Item ID</th>
+                <tr className='text-gray-100 bg-slate-900'>
+                  <th className='px-6 py-3 text-left text-sm font-medium uppercase '>Product Item ID</th>
                   <th className='px-6 py-3 text-left text-sm font-medium uppercase'>Warehouse</th>
                   <th className='px-6 py-3 text-left text-sm font-medium uppercase'>Location</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedProduct.details.map((detail, index) => (
-                  <tr key={index} className='text-gray-100'>
+                  <tr key={index} className='text-gray-100 bg-slate-900'>
                     <td className='px-6 py-4 text-sm'>{detail.productItemId}</td>
                     <td className='px-6 py-4 text-sm'>{detail.warehouse}</td>
                     <td className='px-6 py-4 text-sm'>{detail.location}</td>
