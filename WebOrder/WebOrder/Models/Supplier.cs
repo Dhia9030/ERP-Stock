@@ -19,7 +19,5 @@ public partial class Supplier
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    public virtual ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
-
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; } = new List<ProductSupplier>();
 }
