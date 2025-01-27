@@ -308,22 +308,12 @@ namespace backend.Migrations
                     b.Property<int?>("ProductBlockId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PurchaseOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SaleOrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("ProductItemId");
 
                     b.HasIndex("ProductBlockId");
-
-                    b.HasIndex("PurchaseOrderId");
-
-                    b.HasIndex("SaleOrderId");
 
                     b.ToTable("ProductItems");
                 });
@@ -364,6 +354,9 @@ namespace backend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int>("DestinationLocationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("DestinationProductBlockId")
                         .HasColumnType("int");
 
@@ -379,14 +372,21 @@ namespace backend.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("SourceLocationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SourceProductBlockId")
                         .HasColumnType("int");
 
                     b.HasKey("StockMovementId");
 
+                    b.HasIndex("DestinationLocationId");
+
                     b.HasIndex("DestinationProductBlockId");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("SourceLocationId");
 
                     b.HasIndex("SourceProductBlockId");
 
@@ -624,21 +624,7 @@ namespace backend.Migrations
                         .WithMany("ProductItems")
                         .HasForeignKey("ProductBlockId");
 
-                    b.HasOne("StockManagement.Models.Order", "PurchaseOrder")
-                        .WithMany()
-                        .HasForeignKey("PurchaseOrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("StockManagement.Models.Order", "SaleOrder")
-                        .WithMany()
-                        .HasForeignKey("SaleOrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("ProductBlock");
-
-                    b.Navigation("PurchaseOrder");
-
-                    b.Navigation("SaleOrder");
                 });
 
             modelBuilder.Entity("StockManagement.Models.ProductSupplier", b =>
@@ -662,6 +648,12 @@ namespace backend.Migrations
 
             modelBuilder.Entity("StockManagement.Models.StockMovement", b =>
                 {
+                    b.HasOne("StockManagement.Models.Location", "DestinationLocation")
+                        .WithMany()
+                        .HasForeignKey("DestinationLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("StockManagement.Models.ProductBlock", "DestinationProductBlock")
                         .WithMany()
                         .HasForeignKey("DestinationProductBlockId")
@@ -673,15 +665,25 @@ namespace backend.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("StockManagement.Models.Location", "SourceLocation")
+                        .WithMany()
+                        .HasForeignKey("SourceLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("StockManagement.Models.ProductBlock", "SourceProductBlock")
                         .WithMany()
                         .HasForeignKey("SourceProductBlockId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("DestinationLocation");
+
                     b.Navigation("DestinationProductBlock");
 
                     b.Navigation("Order");
+
+                    b.Navigation("SourceLocation");
 
                     b.Navigation("SourceProductBlock");
                 });

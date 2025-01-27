@@ -109,3 +109,6 @@ testhost.*
 
 # Rider-specific cache
 .idea/
+
+backend/appsettings.Development.json
+backend/appsettings.json

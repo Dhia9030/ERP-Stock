@@ -57,18 +57,6 @@ namespace StockManagement.Data
                 .WithMany(pb => pb.ProductItems)
                 .HasForeignKey(pi => pi.ProductBlockId);
 
-            modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.PurchaseOrder)
-                .WithMany()
-                .HasForeignKey(pi => pi.PurchaseOrderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ProductItem>()
-                .HasOne(pi => pi.SaleOrder)
-                .WithMany()
-                .HasForeignKey(pi => pi.SaleOrderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Configure relationships for Order
 
             modelBuilder.Entity<Order>()
@@ -135,6 +123,18 @@ namespace StockManagement.Data
                 .HasOne(sm => sm.Order)
                 .WithMany(o => o.StockMovements)
                 .HasForeignKey(sm => sm.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.DestinationLocation)
+                .WithMany()
+                .HasForeignKey(sm => sm.DestinationLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<StockMovement>()
+                .HasOne(sm => sm.SourceLocation)
+                .WithMany()
+                .HasForeignKey(sm => sm.SourceLocationId)
                 .OnDelete(DeleteBehavior.Restrict);
             
             // Configuration de la relation many-to-many entre Product et Order via OrderProducts
