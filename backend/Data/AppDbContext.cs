@@ -13,7 +13,7 @@ namespace StockManagement.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClothingProduct> ClothingProducts { get; set; }
-        public DbSet<ElectronicsProduct> ElectronicsProducts { get; set; }
+        public DbSet<ElectronicProduct> ElectronicsProducts { get; set; }
         public DbSet<FoodProduct> FoodProducts { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Manufacturer> Manufacturers { get; set; }
@@ -35,7 +35,7 @@ namespace StockManagement.Data
             modelBuilder.Entity<Product>()
                 .HasDiscriminator<string>("ProductType")
                 .HasValue<ClothingProduct>("Clothing")
-                .HasValue<ElectronicsProduct>("Electronics")
+                .HasValue<ElectronicProduct>("Electronics")
                 .HasValue<FoodProduct>("Food");
             
             // Configuration de l'héritage TPH pour Order, SellOrder, et BuyOrder

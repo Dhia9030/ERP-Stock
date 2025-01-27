@@ -64,13 +64,13 @@ namespace StockManagement.Data
 
                 context.Products.AddRange(
                     new ClothingProduct { Name = "T-Shirt", Price = 19.99m, StockQuantity = 100, CategoryId = 1, ManufacturerId = 1, FabricType = "Cotton", Size = ClothingProductStatus.M },
-                    new ElectronicsProduct { Name = "Smartphone", Price = 299.99m, StockQuantity = 50, CategoryId = 2, ManufacturerId = 2, WarrantyYears = 2, EnergyClass = "A+" },
+                    new ElectronicProduct { Name = "Smartphone", Price = 299.99m, StockQuantity = 50, CategoryId = 2, ManufacturerId = 2, WarrantyYears = 2, EnergyClass = "A+" },
                     new FoodProduct { Name = "Apple", Price = 0.99m, StockQuantity = 200, CategoryId = 3, ManufacturerId = 1, StorageTemperature = 4 },
                     new ClothingProduct { Name = "Jeans", Price = 49.99m, StockQuantity = 150, CategoryId = 1, ManufacturerId = 2, FabricType = "Denim", Size = ClothingProductStatus.L },
-                    new ElectronicsProduct { Name = "Laptop", Price = 999.99m, StockQuantity = 30, CategoryId = 2, ManufacturerId = 3, WarrantyYears = 3, EnergyClass = "A" },
+                    new ElectronicProduct { Name = "Laptop", Price = 999.99m, StockQuantity = 30, CategoryId = 2, ManufacturerId = 3, WarrantyYears = 3, EnergyClass = "A" },
                     new FoodProduct { Name = "Banana", Price = 0.59m, StockQuantity = 300, CategoryId = 3, ManufacturerId = 2, StorageTemperature = 5 },
                     new ClothingProduct { Name = "Jacket", Price = 79.99m, StockQuantity = 80, CategoryId = 1, ManufacturerId = 3, FabricType = "Leather", Size = ClothingProductStatus.S },
-                    new ElectronicsProduct { Name = "Headphones", Price = 49.99m, StockQuantity = 100, CategoryId = 2, ManufacturerId = 4, WarrantyYears = 1, EnergyClass = "B" },
+                    new ElectronicProduct { Name = "Headphones", Price = 49.99m, StockQuantity = 100, CategoryId = 2, ManufacturerId = 4, WarrantyYears = 1, EnergyClass = "B" },
                     new FoodProduct { Name = "Orange", Price = 0.79m, StockQuantity = 250, CategoryId = 3, ManufacturerId = 3, StorageTemperature = 6 }
                 );
 
