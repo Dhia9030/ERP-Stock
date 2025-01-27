@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search } from 'lucide-react';
 
 const products = [
   {
     name: "Phone",
     productId: 1,
     blocks: [
-      { blockId: 1, location: "Aisle1", warehouse: "Main Warehouse" },
-      { blockId: 2, location: "Aisle1", warehouse: "Main Warehouse" },
+      { productBlockId: 1, location: "Aisle1", warehouse: "Main Warehouse", quantity: 10 },
+      { productBlockId: 2, location: "Aisle2", warehouse: "Main Warehouse", quantity: 5 },
     ]
   },
   {
     name: "Laptop",
     productId: 2,
     blocks: [
-      { blockId: 3, location: "Aisle2", warehouse: "Main Warehouse" },
-      { blockId: 4, location: "Aisle2", warehouse: "Main Warehouse" },
+      { productBlockId: 3, location: "Aisle3", warehouse: "Main Warehouse", quantity: 8 },
+      { productBlockId: 4, location: "Aisle4", warehouse: "Main Warehouse", quantity: 12 },
     ]
   }
+];
+
+const freeLocations = [
+  { locationId: 1, name: "Aisle5", warehouse: "Main Warehouse" },
+  { locationId: 2, name: "Aisle6", warehouse: "Main Warehouse" },
+  { locationId: 3, name: "Aisle7", warehouse: "Secondary Warehouse" },
+  { locationId: 4, name: "Aisle8", warehouse: "Secondary Warehouse" }
 ];
 
 const InternalTransfer = () => {
   const [operation, setOperation] = useState("transfer");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [sourceBlock, setSourceBlock] = useState(null);
-  const [destinationBlock, setDestinationBlock] = useState(null);
+  const [destinationLocation, setDestinationLocation] = useState(null);
   const [productBlocks, setProductBlocks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -46,7 +52,7 @@ const InternalTransfer = () => {
       operation,
       productId: selectedProduct,
       sourceBlockId: sourceBlock,
-      destinationBlockId: destinationBlock
+      destinationLocation
     };
     console.log("Request Data:", requestData);
     // Send request to API endpoint
@@ -91,31 +97,31 @@ const InternalTransfer = () => {
         {operation === "transfer" && (
           <>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2">Source Block</label>
+              <label className="block text-white text-sm font-bold mb-2">Product Block</label>
               <select
                 value={sourceBlock}
                 onChange={(e) => setSourceBlock(e.target.value)}
                 className="w-full p-2 rounded-xl bg-gray-800 text-white"
               >
-                <option value="">Select Source Block</option>
+                <option value="">Select Product Block</option>
                 {productBlocks.map(block => (
-                  <option key={block.blockId} value={block.blockId}>
-                    {block.blockId} - {block.location} - {block.warehouse}
+                  <option key={block.productBlockId} value={block.productBlockId}>
+                    {block.productBlockId} - {block.location} - {block.warehouse}
                   </option>
                 ))}
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2">Destination Block</label>
+              <label className="block text-white text-sm font-bold mb-2">Destination Location</label>
               <select
-                value={destinationBlock}
-                onChange={(e) => setDestinationBlock(e.target.value)}
+                value={destinationLocation}
+                onChange={(e) => setDestinationLocation(e.target.value)}
                 className="w-full p-2 rounded-xl bg-gray-800 text-white"
               >
-                <option value="">Select Destination Block</option>
-                {productBlocks.filter(block => block.blockId !== parseInt(sourceBlock)).map(block => (
-                  <option key={block.blockId} value={block.blockId}>
-                    {block.blockId} - {block.location} - {block.warehouse}
+                <option value="">Select Destination Location</option>
+                {freeLocations.map(location => (
+                  <option key={location.locationId} value={`${location.name} - ${location.warehouse}`}>
+                    {location.name} - {location.warehouse}
                   </option>
                 ))}
               </select>
@@ -125,31 +131,31 @@ const InternalTransfer = () => {
         {operation === "merge" && (
           <>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2">Source Block 1</label>
+              <label className="block text-white text-sm font-bold mb-2">Source Product Block</label>
               <select
                 value={sourceBlock}
                 onChange={(e) => setSourceBlock(e.target.value)}
                 className="w-full p-2 rounded-xl bg-gray-800 text-white"
               >
-                <option value="">Select Source Block 1</option>
+                <option value="">Select Source Product Block</option>
                 {productBlocks.map(block => (
-                  <option key={block.blockId} value={block.blockId}>
-                    {block.blockId} - {block.location} - {block.warehouse}
+                  <option key={block.productBlockId} value={block.productBlockId}>
+                    {block.productBlockId} - {block.location} - {block.warehouse} - Quantity: {block.quantity}
                   </option>
                 ))}
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2">Source Block 2</label>
+              <label className="block text-white text-sm font-bold mb-2">Destination Product Block</label>
               <select
-                value={destinationBlock}
-                onChange={(e) => setDestinationBlock(e.target.value)}
+                value={destinationLocation}
+                onChange={(e) => setDestinationLocation(e.target.value)}
                 className="w-full p-2 rounded-xl bg-gray-800 text-white"
               >
-                <option value="">Select Source Block 2</option>
-                {productBlocks.filter(block => block.blockId !== parseInt(sourceBlock)).map(block => (
-                  <option key={block.blockId} value={block.blockId}>
-                    {block.blockId} - {block.location} - {block.warehouse}
+                <option value="">Select Destination Product Block</option>
+                {productBlocks.filter(block => block.productBlockId !== parseInt(sourceBlock)).map(block => (
+                  <option key={block.productBlockId} value={block.productBlockId}>
+                    {block.productBlockId} - {block.location} - {block.warehouse} - Quantity: {block.quantity}
                   </option>
                 ))}
               </select>
@@ -166,8 +172,8 @@ const InternalTransfer = () => {
             >
               <option value="">Select Product Block</option>
               {productBlocks.map(block => (
-                <option key={block.blockId} value={block.blockId}>
-                  {block.blockId} - {block.location} - {block.warehouse}
+                <option key={block.productBlockId} value={block.productBlockId}>
+                  {block.productBlockId} - {block.location} - {block.warehouse}
                 </option>
               ))}
             </select>

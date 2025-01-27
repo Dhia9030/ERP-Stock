@@ -16,6 +16,7 @@ import Transfers from "./pages/Transfers"
 import DelayPage from "./pages/DelayPage";
 import { ToastContainer , toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Purchases from "./pages/Purchases";
 
 //import { BackgroundGradientAnimation } from "./components/ui/background-gradient-animation";
 
@@ -106,6 +107,7 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 				<Route path='/settings' element={<SettingsPage />} />
 				<Route path='/add' element={<AddAdmin />} />
 				<Route path='/delay' element={<DelayPage />} />
+				<Route path='/purchases' element={<Purchases />} />
 			</Routes>
 		</div>
 		</div>
