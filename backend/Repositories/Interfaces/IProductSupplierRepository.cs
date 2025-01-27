@@ -1,6 +1,8 @@
-﻿namespace StockManagement.Repositories;
+﻿using StockManagement.Models;
+namespace StockManagement.Repositories;
 
-public interface IProductSupplierRepository
+public interface IProductSupplierRepository : IRepository<ProductSupplier>
 {
-    
+    Task<IEnumerable<Product>> GetProductsBySupplierIdAsync(int supplierId);
+    Task<IEnumerable<Supplier>> GetSuppliersByProductIdAsync(int productId);
 }
