@@ -20,6 +20,4 @@ public partial class Client
     public DateTime RegistrationDate { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-
-    public virtual ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
 }

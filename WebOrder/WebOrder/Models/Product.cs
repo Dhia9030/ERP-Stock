@@ -19,8 +19,6 @@ public partial class Product
 
     public int ManufacturerId { get; set; }
 
-    public int? SupplierId { get; set; }
-
     public string ProductType { get; set; } = null!;
 
     public string? FabricType { get; set; }
@@ -39,7 +37,7 @@ public partial class Product
 
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
-    public virtual ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
+    public virtual ICollection<ProductBlock> ProductBlocks { get; set; } = new List<ProductBlock>();
 
-    public virtual Supplier? Supplier { get; set; }
+    public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; } = new List<ProductSupplier>();
 }

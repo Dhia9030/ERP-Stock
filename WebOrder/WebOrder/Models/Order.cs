@@ -7,9 +7,15 @@ public partial class Order
 {
     public int OrderId { get; set; }
 
-    public DateTime OrderDate { get; set; }
-
     public decimal TotalAmount { get; set; }
+
+    public DateTime CreationDate { get; set; }
+
+    public DateTime ExecutionDate { get; set; }
+
+    public string? DelayedDates { get; set; }
+
+    public DateTime RealExecutionDate { get; set; }
 
     public double DiscountPercentage { get; set; }
 
@@ -17,17 +23,17 @@ public partial class Order
 
     public int Type { get; set; }
 
-    public int? SupplierId { get; set; }
-
     public int? ClientId { get; set; }
+
+    public string OrderType { get; set; } = null!;
+
+    public int? SupplierId { get; set; }
 
     public virtual Client? Client { get; set; }
 
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
-    public virtual ICollection<ProductItem> ProductItemPurchaseOrders { get; set; } = new List<ProductItem>();
-
-    public virtual ICollection<ProductItem> ProductItemSaleOrders { get; set; } = new List<ProductItem>();
+    public virtual ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
 
     public virtual Supplier? Supplier { get; set; }
 }
