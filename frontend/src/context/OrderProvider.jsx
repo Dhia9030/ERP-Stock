@@ -266,14 +266,26 @@ const OrderProvider = ({ children }) => {
 
   const [orderData, setOrderStatus] = useState(initialOrderData);
 
+  const markAsProcessing = (orderId) => {
+    setOrderStatus(prevData => {
+      return prevData.map(order => order.id === orderId ? { ...order, status: 'Processing' } : order);
+    });
+  };
+
   const markAsDelivered = (orderId) => {
     setOrderStatus(prevData => {
       return prevData.map(order => order.id === orderId ? { ...order, status: 'Delivered' } : order);
     });
   };
+  const markAsCancelled = (orderId) => {
+    setOrderStatus(prevData => {
+      return prevData.map(order => order.id === orderId ? { ...order, status: 'Cancelled' } : order);
+    });
+  };
+
 
   return (
-    <orderContext.Provider value={{ orderData, markAsDelivered }}>
+    <orderContext.Provider value={{ orderData,markAsCancelled,markAsProcessing, markAsDelivered }}>
       {children}
     </orderContext.Provider>
   );

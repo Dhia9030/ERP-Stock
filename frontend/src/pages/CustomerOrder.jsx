@@ -5,7 +5,7 @@ import { CheckCircle, X } from 'lucide-react';
 import { useOrder } from "../context/OrderProvider";
 
 const CustomerOrder = () => {
-  const { orderData, markAsDelivered } = useOrder();
+  const { orderData, markAsCancelled,markAsProcessing,markAsDelivered } = useOrder();
   const { orderId } = useParams();
 
   const order = orderData.find(o => o.id === orderId);
@@ -76,7 +76,7 @@ const CustomerOrder = () => {
               ? "bg-green-100 text-green-800"
               : orderStatus === "Processing"
               ? "bg-yellow-100 text-yellow-800"
-              : orderStatus === "Shipped"
+              : orderStatus === "Pending"
               ? "bg-blue-100 text-blue-800"
               : "bg-red-100 text-red-800"
           }`}
@@ -84,14 +84,32 @@ const CustomerOrder = () => {
           {orderStatus}
         </span></p>
         <button
-          onClick={() => {
-            markAsDelivered(order.id);
-          }}
-          disabled={orderStatus === 'Delivered'}
-          className={`absolute bottom-4 right-4 px-4 py-2 ${orderStatus !== 'Delivered' ? `bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
-        >
-          Mark as Delivered
-        </button>
+  onClick={() => {
+    markAsProcessing(order.id);
+  }}
+  disabled={orderStatus === 'Processing' || orderStatus === 'Delivered' || orderStatus === 'Cancelled'}
+  className={`absolute bottom-4 right-52 px-4 py-2 ${orderStatus === 'Pending' ? `bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
+>
+  Mark as Processing
+</button>
+<button
+  onClick={() => {
+    markAsCancelled(order.id);
+  }}
+  disabled={orderStatus === 'Cancelled' || orderStatus === 'Delivered' || orderStatus === 'Processing'}
+  className={`absolute bottom-4 right-[450px] px-4 py-2 ${orderStatus !== 'Cancelled' && orderStatus !== 'Delivered' && orderStatus !== 'Processing' ? `bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
+>
+  Cancel
+</button>
+<button
+  onClick={() => {
+    markAsDelivered(order.id);
+  }}
+  disabled={orderStatus !== 'Processing'}
+  className={`absolute bottom-4 right-4 px-4 py-2 ${orderStatus === 'Processing' ? `bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
+>
+  Mark as Delivered
+</button>
       </div>
     </div>
   );
