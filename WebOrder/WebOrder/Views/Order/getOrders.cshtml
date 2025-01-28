@@ -33,6 +33,11 @@ else
                 <th>
                     Quantity
                 </th>
+                <th>
+                    Unit Price
+                </th>
+                <th>
+                    TotalPricePerProduct
             </tr>
             </thead>
             <tbody>
@@ -47,6 +52,12 @@ else
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Total)
                     </td>
                     <td>
                         @Html.ActionLink("update quantity", "AddProduct", new { productId = item.ProductId })|

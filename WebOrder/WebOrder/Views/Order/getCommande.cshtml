@@ -35,19 +35,19 @@ ViewData["Title"] = "Orders List";
                 <td>
                 @if(order.Order.Status==0)
                 {
-                    <span  >Pending</span>
+                    <span class="label-primary-bg"  >Pending</span>
                 }
                 else if(order.Order.Status==1)
                 {
-                    <span >Shipped</span>
+                    <span class="label-success-bg" >Shipped</span>
                 }
                 else if(order.Order.Status==2)
                 {
-                    <span >Delivered</span>
+                    <span class="label-success-bg" >Delivered</span>
                 }
                 else if(order.Order.Status==3)
                 {
-                    <span >Cancelled</span>
+                    <span class="label-danger-bg" >Cancelled</span>
                 }
                 
                 <td>
@@ -66,12 +66,13 @@ ViewData["Title"] = "Orders List";
                     <a asp-action="CancelCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-danger btn-sm">
                         Cancel
                     </a>
+                    <a asp-action="ActiverCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-primary btn-sm">
+                        Activer Commande
+                    </a>
                 </td>
-            <td>
-                <a asp-action="ActiverCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-primary btn-sm">
-                    Activer Commande
-                </a>
-            </td>
+            
+            
+            
         </tr>
         }
         </tbody>

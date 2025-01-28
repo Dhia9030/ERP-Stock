@@ -154,7 +154,7 @@ public class OrderController : Controller
             });
         }
 
-        var products = _Erpdb.Products.ToDictionary(p => p.ProductId, p => p.Name);
+        var products = _Erpdb.Products.ToDictionary(p => p.ProductId, p => new{p.Name, p.Price});
 
         var orderdata = _Appdb.TempOrders
             .Select(x => new OrderViewModel()
@@ -164,10 +164,15 @@ public class OrderController : Controller
                 Items = x.TempOrderProducts.Select(y => new OrderItemViewModel()
                 {
                     ProductId = y.ProductId,
-                    ProductName = products.ContainsKey(y.ProductId) ? products[y.ProductId] : "Unknown",
+                    ProductName = products.ContainsKey(y.ProductId) ? products[y.ProductId].Name : "Unknown",
+                    ProductPrice = products.ContainsKey(y.ProductId) ? products[y.ProductId].Price : 0,
+                    Total = products.ContainsKey(y.ProductId) ? products[y.ProductId].Price * y.Quantity : 0,
                     Quantity = y.Quantity
                 }).ToList()
             }).FirstOrDefault();
+       
+        
+        
         return View(orderdata);
     }
     public IActionResult deleteOrder()
@@ -200,6 +205,14 @@ public class OrderController : Controller
             
             return RedirectToAction("getOrders");
         }
+        decimal totalPrice = 0;
+        var orderProductsList = _Appdb.TempOrderProducts.ToList();
+        foreach (var orderProduct in orderProductsList)
+        {
+            var product = _Erpdb.Products.Find(orderProduct.ProductId);
+            totalPrice += product.Price * orderProduct.Quantity;
+        }
+        ViewBag.TotalPrice = totalPrice;
         ViewBag.Users = _Erpdb.Clients.Select(c => new SelectListItem()
         {
             Value = c.ClientId.ToString(),
@@ -305,10 +318,11 @@ public class OrderController : Controller
         if (order != null)
         {
             order.Status = 3;
+            _Erpdb.Orders.Update(order);
+            _Erpdb.SaveChanges();
         }
 
-        _Erpdb.Orders.Update(order);
-        _Erpdb.SaveChanges();
+        
         return RedirectToAction("getCommande");
     }
     

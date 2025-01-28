@@ -8,6 +8,7 @@ public class ConfirmationviewModel
    public int Id { get; set; } 
    
    [Microsoft.Build.Framework.Required]
+   [Display(Name = "Client")]
     public int ClientId { get; set; }
     
     [Required(ErrorMessage = "The discount percentage is required.")]
