@@ -13,8 +13,12 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(String? msg)
     {
+        if(msg != null)
+        {
+            ViewBag.Message = msg;
+        }
         return View();
     }
 

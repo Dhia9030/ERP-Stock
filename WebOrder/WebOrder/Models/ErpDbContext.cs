@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using WebOrder.Models.ViewModels;
 
 namespace WebOrder.Models;
 
@@ -245,4 +246,8 @@ public partial class ErpDbContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<WebOrder.Models.ViewModels.ConfirmationviewModel> ConfirmationviewModel { get; set; } = default!;
+
+
 }

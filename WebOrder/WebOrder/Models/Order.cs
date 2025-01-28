@@ -19,7 +19,7 @@ public partial class Order
 
     public double DiscountPercentage { get; set; }
 
-    public int Status { get; set; }
+    public int  Status { get; set; }
 
     public int Type { get; set; }
 
@@ -36,4 +36,19 @@ public partial class Order
     public virtual ICollection<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
 
     public virtual Supplier? Supplier { get; set; }
+}
+
+public enum OrderStatus
+{
+    Pending,
+    Processing,
+    Delivered,
+    Cancelled,
+    Delayed 
+}
+
+public enum OrderType
+{
+    Purchase,
+    Sales
 }

@@ -1,5 +1,8 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebOrder.Models;
 using WebOrder.Models.ViewModels;
@@ -183,17 +186,158 @@ public class OrderController : Controller
         return RedirectToAction("getOrders");
     }
 
-    /*public IActionResult chekout()
+    public IActionResult ConfirmOrder()
     {
+        var order = _Appdb.TempOrders.FirstOrDefault();
+        if (order == null)
+        {
+            
+            return RedirectToAction("getOrders");;
+        }
+        var orderProducts = _Appdb.TempOrderProducts.FirstOrDefault();
+        if (orderProducts == null)
+        {
+            
+            return RedirectToAction("getOrders");
+        }
+        ViewBag.Users = _Erpdb.Clients.Select(c => new SelectListItem()
+        {
+            Value = c.ClientId.ToString(),
+            Text = c.FirstName + " " + c.LastName
+        }).ToList();
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult ConfirmOrder(ConfirmationviewModel confirmation)
+    {
+        var order = _Appdb.TempOrders.FirstOrDefault();
+        if (order == null)
+        {
+            ViewBag.msg = "no order exists";
+            return View();
+        }
+
+        var orderProducts = _Appdb.TempOrderProducts.FirstOrDefault();
+        if (orderProducts == null)
+        {
+            ViewBag.msg = "no product exists";
+            return View();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Users = _Erpdb.Clients.Select(c => new SelectListItem()
+            {
+                Value = c.ClientId.ToString(),
+                Text = c.FirstName + " " + c.LastName
+            }).ToList();
+            return View(confirmation);
+        }
+        var orderProductsList = _Appdb.TempOrderProducts.ToList();
+        decimal TotalPrice = 0;
+        foreach (var orderProduct in orderProductsList)
+        {
+            var product = _Erpdb.Products.Find(orderProduct.ProductId);
+            TotalPrice += product.Price * orderProduct.Quantity;
+        }
         
+
+        var newOrder = new Order()
+        {
+            ClientId = confirmation.ClientId,
+            CreationDate = _Appdb.TempOrders.FirstOrDefault().OrderDate,
+            ExecutionDate = confirmation.ExecutionDate,
+            Status = 0, // OrderStatus.Pending
+            Type = 1, // OrderType.Sales
+            DiscountPercentage = confirmation.Discount,
+            TotalAmount = TotalPrice,
+            OrderType = "Idk"
+        };
+        _Erpdb.Orders.Add(newOrder);
+        _Erpdb.SaveChanges();
         
-    }*/
+        foreach (var orderProduct in orderProductsList)
+        {
+            var newOrderProduct = new OrderProduct()
+            {
+                OrderId = newOrder.OrderId,
+                ProductId = orderProduct.ProductId,
+                Quantity = orderProduct.Quantity
+            };
+            _Erpdb.OrderProducts.Add(newOrderProduct);
+        }
+
+        _Erpdb.SaveChanges();
+        _Appdb.TempOrders.RemoveRange(_Appdb.TempOrders);
+        _Appdb.TempOrderProducts.RemoveRange(_Appdb.TempOrderProducts);
+        _Appdb.SaveChanges();
+        String data = "Order has been created successfully";
+        return RedirectToAction("Index", "Home", new { msg = data });
+    }
+
+    public IActionResult getCommande()
+    {
+       
+        
+            var orders = _Erpdb.Orders
+                .Include(o => o.Client)
+                .Include(o => o.OrderProducts)
+                
+                .ThenInclude(op => op.Product)
+                .ToList() // Materialize the query here to detach it from EF
+                .Select(o => new CommandeViewModel
+                {
+                    Client = o.Client,
+                    Order = o,
+                    OrderProducts = o.OrderProducts.ToList()
+                })
+                .ToList();
     
+        return View(orders);
+
+
+    } 
     
+    public IActionResult CancelCommande(int orderId)
+    {
+        var order = _Erpdb.Orders.Find(orderId);
+        if (order != null)
+        {
+            order.Status = 3;
+        }
+
+        _Erpdb.Orders.Update(order);
+        _Erpdb.SaveChanges();
+        return RedirectToAction("getCommande");
+    }
     
+    public IActionResult ActiverCommande(int orderId)
+    {
+        var order = _Erpdb.Orders.Find(orderId);
+        if (order != null)
+        {
+            order.Status = 0;
+        }
+
+        _Erpdb.Orders.Update(order);
+        _Erpdb.SaveChanges();
+        return RedirectToAction("getCommande");
+    }
     
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
