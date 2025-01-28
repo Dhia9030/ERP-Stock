@@ -2,8 +2,11 @@
 
 namespace StockManagement.Repositories;
 
-public interface IStockMovementItemsRepository : IRepository<StockMovementItems>
+public interface IStockMovementItemsRepository : IBaseJointRepository<StockMovementItems, StockMovement, ProductItem>
 {
-    Task<IEnumerable<ProductItem>> GetProductItemsByStockMovementIdAsync(int stockMovementId);
-    Task<IEnumerable<StockMovement>> GetStockMovementsByProductItemIdAsync(int productItemId);
+    public Task<IEnumerable<ProductItem>> GetProductItemsByStockMovementIdAsync(int stockMovementId,
+        bool asNoTracking = false, bool includeStockMovement = false);
+
+    public Task<IEnumerable<StockMovement>> GetStockMovementsByProductItemIdAsync(int productItemId,
+        bool asNoTracking = false, bool includeProductItem = false);
 }

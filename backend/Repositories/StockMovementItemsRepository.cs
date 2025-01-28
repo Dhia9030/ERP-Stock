@@ -3,19 +3,19 @@ using StockManagement.Models;
 
 namespace StockManagement.Repositories;
 
-public class StockMovementItemsRepository : BaseJoinRepository<StockMovementItems, StockMovement, ProductItem>, IStockMovementItemsRepository
+public class StockMovementItemsRepository : BaseJointRepository<StockMovementItems, StockMovement, ProductItem>, IStockMovementItemsRepository
 {
     public StockMovementItemsRepository(AppDbContext context) : base(context)
     {
     }
 
-    public async Task<IEnumerable<ProductItem>> GetProductItemsByStockMovementIdAsync(int stockMovementId)
+    public async Task<IEnumerable<ProductItem>> GetProductItemsByStockMovementIdAsync(int stockMovementId , bool asNoTracking = false, bool includeStockMovement = false)
     {
-            return await GetSecondEntitiesByFirstIdAsync(stockMovementId, nameof(StockMovementItems.StockMovementId), nameof(StockMovementItems.ProductItem));
+            return await GetSecondEntitiesByFirstIdAsync(stockMovementId, nameof(StockMovementItems.StockMovementId), nameof(StockMovementItems.ProductItem), asNoTracking, includeStockMovement);
     }
 
-    public async Task<IEnumerable<StockMovement>> GetStockMovementsByProductItemIdAsync(int productItemId)
+    public async Task<IEnumerable<StockMovement>> GetStockMovementsByProductItemIdAsync(int productItemId, bool asNoTracking = false, bool includeProductItem = false)
     {
-            return await GetFirstEntitiesBySecondIdAsync(productItemId, nameof(StockMovementItems.ProductItemId), nameof(StockMovementItems.StockMovement));
+            return await GetFirstEntitiesBySecondIdAsync(productItemId, nameof(StockMovementItems.ProductItemId), nameof(StockMovementItems.StockMovement), asNoTracking, includeProductItem);
     }
 }

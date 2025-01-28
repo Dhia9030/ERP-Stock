@@ -2,11 +2,12 @@
 
 namespace StockManagement.Repositories;
 
-public interface IOrderProductsRepository : IRepository<OrderProducts>
+public interface IOrderProductsRepository : IBaseJointRepository<OrderProducts, Order, Product>
 {
-    
-    Task<IEnumerable<Product>> GetProductsByOrderIdAsync(int orderId);
-    Task<IEnumerable<Order>> GetOrdersByProductIdAsync(int productId);
+
+    public Task<IEnumerable<Product>> GetProductsByOrderIdAsync(int orderId, bool asNoTracking = false, bool includeOrder = false);
+
+    public  Task<IEnumerable<Order>> GetOrdersByProductIdAsync(int productId, bool asNoTracking = false, bool includeProduct = false);
 }
     
     

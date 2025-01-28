@@ -4,11 +4,21 @@ namespace StockManagement.Repositories
 {
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
+        public Task<IEnumerable<T>> GetAllAsync(
+            Func<IQueryable<T>, IQueryable<T>>? include = null,
+            bool asNoTracking = false);
+
+        public Task<T?> GetByIdAsync(
+            int id,
+            Func<IQueryable<T>, IQueryable<T>>? include = null,
+            bool asNoTracking = false);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
-        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+
+        public Task<IEnumerable<T>> FindAsync(
+            Expression<Func<T, bool>> predicate,
+            Func<IQueryable<T>, IQueryable<T>>? include = null,
+            bool asNoTracking = false);
     }
 }

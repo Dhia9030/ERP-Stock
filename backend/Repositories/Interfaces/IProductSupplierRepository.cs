@@ -1,8 +1,11 @@
 ﻿using StockManagement.Models;
 namespace StockManagement.Repositories;
 
-public interface IProductSupplierRepository : IRepository<ProductSupplier>
+public interface IProductSupplierRepository : IBaseJointRepository<ProductSupplier, Supplier, Product>
 {
-    Task<IEnumerable<Product>> GetProductsBySupplierIdAsync(int supplierId);
-    Task<IEnumerable<Supplier>> GetSuppliersByProductIdAsync(int productId);
+    public Task<IEnumerable<Product>> GetProductsBySupplierIdAsync(int supplierId, bool asNoTracking = false,
+        bool includeSuppliers = false);
+
+    public Task<IEnumerable<Supplier>> GetSuppliersByProductIdAsync(int productId, bool asNoTracking = false,
+        bool includeProducts = false);
 }
