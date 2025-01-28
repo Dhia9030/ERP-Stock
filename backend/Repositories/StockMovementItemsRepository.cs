@@ -9,13 +9,13 @@ public class StockMovementItemsRepository : BaseJointRepository<StockMovementIte
     {
     }
 
-    public async Task<IEnumerable<ProductItem>> GetProductItemsByStockMovementIdAsync(int stockMovementId , bool asNoTracking = false, bool includeStockMovement = false)
+    public async Task<IEnumerable<ProductItem>> GetProductItemsByStockMovementIdAsync(int stockMovementId , bool asNoTracking = false,  Func<IQueryable<StockMovementItems>, IQueryable<StockMovementItems>>? include = null)
     {
-            return await GetSecondEntitiesByFirstIdAsync(stockMovementId, nameof(StockMovementItems.StockMovementId), nameof(StockMovementItems.ProductItem), asNoTracking, includeStockMovement);
+            return await GetSecondEntitiesByFirstIdAsync(stockMovementId, nameof(StockMovementItems.StockMovementId), nameof(StockMovementItems.ProductItem), asNoTracking, include);
     }
 
-    public async Task<IEnumerable<StockMovement>> GetStockMovementsByProductItemIdAsync(int productItemId, bool asNoTracking = false, bool includeProductItem = false)
+    public async Task<IEnumerable<StockMovement>> GetStockMovementsByProductItemIdAsync(int productItemId, bool asNoTracking = false, Func<IQueryable<StockMovementItems>, IQueryable<StockMovementItems>>? include = null)
     {
-            return await GetFirstEntitiesBySecondIdAsync(productItemId, nameof(StockMovementItems.ProductItemId), nameof(StockMovementItems.StockMovement), asNoTracking, includeProductItem);
+            return await GetFirstEntitiesBySecondIdAsync(productItemId, nameof(StockMovementItems.ProductItemId), nameof(StockMovementItems.StockMovement), asNoTracking, include);
     }
 }

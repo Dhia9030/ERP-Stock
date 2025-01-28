@@ -18,15 +18,15 @@ namespace StockManagement.Repositories
             string firstEntityIdProperty,
             string secondEntityProperty,
             bool asNoTracking = false,
-            bool IncludeFirstEntity = false)
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
         {
             ValidatePropertyNames(firstEntityIdProperty, secondEntityProperty);
 
             var query = _dbSet.AsQueryable();
             
-            if (IncludeFirstEntity)
+            if (include != null)
             {
-                query = query.Include(e => EF.Property<TSecondEntity>(e, secondEntityProperty));
+                query = include(query);
             }
 
             if (asNoTracking)
@@ -43,15 +43,15 @@ namespace StockManagement.Repositories
             string secondEntityIdProperty,
             string firstEntityProperty,
             bool asNoTracking = false,
-            bool IncludeSecondEntity = false)
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
         {
             ValidatePropertyNames(secondEntityIdProperty, firstEntityProperty);
 
             var query = _dbSet.AsQueryable();
             
-            if (IncludeSecondEntity)
+            if (include != null)
             {
-                query = query.Include(e => EF.Property<TFirstEntity>(e, firstEntityProperty));
+                query = include(query);
             }
 
             if (asNoTracking)

@@ -11,13 +11,13 @@ public class ProductSupplierRepository : BaseJointRepository<ProductSupplier, Su
     {
     }
 
-    public async Task<IEnumerable<Product>> GetProductsBySupplierIdAsync(int supplierId, bool asNoTracking = false, bool includeSuppliers = false)
+    public async Task<IEnumerable<Product>> GetProductsBySupplierIdAsync(int supplierId, bool asNoTracking = false, Func<IQueryable<ProductSupplier>, IQueryable<ProductSupplier>>? include = null)
     {
-        return await GetSecondEntitiesByFirstIdAsync(supplierId, nameof(ProductSupplier.SupplierId), nameof(ProductSupplier.Product), asNoTracking, includeSuppliers);
+        return await GetSecondEntitiesByFirstIdAsync(supplierId, nameof(ProductSupplier.SupplierId), nameof(ProductSupplier.Product), asNoTracking, include);
     }
 
-    public async Task<IEnumerable<Supplier>> GetSuppliersByProductIdAsync(int productId, bool asNoTracking = false, bool includeProducts = false)
+    public async Task<IEnumerable<Supplier>> GetSuppliersByProductIdAsync(int productId, bool asNoTracking = false, Func<IQueryable<ProductSupplier>, IQueryable<ProductSupplier>>? include = null)
     {
-        return await GetFirstEntitiesBySecondIdAsync(productId, nameof(ProductSupplier.ProductId), nameof(ProductSupplier.Supplier), asNoTracking, includeProducts);
+        return await GetFirstEntitiesBySecondIdAsync(productId, nameof(ProductSupplier.ProductId), nameof(ProductSupplier.Supplier), asNoTracking, include);
     }
 }

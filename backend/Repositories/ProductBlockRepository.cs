@@ -12,20 +12,25 @@ public class ProductBlockRepository : Repository<ProductBlock>,IProductBlockRepo
     {
     }
     
-    public async Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockAsync()
+    public async Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockAsync( Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null)
+    {
+        var querry = _dbSet.OfType<FoodProductBlock>();
+        if (include != null)
         {
-            return await _dbSet
-                .OfType<FoodProductBlock>() // Filter only ClothingProductRepository entities
-                .ToListAsync();            // Execute the query asynchronously
+            querry = include(querry);
+        }
+        return await querry.ToListAsync();            
         }
     
     
-    public async Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(Expression<Func<FoodProductBlock, bool>> predicate)
+    public async Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(Expression<Func<FoodProductBlock, bool>> predicate,Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null)
     {
-        return await _dbSet
-            .OfType<FoodProductBlock>() // Filter only FoodProduct entities
-            .Where(predicate)      // Apply the predicate
-            .ToListAsync();        // Execute the query asynchronously
+        var querry = _dbSet.OfType<FoodProductBlock>();
+        if (include != null)
+        {
+            querry = include(querry);
+        }
+        return await querry.Where(predicate).ToListAsync();
     }
 
     
