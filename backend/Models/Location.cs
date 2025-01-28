@@ -14,6 +14,8 @@ namespace StockManagement.Models
         [Required(ErrorMessage = "L'entrepôt est requis.")]
         public int WarehouseId { get; set; }
         public Warehouse Warehouse { get; set; }
+        
+        public Boolean isEmpty { get; set; }
 
     }
 }
