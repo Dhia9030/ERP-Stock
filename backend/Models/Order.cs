@@ -41,7 +41,7 @@ namespace StockManagement.Models
         
         [DataType(DataType.DateTime)]
         [Display(Name = "les Dates de retard de la commande")]
-        public ICollection<DateTime>? DelayedDates { get; set; }
+        public string? DelayedDates { get; set; }
         
         [Required(ErrorMessage = "La date d'execution reel de la commande est obligatoire")]
         [DataType(DataType.DateTime)]

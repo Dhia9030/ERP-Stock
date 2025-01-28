@@ -15,7 +15,7 @@ public class ProductBlockRepository : Repository<ProductBlock>,IProductBlockRepo
     public async Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockAsync()
         {
             return await _dbSet
-                .OfType<FoodProductBlock>() // Filter only ClothingProduct entities
+                .OfType<FoodProductBlock>() // Filter only ClothingProductRepository entities
                 .ToListAsync();            // Execute the query asynchronously
         }
     

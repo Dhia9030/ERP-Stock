@@ -2,7 +2,7 @@
 
 namespace StockManagement.Repositories;
 
-public interface IClothingProductRepository : IRepository<ClothingProduct>
+public interface IClothingProductRepository : IRepository<ClothingProductRepository>
 {
     
 }

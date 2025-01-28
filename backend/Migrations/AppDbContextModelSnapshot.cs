@@ -489,7 +489,7 @@ namespace backend.Migrations
                     b.HasDiscriminator().HasValue("SellOrder");
                 });
 
-            modelBuilder.Entity("StockManagement.Models.ClothingProduct", b =>
+            modelBuilder.Entity("StockManagement.Models.ClothingProductRepository", b =>
                 {
                     b.HasBaseType("StockManagement.Models.Product");
 
