@@ -5,7 +5,11 @@ namespace StockManagement.Repositories;
 
 public interface IProductBlockRepository : IRepository<ProductBlock>
 {
-    Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockAsync();
-    Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(Expression<Func<FoodProductBlock, bool>> predicate);
-    
+    public Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockAsync(
+        Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
+
+    public Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(
+        Expression<Func<FoodProductBlock, bool>> predicate,
+        Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
+
 }

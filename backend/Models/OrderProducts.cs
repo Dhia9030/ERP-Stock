@@ -25,6 +25,9 @@ public class OrderProducts
     [Display(Name = "Quantité")]
     public int Quantity { get; set; }
     
+    [Display(Name = "Date d'expiration")]
+    public DateTime? ExpirationDate { get; set; }
+    
     [Required(ErrorMessage = "L'OrderId est obligatoire")]
     [ForeignKey("OrderId")]
     [Display(Name = "Produit")]
@@ -34,5 +37,6 @@ public class OrderProducts
     [Required(ErrorMessage = "Le Order doit être associé")]
     [Display(Name = "Order")]
     public Order Order { get; set; }
+    
     
 }

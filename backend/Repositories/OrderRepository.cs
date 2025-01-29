@@ -12,31 +12,43 @@ public class OrderRepository : Repository<Order>, IOrderRepository
     {
     }
     
-    public async Task<IEnumerable<BuyOrder>> GetAllBuyOrdersAsync()
+    public async Task<IEnumerable<BuyOrder>> GetAllBuyOrdersAsync(Func<IQueryable<BuyOrder>, IQueryable<BuyOrder>>? include = null)
     {
-        return await _dbSet
-            .OfType<BuyOrder>() 
-            .ToListAsync();            
+        var querry = _dbSet.AsQueryable().OfType<BuyOrder>();
+        if (include != null)
+        {
+            querry = include(querry);
+        }
+        return await querry.ToListAsync();            
     }
     
-    public async Task<IEnumerable<SellOrder>> GetAllSellOrdersAsync()
+    public async Task<IEnumerable<SellOrder>> GetAllSellOrdersAsync(Func<IQueryable<SellOrder>, IQueryable<SellOrder>>? include = null)
     {
-        return await _dbSet
-            .OfType<SellOrder>() 
-            .ToListAsync();           
+        var querry = _dbSet.AsQueryable().OfType<SellOrder>();
+        if (include != null)
+        {
+            querry = include(querry);
+        }
+        return await querry.ToListAsync();    
     }
-    public async Task<IEnumerable<BuyOrder>> FindBuyOrdersAsync(Expression<Func<BuyOrder, bool>> predicate)
+    public async Task<IEnumerable<BuyOrder>> FindBuyOrdersAsync(Expression<Func<BuyOrder, bool>> predicate , Func<IQueryable<BuyOrder>, IQueryable<BuyOrder>>? include = null)
     {
-        return await _dbSet
-            .OfType<BuyOrder>() 
-            .Where(predicate)      
-            .ToListAsync();        
+        var querry = _dbSet.AsQueryable().OfType<BuyOrder>();
+        if (include != null)
+        {
+            querry = include(querry);
+        }
+        return await querry.Where(predicate).ToListAsync();
     }
     
-    public async Task<IEnumerable<SellOrder>> FindSellOrdersAsync(Expression<Func<SellOrder, bool>> predicate)
+    public async Task<IEnumerable<SellOrder>> FindSellOrdersAsync(Expression<Func<SellOrder, bool>> predicate ,Func<IQueryable<SellOrder>, IQueryable<SellOrder>>? include = null)
     {
-        return await _dbSet
-            .OfType<SellOrder>() 
+        var querry = _dbSet.AsQueryable().OfType<SellOrder>();
+        if (include != null)
+        {
+            querry = include(querry);
+        }
+        return await querry
             .Where(predicate)      
             .ToListAsync();        
     }

@@ -19,5 +19,3 @@ obj/
 
 Program.cs
 appsettings.json
-
-backend/obj/backend.csproj.nuget.dgspec.json
