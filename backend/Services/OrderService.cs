@@ -33,7 +33,7 @@ namespace StockManagement.Services
 
         public async Task ExecuteBuyOrderAsync(int orderId)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId,
+            var order = await _orderRepository.GetByIdAsync("OrderId",orderId,
                 q => q.Include(o => o.Warehouse)
                     .Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product));
@@ -122,7 +122,7 @@ namespace StockManagement.Services
         
         public async Task ExecuteSellOrderAsync(int orderId)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId,
+            var order = await _orderRepository.GetByIdAsync("OrderId",orderId,
                 q => q.Include(o => o.Warehouse)
                     .Include(o => o.Client)
                     .Include(o => o.OrderProducts)

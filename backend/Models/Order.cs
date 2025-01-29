@@ -66,10 +66,10 @@ namespace StockManagement.Models
 
         [ForeignKey("ClientId")]
         public Client? Client { get; set; }
-        
+
         [Required(ErrorMessage = "The Warehouse ID is required.")]
         [Display(Name = "Warehouse ID")]
-        public int WarehouseId { get; set; }
+        public int WarehouseId { get; set; } = 1;
 
         [ForeignKey("WarehouseId")]
         public Warehouse Warehouse { get; set; }

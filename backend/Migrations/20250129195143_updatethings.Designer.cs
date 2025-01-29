@@ -12,8 +12,8 @@ using StockManagement.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250127062002_initial")]
-    partial class initial
+    [Migration("20250129195143_updatethings")]
+    partial class updatethings
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,9 @@ namespace backend.Migrations
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isEmpty")
+                        .HasColumnType("bit");
+
                     b.HasKey("LocationId");
 
                     b.HasIndex("WarehouseId");
@@ -175,9 +178,14 @@ namespace backend.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("OrderId");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Orders");
 
@@ -193,6 +201,9 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderProductId"));
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -270,7 +281,7 @@ namespace backend.Migrations
                     b.Property<double>("DiscountPercentage")
                         .HasColumnType("float");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductBlockType")
@@ -508,7 +519,7 @@ namespace backend.Migrations
                     b.HasDiscriminator().HasValue("Clothing");
                 });
 
-            modelBuilder.Entity("StockManagement.Models.ElectronicsProduct", b =>
+            modelBuilder.Entity("StockManagement.Models.ElectronicProduct", b =>
                 {
                     b.HasBaseType("StockManagement.Models.Product");
 
@@ -537,7 +548,8 @@ namespace backend.Migrations
                 {
                     b.HasBaseType("StockManagement.Models.ProductBlock");
 
-                    b.Property<DateTime>("ExpirationDate")
+                    b.Property<DateTime?>("ExpirationDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.HasDiscriminator().HasValue("FoodProductBlock");
@@ -561,7 +573,15 @@ namespace backend.Migrations
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("StockManagement.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("StockManagement.Models.OrderProducts", b =>
@@ -606,9 +626,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("StockManagement.Models.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("StockManagement.Models.Product", "Product")
                         .WithMany("ProductBlocks")

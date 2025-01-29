@@ -1,4 +1,5 @@
 ﻿using backend.Services.ServicesContract;
+using Microsoft.EntityFrameworkCore;
 using StockManagement.Repositories;
 using StockManagement.Models;
 
@@ -16,26 +17,26 @@ public class GetOrderService : IGetOrderService
     
     public async Task<IEnumerable<Order>> GetAllSellOrders()
     {
-        return await _orderRepository.GetAllSellOrdersAsync();
+        return await _orderRepository.GetAllSellOrdersAsync(q => q.Include(e => e.Client));
     }
 
-    public void CancelOrder(int orderId)
+    public async Task CancelOrder(int orderId)
     {
         // Implementation here
     }
 
-    public Order GetOrderDetail(int orderId)
+    public async Task<Order> GetOrderDetail(int orderId)
     {
         // Implementation here
-        throw new NotImplementedException();
+        return await _orderRepository.GetByIdAsync("OrderId",orderId,q=>q.Include(e => e.Client).Include(e => e.Warehouse).Include(o => o.OrderProducts).ThenInclude(op => op.Product).ThenInclude(p => p.Category));
     }
 
-    public void MarkOrderAsDelivered(int orderId)
+    public async Task MarkOrderAsDelivered(int orderId)
     {
         // Implementation here
     }
 
-    public void MarkOrderAsProcessing(int orderId)
+    public async Task MarkOrderAsProcessing(int orderId)
     {
         // Implementation here
     }

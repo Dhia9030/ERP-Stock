@@ -22,6 +22,8 @@ public partial class Order
     public int  Status { get; set; }
 
     public int Type { get; set; }
+    
+    public int WarehouseId { get; set; }
 
     public int? ClientId { get; set; }
 

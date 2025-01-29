@@ -9,6 +9,7 @@ namespace StockManagement.Repositories
             bool asNoTracking = false);
 
         public Task<T?> GetByIdAsync(
+            string primaryKey,
             int id,
             Func<IQueryable<T>, IQueryable<T>>? include = null,
             bool asNoTracking = false);

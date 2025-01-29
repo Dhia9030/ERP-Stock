@@ -35,6 +35,7 @@ namespace StockManagement.Repositories
         }
         
         public async Task<T?> GetByIdAsync(
+            string primaryKey,
             int id, 
             Func<IQueryable<T>, IQueryable<T>>? include = null, 
             bool asNoTracking = false)
@@ -51,7 +52,7 @@ namespace StockManagement.Repositories
                 query = query.AsNoTracking();
             }
 
-            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, primaryKey) == id);
         }
         
         public async Task AddAsync(T entity)
