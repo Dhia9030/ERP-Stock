@@ -26,14 +26,14 @@ public class TestController : Controller
         _getOrderService = getOrderService;
     }
     
-    [Route("Index")]
+    [Route("getallsellOrder")]
     [HttpGet]
     public async Task<IActionResult> Index()
     {
         var buyOrders = await _orderRepository.GetAllSellOrdersAsync();
         return Json(buyOrders);
     }
-    [Route("Index2")]
+    [Route("getallorder")]
     [HttpGet]
     public async Task<IActionResult> Index2()
     {
@@ -45,7 +45,7 @@ public class TestController : Controller
             
         });
     }
-    [Route("Index3")]
+    [Route("getall sells order")]
     [HttpGet]
     public async Task<IActionResult> Index3()
     {
@@ -57,7 +57,7 @@ public class TestController : Controller
         });
     }
     
-    [Route("Index4")]
+    [Route("detailof an order")]
     [HttpGet]
     public async Task<IActionResult> Index4()
     {
