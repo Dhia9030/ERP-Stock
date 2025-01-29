@@ -11,7 +11,7 @@ namespace StockManagement.Services
         private readonly ProductBlockRepository _productBlockRepository;
         private readonly StockMovementRepository _stockMovementRepository;
         private readonly LocationRepository _locationRepository;
-        private readonly ProductItem _productItem;
+        private readonly ProductItemRepository _productItemRepository;
 
         public OrderService()
         {
@@ -80,8 +80,8 @@ namespace StockManagement.Services
                         PurchaseOrder = order
                     };
                     
+                    await _productItemRepository.AddAsync(productItem);
                 }
-                
                 
                 var stockMovement = new StockMovement
                 {
