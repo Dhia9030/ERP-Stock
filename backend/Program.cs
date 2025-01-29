@@ -1,4 +1,6 @@
 using System.Collections.Immutable;
+using backend.Services.ConcreteServices;
+using backend.Services.ServicesContract;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using StockManagement.Data;
@@ -33,7 +35,10 @@ builder.Services.AddScoped<IStockMovementItemsRepository, StockMovementItemsRepo
 builder.Services.AddScoped<IStockMovementRepository, StockMovementRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+ //services
 
+builder.Services.AddScoped<IGetOrderService, GetOrderService>();
+builder.Services.AddScoped<IGetProductService, GetProductService>();
 
 builder.Services.AddControllers();
 

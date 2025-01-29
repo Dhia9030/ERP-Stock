@@ -277,7 +277,8 @@ public class OrderController : Controller
             {
                 OrderId = newOrder.OrderId,
                 ProductId = orderProduct.ProductId,
-                Quantity = orderProduct.Quantity
+                Quantity = orderProduct.Quantity,
+                ExpirationDate = null
             };
             _Erpdb.OrderProducts.Add(newOrderProduct);
         }

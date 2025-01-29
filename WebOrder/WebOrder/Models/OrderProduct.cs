@@ -14,6 +14,9 @@ public partial class OrderProduct
     public int OrderId { get; set; }
 
     public virtual Order Order { get; set; } = null!;
+    
+    
+    public DateTime? ExpirationDate { get; set; }
 
     public virtual Product Product { get; set; } = null!;
 }

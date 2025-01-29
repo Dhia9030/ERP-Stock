@@ -12,8 +12,8 @@ using StockManagement.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250127062002_initial")]
-    partial class initial
+    [Migration("20250129143353_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,6 +98,9 @@ namespace backend.Migrations
 
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("isEmpty")
+                        .HasColumnType("bit");
 
                     b.HasKey("LocationId");
 
@@ -193,6 +196,9 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderProductId"));
+
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -508,7 +514,7 @@ namespace backend.Migrations
                     b.HasDiscriminator().HasValue("Clothing");
                 });
 
-            modelBuilder.Entity("StockManagement.Models.ElectronicsProduct", b =>
+            modelBuilder.Entity("StockManagement.Models.ElectronicProduct", b =>
                 {
                     b.HasBaseType("StockManagement.Models.Product");
 
