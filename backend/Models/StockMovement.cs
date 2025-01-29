@@ -9,7 +9,9 @@ public enum StockMovementStatus
 {
     Incoming,   // Stock entrant
     Outgoing,   // Stock sortant
-    Transfer    // Transfert de stock
+    Transfer,
+    Merge,
+    Delete
 }
 
 public class StockMovement

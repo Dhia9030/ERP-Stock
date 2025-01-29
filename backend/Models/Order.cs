@@ -67,6 +67,13 @@ namespace StockManagement.Models
         [ForeignKey("ClientId")]
         public Client? Client { get; set; }
         
+        [Required(ErrorMessage = "The Warehouse ID is required.")]
+        [Display(Name = "Warehouse ID")]
+        public int WarehouseId { get; set; }
+
+        [ForeignKey("WarehouseId")]
+        public Warehouse Warehouse { get; set; }
+        
         [Display(Name = "Order Products")]
         public ICollection<OrderProducts>? OrderProducts { get; set; }
         

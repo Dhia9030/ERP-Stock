@@ -67,6 +67,12 @@ namespace StockManagement.Data
                 .HasForeignKey(o => o.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
             
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Warehouse)
+                .WithMany()
+                .HasForeignKey(o => o.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
             modelBuilder.Entity<BuyOrder>()
                 .HasOne(bo => bo.Supplier)
                 .WithMany(s => s.Orders)
