@@ -15,11 +15,29 @@ namespace StockManagement.Controllers
         }
         
         [HttpPost("executeBuyOrder/{orderId}")]
-        public async Task<IActionResult> ExecuteOrder(int orderId)
+        public async Task<IActionResult> ExecuteBuyOrderAsync(int orderId)
         {
             try
             {
                 await _orderService.ExecuteBuyOrderAsync(orderId);
+                return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpPost("executeSellOrder/{orderId}")]
+        public async Task<IActionResult> ExecuteSellOrderAsync(int orderId)
+        {
+            try
+            {
+                await _orderService.ExecuteSellOrderAsync(orderId);
                 return Ok();
             }
             catch (ArgumentException ex)
