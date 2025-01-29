@@ -16,19 +16,22 @@ namespace StockManagement.Services
         private readonly IStockMovementRepository _stockMovementRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IProductItemRepository _productItemRepository;
+        private readonly IStockMovementItemsRepository _stockMovementItemRepository;
 
         public OrderService(
             IOrderRepository orderRepository,
             IProductBlockRepository productBlockRepository,
             IStockMovementRepository stockMovementRepository,
             ILocationRepository locationRepository,
-            IProductItemRepository productItemRepository)
+            IProductItemRepository productItemRepository,
+            IStockMovementItemsRepository stockMovementItemRepository)
         {
             _orderRepository = orderRepository;
             _productBlockRepository = productBlockRepository;
             _stockMovementRepository = stockMovementRepository;
             _locationRepository = locationRepository;
             _productItemRepository = productItemRepository;
+            _stockMovementItemRepository = stockMovementItemRepository;
         }
 
         public async Task ExecuteBuyOrderAsync(int orderId)
@@ -84,22 +87,8 @@ namespace StockManagement.Services
                         Status = ProductBlockStatus.InStock
                     };
                 }
-
                 await _productBlockRepository.AddAsync(productBlock);
-
-                for (int i = 0; i < orderProduct.Quantity; i++)
-                {
-                    var productItem = new ProductItem
-                    {
-                        ProductBlockId = productBlock.ProductBlockId,
-                        Status = ProductItemStatus.InStock,
-                        PurchaseOrder = order
-                    };
-
-                    await _productItemRepository.AddAsync(productItem);
-                }
-
-                var stockMovement = new StockMovement
+                var stockMovement =new StockMovement
                 {
                     MovementType = StockMovementStatus.Incoming,
                     CreatedBy = "System",
@@ -109,10 +98,31 @@ namespace StockManagement.Services
                     SourceLocationId = _locationRepository.GetSupplierAreaLocation(order.Warehouse.Name).Id,
                     DestinationLocationId = location.Id,
                     Quantity = orderProduct.Quantity,
-                    OrderId = order.OrderId
+                    OrderId = order.OrderId,
+                    
                 };
-
                 await _stockMovementRepository.AddAsync(stockMovement);
+                
+               
+                for (int i = 0; i < orderProduct.Quantity; i++)
+                {
+                    var productItem = new ProductItem
+                    {
+                        ProductBlockId = productBlock.ProductBlockId,
+                        Status = ProductItemStatus.InStock,
+                        PurchaseOrder = order
+                    };
+                    await _productItemRepository.AddAsync(productItem);
+                    var stockMovementItem = new StockMovementItems
+                        {
+                            ProductItemId = productItem.ProductItemId,
+                            StockMovementId = stockMovement.StockMovementId
+                        };
+                 
+                    await _stockMovementItemRepository.AddAsync(stockMovementItem);
+                    
+                }
+
             }
 
             order.Status = OrderStatus.Delivered;
