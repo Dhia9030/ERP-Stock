@@ -13,8 +13,8 @@ public class LocationRepository : Repository<Location>, ILocationRepository
         Func<IQueryable<Location>, IQueryable<Location>>? include = null, 
         bool asNoTracking = false)
     {
-        var results = await FindAsync(x => x.WarehouseId == warehouseId && x.isEmpty == true, 
-            query => (include != null ? include(query) : query).Take(1), 
+        var results = await FindAsync(x => x.WarehouseId == warehouseId && x.isEmpty == true && x.LocationId != 1 && x.LocationId != 2 && x.LocationId != 3, 
+            query => (include != null ? include(query) : query), 
             asNoTracking);
         return results.FirstOrDefault();  
     }
@@ -25,7 +25,7 @@ public class LocationRepository : Repository<Location>, ILocationRepository
         bool asNoTracking = false)
     {
         var results = await FindAsync(x => x.Name == $"{warehouseName} - Buyer Area" , 
-            query => (include != null ? include(query) : query).Take(1), 
+            query => (include != null ? include(query) : query), 
             asNoTracking);
         return results.FirstOrDefault();
     }
