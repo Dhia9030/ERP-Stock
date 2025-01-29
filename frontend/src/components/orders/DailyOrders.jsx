@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import * as SignalR from '@microsoft/signalr';
+import {useEffect} from 'react';
 
 const dailyOrdersData = [
 	{ date: "07/01", orders: 45 },
@@ -12,6 +14,33 @@ const dailyOrdersData = [
 ];
 
 const DailyOrders = () => {
+	const [dailyOrdersData, setDailyOrdersData] = useState([]);
+
+  useEffect(() => {
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/orderhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for daily orders");
+
+        connection.on("ReceiveDailyOrders", (data) => {
+          console.log("Received daily orders data:", data);
+          setDailyOrdersData(data);
+        });
+
+        connection.invoke("GetDailyOrders")
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
+  }, []);
+
 	return (
 		<motion.div
 			className='bg-gradient-to-br from-sky-800 to-sky-900 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border '

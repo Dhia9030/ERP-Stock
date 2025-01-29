@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import * as SignalR from '@microsoft/signalr';
+
 
 const products = [
   {
@@ -32,15 +34,70 @@ const InternalTransfer = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [sourceBlock, setSourceBlock] = useState(null);
   const [destinationLocation, setDestinationLocation] = useState(null);
+  const [products, setProducts] = useState([]);
   const [productBlocks, setProductBlocks] = useState([]);
+  const [freeLocations, setFreeLocations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/producthub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for products");
+
+        connection.on("ReceiveProducts", (data) => {
+          console.log("Received products:", data);
+          setProducts(data);
+        });
+
+        connection.invoke("GetInitialProducts")
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
+  }, []);
+
+  useEffect(() => {
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/locationhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for locations");
+
+        connection.on("ReceiveFreeLocations", (data) => {
+          console.log("Received free locations:", data);
+          setFreeLocations(data);
+        });
+
+        connection.invoke("GetFreeLocations")
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
+  }, []);
+
+
+
 
   useEffect(() => {
     if (selectedProduct) {
       const product = products.find(p => p.productId === parseInt(selectedProduct));
       setProductBlocks(product ? product.blocks : []);
     }
-  }, [selectedProduct]);
+  }, [selectedProduct,products]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -48,18 +105,52 @@ const InternalTransfer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const requestData = {
+    let requestData = {
       operation,
       productId: selectedProduct,
-      sourceBlockId: sourceBlock,
-      destinationLocation
     };
+
+    if (operation === "transfer") {
+      requestData = {
+        ...requestData,
+        sourceBlockId: sourceBlock,
+        destinationLocation
+      };
+    } else if (operation === "merge") {
+      requestData = {
+        ...requestData,
+        sourceBlockId: sourceBlock,
+        destinationBlockId: destinationLocation
+      };
+    } else if (operation === "delete") {
+      requestData = {
+        ...requestData,
+        sourceBlockId: sourceBlock
+      };
+    }
+
     console.log("Request Data:", requestData);
-    // Send request to API endpoint
-    // axios.post('/api/transfer', requestData)
-    //   .then(response => console.log(response))
-    //   .catch(error => console.error(error));
+
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/transferhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for transfer");
+
+        connection.invoke("ExecuteTransfer", requestData)
+          .then(response => console.log(response))
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
   };
+
 
   return (
     <motion.div

@@ -8,7 +8,6 @@ import AddAdmin from "./pages/AddAdmin";
 import OverviewPage from "./pages/OverviewPage";
 import ProductsPage from "./pages/ProductsPage";
 import OrdersPage from "./pages/OrdersPage";
-import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
 import CustomerOrder from "./pages/CustomerOrder";
 import LowStock  from "./pages/LowStock";
@@ -103,7 +102,6 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 				<Route path='/orders/:orderId' element={<CustomerOrder />} />
 				<Route path='/lowstock' element={<LowStock />} />
 				<Route path='/transfers' element={<Transfers />} />
-				<Route path='/analytics' element={<AnalyticsPage />} />
 				<Route path='/settings' element={<SettingsPage />} />
 				<Route path='/add' element={<AddAdmin />} />
 				<Route path='/delay' element={<DelayPage />} />
