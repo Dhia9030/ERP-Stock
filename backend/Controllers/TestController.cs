@@ -34,7 +34,6 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Index2()
     {
-        var orderProducts = await _orderProductsRepository.GetProductsByOrderIdAsync(1007,true,true);
         var order = await _orderProductsRepository.GetOrdersByProductIdAsync(8);
         var Orders = await _orderRepository.GetAllAsync(include => include.Include(e => e.OrderProducts).ThenInclude(e => e.Product));
         return Json(Orders , new JsonSerializerOptions{
