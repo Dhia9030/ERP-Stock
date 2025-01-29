@@ -1,4 +1,5 @@
 ﻿using backend.Services.ServicesContract;
+using Microsoft.EntityFrameworkCore;
 using StockManagement.Repositories;
 using  StockManagement.Models;
 namespace backend.Services.ConcreteServices;
@@ -20,22 +21,22 @@ public class GetProductService : IGetProductService
     
     public async Task<IEnumerable<Product>> GetAllProductsAsync()
     {
-        return await _productRepository.GetAllAsync();
+        return await _productRepository.GetAllAsync(q => q.Include(e => e.Category));
     }
     
     public async Task<IEnumerable<Product>> GetAllClothingProduct()
     {
-        return await _clothingProductRepository.GetAllAsync();
+        return await _clothingProductRepository.GetAllAsync(q => q.Include(e => e.Category));
     }
     
     public async Task<IEnumerable<Product>> GetAllFoodProduct()
     {
-        return await _foodProductRepository.GetAllAsync();
+        return await _foodProductRepository.GetAllAsync(q => q.Include(e => e.Category));
     }
     
     public async Task<IEnumerable<Product>> GetAllElectronicProduct()
     {
-        return await _electronicProductRepository.GetAllAsync();
+        return await _electronicProductRepository.GetAllAsync(q => q.Include(e => e.Category));
     }
     
 }

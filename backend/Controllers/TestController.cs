@@ -17,13 +17,15 @@ public class TestController : Controller
     private readonly IOrderRepository _orderRepository;
     private readonly IOrderProductsRepository _orderProductsRepository;
     private readonly IGetOrderService _getOrderService;
+    private readonly IGetProductService _getProductService;
     
-    public TestController(AppDbContext db , IOrderRepository orderRepository, IOrderProductsRepository orderProductsRepository , IGetOrderService getOrderService)
+    public TestController(AppDbContext db , IOrderRepository orderRepository, IOrderProductsRepository orderProductsRepository , IGetOrderService getOrderService, IGetProductService getProductService)
     {
         _db = db;
         _orderRepository = orderRepository;
         _orderProductsRepository = orderProductsRepository;
         _getOrderService = getOrderService;
+        _getProductService = getProductService;
     }
     
     [Route("getallsellOrder")]
@@ -65,6 +67,31 @@ public class TestController : Controller
         return Json(order ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false
+            
+        });
+    }
+    [Route("getAllProduct")]
+    [HttpGet]
+    public async Task<IActionResult> Index5()
+    {
+        var order = await _getProductService.GetAllProductsAsync();
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+            MaxDepth = 0
+            
+        });
+    }
+    
+    [Route("getAllClothingProduct")]
+    [HttpGet]
+    public async Task<IActionResult> Index6()
+    {
+        var order = await _getProductService.GetAllClothingProduct();
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+            MaxDepth = 0
             
         });
     }
