@@ -25,7 +25,7 @@ namespace StockManagement.Models
         [ForeignKey("StockMovementId")]
         public int StockMovementId { get; set; }
 
-        [ValidateNever]
+      
         [Required(ErrorMessage = "Le StockMovement doit être associé")]
         [Display(Name = "StockMovement")]
         public StockMovement StockMovement { get; set; }

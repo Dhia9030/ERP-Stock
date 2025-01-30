@@ -170,7 +170,7 @@ namespace StockManagement.Data
 
             modelBuilder.Entity<StockMovementItems>()
                 .HasOne(smi => smi.StockMovement)
-                .WithMany()
+                .WithMany(sm => sm.StockMovementItems)
                 .HasForeignKey(smi => smi.StockMovementId);
             
             // Configuration de la relation many-to-many entre Product et Supplier

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using backend.Services.ServicesContract;
+using Microsoft.AspNetCore.Mvc;
 using StockManagement.Services;
 
 namespace StockManagement.Controllers
@@ -8,10 +9,12 @@ namespace StockManagement.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IConfirmOrderService _confirmOrderService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService , IConfirmOrderService confirmOrderService)
         {
             _orderService = orderService;
+            _confirmOrderService = confirmOrderService;
         }
         
         [HttpPost("executeBuyOrder/{orderId}")]
@@ -38,6 +41,41 @@ namespace StockManagement.Controllers
             try
             {
                 await _orderService.ExecuteSellOrderAsync(orderId);
+                return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("ConfirmBuy/{orderId}")]
+        public async Task<IActionResult> ExecuteReturnOrderAsync(int orderId)
+        {
+            try
+            {
+                await _confirmOrderService.ConfirmBuyOrderAsync(orderId);
+                return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpPost("ConfirmSale/{orderId}")]
+        public async Task<IActionResult> ExecuteExpireOrderAsync(int orderId)
+        {
+            try
+            {
+                await _confirmOrderService.ConfirmSaleOrderAsync(orderId);
                 return Ok();
             }
             catch (ArgumentException ex)

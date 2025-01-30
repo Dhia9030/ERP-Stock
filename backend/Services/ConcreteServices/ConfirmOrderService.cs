@@ -44,7 +44,7 @@ public class ConfirmOrderService : IConfirmOrderService
             throw new ArgumentException($"Order with ID {orderId} not found");
         }
         
-        if (order.Status != OrderStatus.Pending)
+        if (order.Status != OrderStatus.Processing)
         {
             throw new ArgumentException($"Order with ID {orderId} is already confirmed");
         }

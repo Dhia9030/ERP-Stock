@@ -52,6 +52,7 @@ builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IGetOrderService, GetOrderService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IGetProductService, GetProductService>();
+builder.Services.AddScoped<IConfirmOrderService, ConfirmOrderService>();
 
 
 builder.Services.AddControllers();
