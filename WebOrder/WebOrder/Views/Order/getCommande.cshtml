@@ -39,7 +39,7 @@ ViewData["Title"] = "Orders List";
                 }
                 else if(order.Order.Status==1)
                 {
-                    <span class="label-success-bg" >Shipped</span>
+                    <span class="label-success-bg" >Processing</span>
                 }
                 else if(order.Order.Status==2)
                 {
@@ -50,26 +50,36 @@ ViewData["Title"] = "Orders List";
                     <span class="label-danger-bg" >Cancelled</span>
                 }
                 
-                <td>
+            <td>
                 <ul class="list-group">
                     @foreach (var orderProduct in order.OrderProducts)
                     {
-                    <li class="list-group-item">
-                        <strong>@orderProduct.Product.Name</strong> -
-                        Quantity: @orderProduct.Quantity -
-                        Price: @orderProduct.Product.Price.ToString("C")
-                    </li>
+                        <li class="list-group-item">
+                            <strong>@orderProduct.Product.Name</strong> -
+                            Quantity: @orderProduct.Quantity -
+                            Price: @orderProduct.Product.Price.ToString("C")
+                        </li>
                     }
                 </ul>
             </td>
-                <td>
-                    <a asp-action="CancelCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-danger btn-sm">
-                        Cancel
-                    </a>
-                    <a asp-action="ActiverCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-primary btn-sm">
-                        Activer Commande
-                    </a>
-                </td>
+                @if(order.Order.Status != 1 && order.Order.Status != 2)
+                {
+                    <td>
+                        <a asp-action="CancelCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-danger btn-sm">
+                            Cancel
+                        </a>
+                        <a asp-action="ActiverCommande" asp-route-orderId="@order.Order.OrderId" class="btn btn-primary btn-sm">
+                            Activer Commande
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <p>no action allowed</p>
+                    </td>
+                }
+               
             
             
             

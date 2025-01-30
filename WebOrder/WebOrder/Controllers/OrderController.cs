@@ -216,7 +216,7 @@ public class OrderController : Controller
         ViewBag.Users = _Erpdb.Clients.Select(c => new SelectListItem()
         {
             Value = c.ClientId.ToString(),
-            Text = c.FirstName + " " + c.LastName
+            Text = c.FirstName + " " + c.LastName +" "+ c.Email
         }).ToList();
         return View();
     }
@@ -243,7 +243,7 @@ public class OrderController : Controller
             ViewBag.Users = _Erpdb.Clients.Select(c => new SelectListItem()
             {
                 Value = c.ClientId.ToString(),
-                Text = c.FirstName + " " + c.LastName
+                Text = c.FirstName + " " + c.LastName +" "+ c.Email
             }).ToList();
             return View(confirmation);
         }
@@ -299,8 +299,8 @@ public class OrderController : Controller
             var orders = _Erpdb.Orders
                 .Include(o => o.Client)
                 .Include(o => o.OrderProducts)
-                
                 .ThenInclude(op => op.Product)
+                .Where(o => o.OrderType=="SellOrder")
                 .ToList() // Materialize the query here to detach it from EF
                 .Select(o => new CommandeViewModel
                 {
@@ -342,6 +342,71 @@ public class OrderController : Controller
         return RedirectToAction("getCommande");
     }
     
+    [HttpGet]
+    public IActionResult AddNewClient()
+    {
+        var order = _Appdb.TempOrders.FirstOrDefault();
+        if (order == null)
+        {
+            
+            return RedirectToAction("getOrders");;
+        }
+        var orderProducts = _Appdb.TempOrderProducts.FirstOrDefault();
+        if (orderProducts == null)
+        {
+            
+            return RedirectToAction("getOrders");
+        }
+        return View();
+    }
+    [HttpPost]
+    
+    public IActionResult AddNewClient(NewClientViewModel clientvm)
+    {
+        var order = _Appdb.TempOrders.FirstOrDefault();
+        if (order == null)
+        {
+            ViewBag.msg = "no order exists";
+            return View();
+        }
+
+        var orderProducts = _Appdb.TempOrderProducts.FirstOrDefault();
+        if (orderProducts == null)
+        {
+            ViewBag.msg = "no product exists";
+            return View();
+        }
+        if (!ModelState.IsValid)
+        {
+            ViewBag.msg = "Invalid data";
+            return View(clientvm);
+        }
+        var clientExists = _Erpdb.Clients.Any(c => c.Email == clientvm.Email);
+        if (clientExists)
+        {
+            ViewBag.msg = "Client already exists";
+            return View(clientvm);
+        }
+        var client = new Client()
+        {
+            LastName = clientvm.LastName,
+            FirstName = clientvm.FirstName,
+            Email = clientvm.Email,
+            Address = clientvm.Address,
+            PhoneNumber = clientvm.PhoneNumber,
+            RegistrationDate = DateTime.Now
+        };
+        _Erpdb.Clients.Add(client);
+        _Erpdb.SaveChanges();
+        
+        ConfirmationviewModel confirmation = new ConfirmationviewModel()
+        {
+            ClientId = client.ClientId,
+            Discount = clientvm.Discount,
+            ExecutionDate = clientvm.ExecutionDate
+        };
+        return View("SubmitOrder" , confirmation);
+    }
 
 
 

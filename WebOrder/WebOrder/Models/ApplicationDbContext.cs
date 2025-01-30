@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebOrder.Models.ViewModels;
 
 namespace WebOrder.Models;
 
@@ -13,6 +14,8 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     
     public DbSet<TempOrder> TempOrders { get; set; }
     public DbSet<TempOrderProduct> TempOrderProducts { get; set; }
+    
+   
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

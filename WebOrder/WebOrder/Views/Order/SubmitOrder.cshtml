@@ -1,0 +1,13 @@
+@model WebOrder.Models.ViewModels.ConfirmationviewModel
+
+<form id="confirmForm" method="post" action="@Url.Action("ConfirmOrder", "Order")">
+    <input type="hidden" asp-for="ClientId" value="@Model.ClientId" />
+    <input type="hidden" asp-for="Discount" value="@Model.Discount" />
+    <input type="hidden" asp-for="ExecutionDate" value="@Model.ExecutionDate" />
+</form>
+<script>
+    document.getElementById("confirmForm").submit();
+</script>
+
+
+    
