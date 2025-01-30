@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Storage;
 using StockManagement.Data;
 
 namespace StockManagement.Repositories
@@ -96,6 +97,11 @@ namespace StockManagement.Repositories
             }
 
             return await query.Where(predicate).ToListAsync();
+        }
+        
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await  _context.Database.BeginTransactionAsync();
         }
     }
 }

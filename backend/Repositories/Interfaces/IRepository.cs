@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace StockManagement.Repositories
 {
@@ -21,5 +22,7 @@ namespace StockManagement.Repositories
             Expression<Func<T, bool>> predicate,
             Func<IQueryable<T>, IQueryable<T>>? include = null,
             bool asNoTracking = false);
+
+        public Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

@@ -59,89 +59,101 @@ namespace StockManagement.Services
     order.Status = OrderStatus.Processing;
     order.RealExecutionDate = DateTime.UtcNow;
     await _orderRepository.UpdateAsync(order);
-
-    foreach (var orderProduct in order.OrderProducts)
+    var transaction = await _orderRepository.BeginTransactionAsync();
+    try
     {
-        if (orderProduct == null || orderProduct.Product == null)
+        foreach (var orderProduct in order.OrderProducts)
         {
-            throw new InvalidOperationException("Invalid order product data");
-        }
-
-        var location = await _locationRepository.GetFirstEmptyLocationForWarehouse(order.WarehouseId);
-        
-        if (location == null)
-        {
-            throw new InvalidOperationException("No empty location found in the warehouse");
-        }
-        
-        ProductBlock productBlock;
-
-        if (orderProduct.Product is FoodProduct)
-        {
-            productBlock = new FoodProductBlock
+            if (orderProduct == null || orderProduct.Product == null)
             {
-                ProductId = orderProduct.ProductId,
-                LocationId = location.LocationId,
+                throw new InvalidOperationException("Invalid order product data");
+            }
+
+            var location = await _locationRepository.GetFirstEmptyLocationForWarehouse(order.WarehouseId);
+
+            if (location == null)
+            {
+                throw new InvalidOperationException("No empty location found in the warehouse");
+            }
+
+            ProductBlock productBlock;
+
+            if (orderProduct.Product is FoodProduct)
+            {
+                productBlock = new FoodProductBlock
+                {
+                    ProductId = orderProduct.ProductId,
+                    LocationId = location.LocationId,
+                    Quantity = orderProduct.Quantity,
+                    Status = ProductBlockStatus.InStock,
+                    ExpirationDate = orderProduct.ExpirationDate
+                };
+            }
+            else
+            {
+                productBlock = new ProductBlock
+                {
+                    ProductId = orderProduct.ProductId,
+                    LocationId = location.LocationId,
+                    Quantity = orderProduct.Quantity,
+                    Status = ProductBlockStatus.InStock
+                };
+            }
+
+            await _productBlockRepository.AddAsync(productBlock);
+
+            var supplierAreaLocation = await _locationRepository.GetSupplierAreaLocation(order.Warehouse.Name);
+            if (supplierAreaLocation == null)
+            {
+                throw new InvalidOperationException("Supplier area location not found");
+            }
+
+            var stockMovement = new StockMovement
+            {
+                MovementType = StockMovementStatus.Incoming,
+                CreatedBy = "System",
+                MovementDate = DateTime.UtcNow,
+                SourceProductBlockId = productBlock.ProductBlockId,
+                DestinationProductBlockId = productBlock.ProductBlockId,
+                SourceLocationId = supplierAreaLocation.LocationId,
+                DestinationLocationId = location.LocationId,
                 Quantity = orderProduct.Quantity,
-                Status = ProductBlockStatus.InStock,
-                ExpirationDate = orderProduct.ExpirationDate
+                OrderId = order.OrderId,
             };
-        }
-        else
-        {
-            productBlock = new ProductBlock
+
+            await _stockMovementRepository.AddAsync(stockMovement);
+
+            for (int i = 0; i < orderProduct.Quantity; i++)
             {
-                ProductId = orderProduct.ProductId,
-                LocationId = location.LocationId,
-                Quantity = orderProduct.Quantity,
-                Status = ProductBlockStatus.InStock
-            };
+                var productItem = new ProductItem
+                {
+                    ProductBlockId = productBlock.ProductBlockId,
+                    Status = ProductItemStatus.InStock,
+                    PurchaseOrder = order
+                };
+
+                await _productItemRepository.AddAsync(productItem);
+
+                var stockMovementItem = new StockMovementItems
+                {
+                    ProductItemId = productItem.ProductItemId,
+                    StockMovementId = stockMovement.StockMovementId
+                };
+
+                await _stockMovementItemRepository.AddAsync(stockMovementItem);
+            }
+
+            location.isEmpty = false;
+            await _locationRepository.UpdateAsync(location);
         }
-
-        await _productBlockRepository.AddAsync(productBlock);
-
-        var supplierAreaLocation = await _locationRepository.GetSupplierAreaLocation(order.Warehouse.Name);
-        if (supplierAreaLocation == null)
-        {
-            throw new InvalidOperationException("Supplier area location not found");
-        }
-
-        var stockMovement = new StockMovement
-        {
-            MovementType = StockMovementStatus.Incoming,
-            CreatedBy = "System",
-            MovementDate = DateTime.UtcNow,
-            SourceProductBlockId = productBlock.ProductBlockId,
-            DestinationProductBlockId = productBlock.ProductBlockId,
-            SourceLocationId = supplierAreaLocation.LocationId,
-            DestinationLocationId = location.LocationId,
-            Quantity = orderProduct.Quantity,
-            OrderId = order.OrderId,
-        };
-
-        await _stockMovementRepository.AddAsync(stockMovement);
-
-        for (int i = 0; i < orderProduct.Quantity; i++)
-        {
-            var productItem = new ProductItem
-            {
-                ProductBlockId = productBlock.ProductBlockId,
-                Status = ProductItemStatus.InStock,
-                PurchaseOrder = order
-            };
-
-            await _productItemRepository.AddAsync(productItem);
-
-            var stockMovementItem = new StockMovementItems
-            {
-                ProductItemId = productItem.ProductItemId,
-                StockMovementId = stockMovement.StockMovementId
-            };
-
-            await _stockMovementItemRepository.AddAsync(stockMovementItem);
-        }
-        location.isEmpty = false;
-        await _locationRepository.UpdateAsync(location);
+        await transaction.CommitAsync();
+    }
+    catch (Exception e)
+    {
+        await transaction.RollbackAsync();
+        order.Status = OrderStatus.Pending;
+        await _orderRepository.UpdateAsync(order);
+        throw new InvalidOperationException(" sahbi exeption Error while processing order" , e);
     }
 
     order.Status = OrderStatus.Delivered;
