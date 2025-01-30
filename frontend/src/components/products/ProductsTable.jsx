@@ -11,11 +11,17 @@ const capitalize = (str) => {
 };
 
 const ProductsTable = ({selectedList}) => {
+
   const PRODUCT_DATA = useProducts();
-  const [selectedProducts, setSelectedProducts] =useState([]);
+  const [selectedProducts, setSelectedProducts] =useState(PRODUCT_DATA);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);
   const notifiedProducts = useRef(new Set());
+
+
+  useEffect(() => {
+    setFilteredProducts(PRODUCT_DATA);
+  }, [PRODUCT_DATA]);
 
 
 //Notification
@@ -43,6 +49,8 @@ const handleSearch = (e) => {
   setSearchTerm(term);
   
 };
+
+console.log('filteredProducts',filteredProducts);
 
   if(!selectedProducts){
     return <div>Loading...</div>

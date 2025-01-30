@@ -19,3 +19,5 @@ obj/
 
 Program.cs
 appsettings.json
+
+Migrations/

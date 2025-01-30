@@ -16,10 +16,10 @@ const OrdersPage = () => {
         <div className='flex-1 relative z-10 overflow-auto'>
             <Header title={"Orders"} />
             <main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
-                    <OrdersTable  />
+                    {<OrdersTable  />}
                 <div className='mt-3 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
-                    <DailyOrders />
-                    <OrderDistribution />
+                    {/* {<DailyOrders />} */}
+                    {/* {<OrderDistribution />} */}
                 </div>
             </main>
         </div>

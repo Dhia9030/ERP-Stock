@@ -6,6 +6,7 @@ import {useOrder} from "../../context/OrderProvider"
 import { ShoppingCart } from "lucide-react";
 const OrdersTable = () => {
     const{orderData} = useOrder();
+    console.log('si sahbi orderData:', orderData);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredOrders, setFilteredOrders] = useState(orderData);

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import * as SignalR from '@microsoft/signalr';
-import {useEffect} from 'react';
+import {useEffect , useState} from 'react';
 
 const dailyOrdersData = [
 	{ date: "07/01", orders: 45 },
