@@ -56,9 +56,7 @@ namespace StockManagement.Services
         throw new InvalidOperationException("Order is empty");
     }
 
-    order.Status = OrderStatus.Processing;
-    order.RealExecutionDate = DateTime.UtcNow;
-    await _orderRepository.UpdateAsync(order);
+
     var transaction = await _orderRepository.BeginTransactionAsync();
     try
     {
@@ -155,12 +153,18 @@ namespace StockManagement.Services
         await _orderRepository.UpdateAsync(order);
         throw new InvalidOperationException(" sahbi exeption Error while processing order" , e);
     }
-
-    order.Status = OrderStatus.Delivered;
+    
+    order.Status = OrderStatus.Processing;
+    order.RealExecutionDate = DateTime.UtcNow;
     await _orderRepository.UpdateAsync(order);
     
 }
 
+        
+        
+        
+        
+        
         
         public async Task ExecuteSellOrderAsync(int orderId)
         {
@@ -180,10 +184,7 @@ namespace StockManagement.Services
             if (order.OrderProducts == null || !order.OrderProducts.Any())
                 throw new InvalidOperationException("Order is empty");
 
-            order.Status = OrderStatus.Processing;
-            order.RealExecutionDate = DateTime.UtcNow;
-            await _orderRepository.UpdateAsync(order);
-
+            
             foreach (var orderProduct in order.OrderProducts)
             {
                 if (orderProduct.Quantity > orderProduct.Product.StockQuantity)
@@ -191,75 +192,103 @@ namespace StockManagement.Services
                         $"Product {orderProduct.Product.Name} has only {orderProduct.Product.StockQuantity} in stock");
             }
 
-            foreach (var orderProduct in order.OrderProducts)
+            
+            var transaction = await _orderRepository.BeginTransactionAsync();
+            try
             {
-                IEnumerable<ProductBlock> productBlocks;
-                
-                if (orderProduct.Product is FoodProduct)
+                foreach (var orderProduct in order.OrderProducts)
                 {
-                    productBlocks = productBlocks = (IEnumerable<ProductBlock>)await _productBlockRepository.GetAllFoodProductBlockOrderedByExpirationDateAsync(
-                        q => q.Include(p => p.ProductItems));
-                }
-                else
-                {
-                    productBlocks = orderProduct.Product.ProductBlocks.ToList();
-                }
+                    IEnumerable<ProductBlock> productBlocks;
 
-                if (!productBlocks.Any())
-                    throw new InvalidOperationException($"No stock available for product {orderProduct.Product.Name}");
-                
-                int remainingQuantity = orderProduct.Quantity;
-                
-                foreach (var productBlock in
-                         productBlocks) 
-                {
-                    if (remainingQuantity <= 0)
-                        break;
-
-                    int deductedQuantity = Math.Min(productBlock.Quantity,remainingQuantity);
-                    productBlock.Quantity -= deductedQuantity;
-                    remainingQuantity -= deductedQuantity;
-                    
-                    var productItems = productBlock.ProductItems.ToList();
-                    for (int i = 0; i < deductedQuantity; i++)
+                    if (orderProduct.Product is FoodProduct)
                     {
-                        productItems[i].Status = ProductItemStatus.Sold;
-                        productItems[i].ProductBlockId = null;
-                        productItems[i].SaleOrder = order;
-                    }
-                    
-                    var stockMovement = new StockMovement
-                    {
-                        MovementType = StockMovementStatus.Outgoing,
-                        CreatedBy = "System",
-                        MovementDate = DateTime.UtcNow,
-                        SourceProductBlockId = productBlock.ProductBlockId,
-                        DestinationLocationId = _locationRepository.GetBuyerAreaLocation(order.Warehouse.Name).Id,
-                        SourceLocationId = productBlock.LocationId ?? throw new InvalidOperationException("Product block location is null"),
-                        Quantity = deductedQuantity,
-                        OrderId = order.OrderId
-                    };
-                    
-                    if (productBlock.Quantity <= remainingQuantity)
-                    {
-                        productBlock.Quantity = 0;
-                        productBlock.Status = ProductBlockStatus.Sold;
-                        productBlock.LocationId = null;
+                        productBlocks = (IEnumerable<ProductBlock>)await _productBlockRepository
+                            .GetAllFoodProductBlockOrderedByExpirationDateAsync(
+                                q => q.Include(p => p.ProductItems));
                     }
                     else
                     {
-                        productBlock.Quantity -=deductedQuantity ;
+                        productBlocks = orderProduct.Product.ProductBlocks.ToList();
                     }
-                   
-                    await _stockMovementRepository.AddAsync(stockMovement);
-                    await _productBlockRepository.UpdateAsync(productBlock);
+
+                    if (!productBlocks.Any())
+                        throw new InvalidOperationException(
+                            $"No stock available for product {orderProduct.Product.Name}");
+
+                    int remainingQuantity = orderProduct.Quantity;
+
+                    foreach (var productBlock in productBlocks)
+                    {
+                        if (remainingQuantity <= 0)
+                            break;
+
+                        int deductedQuantity = Math.Min(productBlock.Quantity, remainingQuantity);
+                        productBlock.Quantity -= deductedQuantity;
+                        remainingQuantity -= deductedQuantity;
+
+
+                        var stockMovement = new StockMovement
+                        {
+                            MovementType = StockMovementStatus.Outgoing,
+                            CreatedBy = "System",
+                            MovementDate = DateTime.UtcNow,
+                            SourceProductBlockId = productBlock.ProductBlockId,
+                            DestinationLocationId = _locationRepository.GetBuyerAreaLocation(order.Warehouse.Name).Id,
+                            SourceLocationId = productBlock.LocationId ??
+                                               throw new InvalidOperationException("Product block location is null"),
+                            Quantity = deductedQuantity,
+                            OrderId = order.OrderId
+                        };
+
+                        await _stockMovementRepository.AddAsync(stockMovement);
+
+                        
+
+                        var productItems = productBlock.ProductItems.ToList();
+                        for (int i = 0; i < deductedQuantity; i++)
+                        {
+                            productItems[i].Status = ProductItemStatus.Sold;
+                            productItems[i].ProductBlockId = null;
+                            productItems[i].SaleOrder = order;
+                            await _productItemRepository.UpdateAsync(productItems[i]);
+
+                            var stockMovementItem = new StockMovementItems
+                            {
+                                ProductItemId = productItems[i].ProductItemId,
+                                StockMovementId = stockMovement.StockMovementId
+                            };
+
+                            await _stockMovementItemRepository.AddAsync(stockMovementItem);
+                        }
+                        
+                        if (productBlock.Quantity <= remainingQuantity)
+                        {
+                            productBlock.Quantity = 0;
+                            productBlock.Status = ProductBlockStatus.Sold;
+                            productBlock.LocationId = null;
+                        }
+                        else
+                        {
+                            productBlock.Quantity -= deductedQuantity;
+                        }
+
+                        await _productBlockRepository.UpdateAsync(productBlock);
+                    }
                 }
-
-
+                await transaction.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                order.Status = OrderStatus.Pending;
+                await _orderRepository.UpdateAsync(order);
+                throw new InvalidOperationException("Error while processing order", e);
             }
 
-            order.Status = OrderStatus.Delivered;
+            order.Status = OrderStatus.Processing;
+            order.RealExecutionDate = DateTime.UtcNow;
             await _orderRepository.UpdateAsync(order);
+
         }
     }
 }
