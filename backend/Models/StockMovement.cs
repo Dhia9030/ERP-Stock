@@ -93,7 +93,7 @@ public class StockMovement
     [Display(Name = "Commande")]
     public Order? Order { get; set; }
     
-    [NotMapped]
-    public ICollection<ProductItem> StockMovementItems { get; set; }
+    
+    public ICollection<StockMovementItems> StockMovementItems { get; set; }
     
 }

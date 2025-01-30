@@ -5,6 +5,8 @@ public enum ProductItemStatus
 {
         InStock,
         Sold,
+        PreccessBuy,
+        PreccessSale,
         Returned,
         Expired
 }

@@ -33,7 +33,7 @@ public class ProductBlock
     
     public int Quantity { get; set; } 
     
-    public ProductBlockStatus Status { get; set; }
+    public ProductBlockStatus? Status { get; set; }
     
     public ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
 }

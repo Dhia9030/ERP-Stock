@@ -126,7 +126,7 @@ namespace StockManagement.Services
                 var productItem = new ProductItem
                 {
                     ProductBlockId = productBlock.ProductBlockId,
-                    Status = ProductItemStatus.InStock,
+                    Status = ProductItemStatus.PreccessBuy,
                     PurchaseOrder = order
                 };
 
@@ -151,7 +151,7 @@ namespace StockManagement.Services
         await transaction.RollbackAsync();
         order.Status = OrderStatus.Pending;
         await _orderRepository.UpdateAsync(order);
-        throw new InvalidOperationException(" sahbi exeption Error while processing order" , e);
+        throw new InvalidOperationException(" Sahbi exeption Error while processing order." + e.Message);
     }
     
     order.Status = OrderStatus.Processing;
@@ -260,7 +260,7 @@ namespace StockManagement.Services
 
                         for (int i = 0; i < deductedQuantity; i++)
                         {
-                            productItems[i].Status = ProductItemStatus.Sold;
+                            productItems[i].Status = ProductItemStatus.PreccessSale;
                             productItems[i].ProductBlockId = null;
                             productItems[i].SaleOrder = order;
                             await _productItemRepository.UpdateAsync(productItems[i]);
@@ -296,7 +296,7 @@ namespace StockManagement.Services
                 await transaction.RollbackAsync();
                 order.Status = OrderStatus.Pending;
                 await _orderRepository.UpdateAsync(order);
-                throw new InvalidOperationException("yassine Error while processing order "+ e.Message);
+                throw new InvalidOperationException("Yassine Error while processing order." + e.Message);
             }
 
             order.Status = OrderStatus.Processing;
