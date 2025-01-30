@@ -5,7 +5,7 @@ namespace StockManagement.Repositories;
 
 public interface IProductBlockRepository : IRepository<ProductBlock>
 {
-    public Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockAsync(
+    public Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockOrderedByExpirationDateAsync(
         Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
 
     public Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(

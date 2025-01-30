@@ -23,12 +23,6 @@ namespace StockManagement.Data
                         Name = "Main Warehouse", Location = "123 Main St, City, Country",
                         Locations = GenerateLocations("Main Warehouse") // Generate 40 locations
                         
-                    },
-                    new Warehouse
-                    {
-                        Name = "Secondary Warehouse",
-                        Location = "456 Secondary St, City, Country",
-                        Locations = GenerateLocations("Secondary Warehouse") // Generate 40 locations
                     }
                 );
                 

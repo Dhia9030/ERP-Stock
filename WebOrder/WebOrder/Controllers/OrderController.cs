@@ -265,7 +265,8 @@ public class OrderController : Controller
             Type = 1, // OrderType.Sales
             DiscountPercentage = confirmation.Discount,
             TotalAmount = TotalPrice,
-            OrderType = "SellOrder"
+            OrderType = "SellOrder",
+            WarehouseId = 1
             
         };
         _Erpdb.Orders.Add(newOrder);

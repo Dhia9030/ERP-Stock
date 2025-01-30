@@ -2,35 +2,69 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Clock } from 'lucide-react';
 import dayjs from 'dayjs';
+import * as SignalR from '@microsoft/signalr';
 
-const foodProducts = [
-  {
-    name: "Milk",
-    quantity: 5,
-    manufacturer: "DairyCo",
-    category: "Food",
-    details: [
-      { productItemId: 1, locationName: "Aisle1", wareHouse: "Main Warehouse", expirationDate: "2025-01-30", supplier: "Supplier A" },
-      { productItemId: 2, locationName: "Aisle1", wareHouse: "Main Warehouse", expirationDate: "2025-02-05", supplier: "Supplier A" },
-      { productItemId: 3, locationName: "Aisle1", wareHouse: "Main Warehouse", expirationDate: "2025-02-05", supplier: "Supplier A" }
-    ]
-  },
-  {
-    name: "Bread",
-    quantity: 10,
-    manufacturer: "BakeryCo",
-    category: "Food",
-    details: [
-      { productItemId: 4, locationName: "Aisle2", wareHouse: "Main Warehouse", expirationDate: "2025-02-05", supplier: "Supplier B" },
-      { productItemId: 5, locationName: "Aisle2", wareHouse: "Main Warehouse", expirationDate: "2025-01-30", supplier: "Supplier B" }
-    ]
-  }
-];
+
+
+
+
 
 const DelayTable = () => {
+  const foodProducts = [
+    {
+      name: "Milk",
+      quantity: 5,
+      manufacturer: "DairyCo",
+      category: "Food",
+      details: [
+        { productItemId: 1, locationName: "Aisle1", wareHouse: "Main Warehouse", expirationDate: "2025-01-30", supplier: "Supplier A" },
+        { productItemId: 2, locationName: "Aisle1", wareHouse: "Main Warehouse", expirationDate: "2025-02-05", supplier: "Supplier A" },
+        { productItemId: 3, locationName: "Aisle1", wareHouse: "Main Warehouse", expirationDate: "2025-02-05", supplier: "Supplier A" }
+      ]
+    },
+    {
+      name: "Bread",
+      quantity: 10,
+      manufacturer: "BakeryCo",
+      category: "Food",
+      details: [
+        { productItemId: 4, locationName: "Aisle2", wareHouse: "Main Warehouse", expirationDate: "2025-02-05", supplier: "Supplier B" },
+        { productItemId: 5, locationName: "Aisle2", wareHouse: "Main Warehouse", expirationDate: "2025-01-30", supplier: "Supplier B" }
+      ]
+    }
+  ];
+
+ 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
+  //const [foodProducts, setFoodProducts] = useState([]);
+
+  // useEffect(() => {
+  //   const connection = new SignalR.HubConnectionBuilder()
+  //     .withUrl("https://localhost:5001/foodhub")
+  //     .configureLogging(SignalR.LogLevel.Information)
+  //     .build();
+
+  //   connection.start()
+  //     .then(() => {
+  //       console.log("Connected to SignalR hub");
+
+  //       connection.on("ReceiveFoodProducts", (data) => {
+  //         console.log("Received data:", data);
+  //         setFoodProducts(data);
+  //       });
+
+  //       // Optionally, you can invoke a method on the server to request initial data
+  //       connection.invoke("GetInitialFoodProducts")
+  //         .catch(err => console.error(err.toString()));
+  //     })
+  //     .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+  //   return () => {
+  //     connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+  //   };
+  // }, []);
 
   useEffect(() => {
     const filtered = foodProducts.map((product) => {
@@ -147,7 +181,7 @@ const DelayTable = () => {
                                     <td className="px-6 py-4 text-sm">{detail.locationName}</td>
                                     <td className="px-6 py-4 text-sm">{detail.wareHouse}</td>
                                     <td className="px-6 py-4 text-sm">{detail.expirationDate}</td>
-                                    <td className="px-6 py-4 text-sm flex justify-center"><span className={`${getBackgroundColor(daysLeft)} rounded-lg px-4 py-2`}>{daysLeft} days</span></td>
+                                    <td className="px-6 py-4 text-sm flex justify-center"><span className={`${getBackgroundColor(daysLeft)} rounded-lg px-4 py-2`}>{Math.max(0,daysLeft)} days</span></td>
                                     <td className="px-6 py-4 text-sm">{detail.supplier}</td>
                                   </tr>
                                 );

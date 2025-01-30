@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class updatethings : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -127,40 +127,6 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExecutionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DelayedDates = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RealExecutionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DiscountPercentage = table.Column<double>(type: "float", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    ClientId = table.Column<int>(type: "int", nullable: true),
-                    OrderType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    SupplierId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "ClientId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Suppliers_SupplierId",
-                        column: x => x.SupplierId,
-                        principalTable: "Suppliers",
-                        principalColumn: "SupplierId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -179,6 +145,47 @@ namespace backend.Migrations
                         principalTable: "Warehouses",
                         principalColumn: "WarehouseId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,3)", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExecutionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DelayedDates = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RealExecutionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DiscountPercentage = table.Column<double>(type: "float", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: true),
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    OrderType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    SupplierId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "ClientId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Suppliers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Suppliers",
+                        principalColumn: "SupplierId");
+                    table.ForeignKey(
+                        name: "FK_Orders_Warehouses_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalTable: "Warehouses",
+                        principalColumn: "WarehouseId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,6 +215,36 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductBlocks",
+                columns: table => new
+                {
+                    ProductBlockId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    LocationId = table.Column<int>(type: "int", nullable: true),
+                    DiscountPercentage = table.Column<double>(type: "float", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ProductBlockType = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductBlocks", x => x.ProductBlockId);
+                    table.ForeignKey(
+                        name: "FK_ProductBlocks_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "LocationId");
+                    table.ForeignKey(
+                        name: "FK_ProductBlocks_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderProducts",
                 columns: table => new
                 {
@@ -229,37 +266,6 @@ namespace backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductBlocks",
-                columns: table => new
-                {
-                    ProductBlockId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: false),
-                    DiscountPercentage = table.Column<double>(type: "float", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    ProductBlockType = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductBlocks", x => x.ProductBlockId);
-                    table.ForeignKey(
-                        name: "FK_ProductBlocks_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "LocationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductBlocks_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
@@ -386,6 +392,11 @@ namespace backend.Migrations
                 name: "IX_Orders_SupplierId",
                 table: "Orders",
                 column: "SupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_WarehouseId",
+                table: "Orders",
+                column: "WarehouseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductBlocks_LocationId",

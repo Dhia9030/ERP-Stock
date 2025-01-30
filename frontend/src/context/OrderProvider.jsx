@@ -1,8 +1,41 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useEffect } from 'react';
+import * as SignalR from '@microsoft/signalr';
+
 
 const orderContext = createContext();
 
 const OrderProvider = ({ children }) => {
+
+  //fetching orders
+
+  //const [orderData, setOrderData] = useState([]);
+  useEffect(() => {
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/orderhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub");
+
+        connection.on("ReceiveOrders", (data) => {
+          console.log("Received orders:", data);
+          setOrderData(data);
+        });
+
+        // Optionally, you can invoke a method on the server to request initial orders
+        connection.invoke("GetInitialOrders")
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
+  }, []);
+
+
   const initialOrderData = [
     {
       id: "ORD001",
@@ -269,13 +302,53 @@ const OrderProvider = ({ children }) => {
   const markAsProcessing = (orderId) => {
     setOrderStatus(prevData => {
       return prevData.map(order => order.id === orderId ? { ...order, status: 'Processing' } : order);
+
     });
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/orderhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for fetching details");
+
+        connection.invoke("GetOrderDetails", orderId)
+          .then(details => {
+            setOrders(prevOrders => prevOrders.map(order => 
+              order.id === orderId ? { ...order, products: details } : order
+            ));
+          })
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
   };
 
   const markAsDelivered = (orderId) => {
     setOrderStatus(prevData => {
       return prevData.map(order => order.id === orderId ? { ...order, status: 'Delivered' } : order);
     });
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/orderhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for marking as delivered");
+
+        connection.invoke("MarkOrderAsDelivered", orderId)
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
   };
   const markAsCancelled = (orderId) => {
     setOrderStatus(prevData => {

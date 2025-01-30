@@ -175,9 +175,14 @@ namespace backend.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("OrderId");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Orders");
 
@@ -246,9 +251,6 @@ namespace backend.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
-                    b.Property<int>("SalesQuantity")
-                        .HasColumnType("int");
-
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
@@ -276,7 +278,7 @@ namespace backend.Migrations
                     b.Property<double>("DiscountPercentage")
                         .HasColumnType("float");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductBlockType")
@@ -543,7 +545,8 @@ namespace backend.Migrations
                 {
                     b.HasBaseType("StockManagement.Models.ProductBlock");
 
-                    b.Property<DateTime>("ExpirationDate")
+                    b.Property<DateTime?>("ExpirationDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.HasDiscriminator().HasValue("FoodProductBlock");
@@ -567,7 +570,15 @@ namespace backend.Migrations
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("StockManagement.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("StockManagement.Models.OrderProducts", b =>
@@ -612,9 +623,7 @@ namespace backend.Migrations
                 {
                     b.HasOne("StockManagement.Models.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("StockManagement.Models.Product", "Product")
                         .WithMany("ProductBlocks")

@@ -1,9 +1,29 @@
 import {createContext , useContext} from 'react';
+import * as SignalR from '@microsoft/signalr';
 
 
 const productContext = createContext();
 
 const ProductProvider=({children})=>{
+    // const [products, setProducts] = useState([]);
+    // useEffect(() => {
+    //     const connection = new SignalR.HubConnectionBuilder()
+    //     .withUrl("/signalr")
+    //     .build();
+
+    //     connection.start()
+    //     .then(() => {
+    //         console.log("Connected to SignalR hub");
+
+    //         connection.on("ReceiveProducts", (data) => {
+    //             console.log("Received data:", data);
+    //             setProducts(data);
+    //         });
+
+    //         connection.invoke("GetInitialProducts")
+    //         .catch(err => console.error(err.toString()));
+    //     })},[] );
+        
 
     const products = [
       { id: 1, name: "Wireless Earbuds", category: "Electronics", price: 59.99, stock: 0, sales: 1200 },

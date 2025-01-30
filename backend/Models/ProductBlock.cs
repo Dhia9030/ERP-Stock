@@ -18,10 +18,9 @@ public class ProductBlock
     [ForeignKey("ProductId")] 
     public Product Product { get; set; }
     
-    [Required(ErrorMessage = "The Location ID is required.")] 
-    public int LocationId { get; set; }
+    public int? LocationId { get; set; }
     [ForeignKey("LocationId")] 
-    public Location Location { get; set; }
+    public Location? Location { get; set; }
 
     [Display(Name = "Exit Date")]
     [NotMapped]

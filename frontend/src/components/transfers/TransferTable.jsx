@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
+import * as SignalR from '@microsoft/signalr';
+
 
 const transfers = [
   {
@@ -36,9 +38,40 @@ const transfers = [
 ];
 
 const TransferTable = ({type}) => {
+  const [transfers, setTransfers] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTransfers, setFilteredTransfers] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
+
+
+
+  useEffect(() => {
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/transferhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for transfers");
+
+        connection.on("ReceiveTransfers", (data) => {
+          console.log("Received transfers:", data);
+          setTransfers(data);
+        });
+
+        connection.invoke("GetInitialTransfers")
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
+  }, []);
+
+
 
   useEffect(() => {
     const filtered = transfers.filter((transfer) =>

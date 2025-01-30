@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Search } from 'lucide-react';
+import * as SignalR from '@microsoft/signalr';
 
 const lowproducts = [
   {
@@ -18,7 +19,36 @@ const lowproducts = [
 
 const LowStockTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [lowproducts, setLowStockProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState(lowproducts);
+
+  useEffect(() => {
+    const connection = new SignalR.HubConnectionBuilder()
+      .withUrl("https://localhost:5001/stockhub")
+      .configureLogging(SignalR.LogLevel.Information)
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("Connected to SignalR hub for low stock products");
+
+        connection.on("ReceiveLowStockProducts", (data) => {
+          console.log("Received low stock products:", data);
+          setLowStockProducts(data);
+          setFilteredProducts(data);
+        });
+
+        connection.invoke("GetLowStockProducts")
+          .catch(err => console.error(err.toString()));
+      })
+      .catch(err => console.error("Error connecting to SignalR hub:", err));
+
+    return () => {
+      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    };
+  }, []);
+
+
 
   useEffect(() => {
     const filtered = lowproducts.filter((product) =>

@@ -7,7 +7,7 @@ public interface IGetOrderService
 {
     public Task<IEnumerable<Order>> GetAllSellOrders();
     public Task<Order> GetOrderDetail(int id);
-    public void CancelOrder(int id);
-    public void MarkOrderAsDelivered(int id);
-    public void MarkOrderAsProcessing(int id);
+    public Task CancelOrder(int id);
+    public Task MarkOrderAsDelivered(int id);
+    public Task MarkOrderAsProcessing(int id);
 }
