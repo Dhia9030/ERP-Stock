@@ -165,7 +165,7 @@ const InternalTransfer = () => {
           <select
             value={operation}
             onChange={(e) => setOperation(e.target.value)}
-            className="w-full p-2 rounded-xl bg-gray-800 text-white"
+            className="custom-select w-full p-2 rounded-xl bg-gray-800 text-white"
           >
             <option value="transfer">Transfer</option>
             <option value="merge">Merge</option>

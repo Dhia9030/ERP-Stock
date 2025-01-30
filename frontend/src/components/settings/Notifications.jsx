@@ -3,30 +3,29 @@ import SettingSection from "./SettingSection";
 import { Bell } from "lucide-react";
 import ToggleSwitch from "./ToggleSwitch";
 
+import { useNotification } from "../../context/NotificationProvider";
+
 const Notifications = () => {
+
+	const{notificationOn , toggleNotification} = useNotification();
 	const [notifications, setNotifications] = useState({
-		push: true,
-		email: false,
-		sms: true,
+		side: true,
+		
 	});
+
+	const toggleSideNotifications = () => {
+		setNotifications({ ...notifications, side: !notifications.side });
+		toggleNotification();
+	}
 
 	return (
 		<SettingSection icon={Bell} title={"Notifications"}>
 			<ToggleSwitch
-				label={"Push Notifications"}
-				isOn={notifications.push}
-				onToggle={() => setNotifications({ ...notifications, push: !notifications.push })}
+				label={"Side Notifications"}
+				isOn={notifications.side}
+				onToggle={() => toggleSideNotifications()}
 			/>
-			<ToggleSwitch
-				label={"Email Notifications"}
-				isOn={notifications.email}
-				onToggle={() => setNotifications({ ...notifications, email: !notifications.email })}
-			/>
-			<ToggleSwitch
-				label={"SMS Notifications"}
-				isOn={notifications.sms}
-				onToggle={() => setNotifications({ ...notifications, sms: !notifications.sms })}
-			/>
+			
 		</SettingSection>
 	);
 };

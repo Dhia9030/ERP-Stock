@@ -16,11 +16,15 @@ import DelayPage from "./pages/DelayPage";
 import { ToastContainer , toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Purchases from "./pages/Purchases";
+import { useNotification } from "./context/NotificationProvider";
+import { useContext } from "react";
 
 //import { BackgroundGradientAnimation } from "./components/ui/background-gradient-animation";
 
 
 function App() {
+
+	const {notificationOn} = useNotification();
 
 	
 // Low Stock Notifications
@@ -71,7 +75,7 @@ console.log("memorizedProducts:", memorizedProducts); // Debugging log
 
 		
 		<div>
-			<ToastContainer />
+			{notificationOn && <ToastContainer />}
 			<div className="area">
 		{/*<ul className="circles">
 			<li></li>
