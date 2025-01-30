@@ -23,6 +23,8 @@ namespace StockManagement.Models
         [Range(0, int.MaxValue, ErrorMessage = "La quantité en stock doit être au moins 0.")]
         public int StockQuantity { get; set; }
         
+        public int SalesQuantity { get; set; } = 0;
+        
         
 
         // Relation avec Category

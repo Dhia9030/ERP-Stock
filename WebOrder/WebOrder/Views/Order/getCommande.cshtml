@@ -49,6 +49,10 @@ ViewData["Title"] = "Orders List";
                 {
                     <span class="label-danger-bg" >Cancelled</span>
                 }
+                else if(order.Order.Status==5)
+                {
+                    <span class="label-danger-bg" >Received</span>
+                }
                 
             <td>
                 <ul class="list-group">

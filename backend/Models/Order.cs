@@ -7,7 +7,8 @@ public enum OrderStatus
     Processing,
     Delivered,
     Cancelled,
-    Delayed 
+    Delayed,
+    Received
 }
 
 public enum OrderType
