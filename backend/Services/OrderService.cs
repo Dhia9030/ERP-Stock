@@ -204,7 +204,8 @@ namespace StockManagement.Services
                     {
                         productBlocks = (IEnumerable<ProductBlock>)await _productBlockRepository
                             .GetAllFoodProductBlockOrderedByExpirationDateAsync(
-                                q => q.Include(p => p.ProductItems));
+                                q => q.Include(p => p.ProductItems)
+                                    .Where(pb => pb.ProductId == orderProduct.ProductId && pb.Status == ProductBlockStatus.InStock));
                     }
                     else
                     {
@@ -226,14 +227,18 @@ namespace StockManagement.Services
                         productBlock.Quantity -= deductedQuantity;
                         remainingQuantity -= deductedQuantity;
 
-
+                        var destinationLocation = await _locationRepository.GetBuyerAreaLocation(order.Warehouse.Name);
+                        if (destinationLocation == null)
+                            throw new InvalidOperationException("Buyer area location not found");
                         var stockMovement = new StockMovement
                         {
                             MovementType = StockMovementStatus.Outgoing,
                             CreatedBy = "System",
                             MovementDate = DateTime.UtcNow,
                             SourceProductBlockId = productBlock.ProductBlockId,
-                            DestinationLocationId = _locationRepository.GetBuyerAreaLocation(order.Warehouse.Name).Id,
+                            DestinationProductBlockId = productBlock.ProductBlockId,
+                            DestinationLocationId = destinationLocation?.LocationId ??
+                                                  throw new InvalidOperationException("Destination location is null"),
                             SourceLocationId = productBlock.LocationId ??
                                                throw new InvalidOperationException("Product block location is null"),
                             Quantity = deductedQuantity,
@@ -267,10 +272,7 @@ namespace StockManagement.Services
                             productBlock.Status = ProductBlockStatus.Sold;
                             productBlock.LocationId = null;
                         }
-                        else
-                        {
-                            productBlock.Quantity -= deductedQuantity;
-                        }
+                        
 
                         await _productBlockRepository.UpdateAsync(productBlock);
                     }
@@ -282,7 +284,7 @@ namespace StockManagement.Services
                 await transaction.RollbackAsync();
                 order.Status = OrderStatus.Pending;
                 await _orderRepository.UpdateAsync(order);
-                throw new InvalidOperationException("Error while processing order", e);
+                throw new InvalidOperationException("yassine Error while processing order", e);
             }
 
             order.Status = OrderStatus.Processing;
