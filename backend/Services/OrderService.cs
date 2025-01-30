@@ -173,7 +173,8 @@ namespace StockManagement.Services
                     .Include(o => o.Client)
                     .Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
-                    .ThenInclude(p => p.ProductBlocks));
+                    .ThenInclude(p => p.ProductBlocks)
+                    .ThenInclude(pb => pb.ProductItems));
 
             if (order == null)
                 throw new ArgumentException("Order not found");
@@ -250,6 +251,13 @@ namespace StockManagement.Services
                         
 
                         var productItems = productBlock.ProductItems.ToList();
+                        Console.WriteLine("************************************************************");
+                        Console.WriteLine(deductedQuantity);
+                        Console.WriteLine("************************************************************");
+                        Console.WriteLine("************************************************************");
+                        Console.WriteLine(productItems.Count);
+                        Console.WriteLine("************************************************************");
+
                         for (int i = 0; i < deductedQuantity; i++)
                         {
                             productItems[i].Status = ProductItemStatus.Sold;
@@ -264,6 +272,10 @@ namespace StockManagement.Services
                             };
 
                             await _stockMovementItemRepository.AddAsync(stockMovementItem);
+                            Console.WriteLine("************************************************************");
+                            Console.WriteLine(i);
+                            Console.WriteLine("************************************************************");
+
                         }
                         
                         if (productBlock.Quantity <= remainingQuantity)
@@ -284,7 +296,7 @@ namespace StockManagement.Services
                 await transaction.RollbackAsync();
                 order.Status = OrderStatus.Pending;
                 await _orderRepository.UpdateAsync(order);
-                throw new InvalidOperationException("yassine Error while processing order", e);
+                throw new InvalidOperationException("yassine Error while processing order "+ e.Message);
             }
 
             order.Status = OrderStatus.Processing;
