@@ -5,7 +5,9 @@ public enum ProductBlockStatus
 {
     InStock,
     Sold,
-    Expired
+    Expired,
+    ProcessBuy,
+    ProcessSell
 }
 
 public class ProductBlock

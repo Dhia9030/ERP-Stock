@@ -41,6 +41,8 @@ namespace StockManagement.Services
               .Include(o => o.OrderProducts)
               .ThenInclude(op => op.Product));
 
+    
+    
     if (order == null)
     {
         throw new ArgumentException($"Order with ID {orderId} not found");
@@ -55,7 +57,10 @@ namespace StockManagement.Services
     {
         throw new InvalidOperationException("Order is empty");
     }
-
+    if(order is SellOrder)
+    {
+        throw new InvalidOperationException("Order is not a purchase order");
+    }
 
     var transaction = await _orderRepository.BeginTransactionAsync();
     try
@@ -83,7 +88,7 @@ namespace StockManagement.Services
                     ProductId = orderProduct.ProductId,
                     LocationId = location.LocationId,
                     Quantity = orderProduct.Quantity,
-                    Status = ProductBlockStatus.InStock,
+                    Status = ProductBlockStatus.ProcessBuy,
                     ExpirationDate = orderProduct.ExpirationDate
                 };
             }
@@ -94,7 +99,7 @@ namespace StockManagement.Services
                     ProductId = orderProduct.ProductId,
                     LocationId = location.LocationId,
                     Quantity = orderProduct.Quantity,
-                    Status = ProductBlockStatus.InStock
+                    Status = ProductBlockStatus.ProcessBuy
                 };
             }
 
@@ -160,15 +165,15 @@ namespace StockManagement.Services
     
 }
 
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
         public async Task ExecuteSellOrderAsync(int orderId)
         {
-            var order = await _orderRepository.GetByIdAsync("OrderId",orderId,
+            var order = await _orderRepository.GetByIdAsync("OrderId", orderId,
                 q => q.Include(o => o.Warehouse)
                     .Include(o => o.Client)
                     .Include(o => o.OrderProducts)
@@ -184,9 +189,12 @@ namespace StockManagement.Services
 
             if (order.OrderProducts == null || !order.OrderProducts.Any())
                 throw new InvalidOperationException("Order is empty");
+            if (order is BuyOrder){
+                throw new InvalidOperationException("Order is not a sell order");
+            }
 
-            
-            foreach (var orderProduct in order.OrderProducts)
+
+        foreach (var orderProduct in order.OrderProducts)
             {
                 if (orderProduct.Quantity > orderProduct.Product.StockQuantity)
                     throw new InvalidOperationException(
@@ -212,6 +220,8 @@ namespace StockManagement.Services
                     {
                         productBlocks = orderProduct.Product.ProductBlocks.ToList();
                     }
+                    
+                    productBlocks = productBlocks.Where(p=>p.Status == ProductBlockStatus.InStock).ToList();
 
                     if (!productBlocks.Any())
                         throw new InvalidOperationException(
@@ -281,7 +291,7 @@ namespace StockManagement.Services
                         if (productBlock.Quantity <= remainingQuantity)
                         {
                             productBlock.Quantity = 0;
-                            productBlock.Status = ProductBlockStatus.Sold;
+                            productBlock.Status = ProductBlockStatus.ProcessSell;
                             productBlock.LocationId = null;
                         }
                         
