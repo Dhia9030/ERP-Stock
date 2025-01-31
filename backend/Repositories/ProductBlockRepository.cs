@@ -12,15 +12,24 @@ public class ProductBlockRepository : Repository<ProductBlock>,IProductBlockRepo
     {
     }
     
-    public async Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockOrderedByExpirationDateAsync( Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null)
+    public async Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockOrderedByExpirationDateAsync( int productId, Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null  )
     {  
         var querry = _dbSet.OfType<FoodProductBlock>();
         if (include != null)
         {
             querry = include(querry);
         }
-        return await querry.OrderBy(x => x.ExpirationDate).ToListAsync();
-        
+        return await querry.Where(pb => pb.ProductId == productId && pb.Status == ProductBlockStatus.InStock).OrderBy(x => x.ExpirationDate).ToListAsync();
+    }
+    
+    public async Task<IEnumerable<ProductBlock>> GetAllProductBlockAsync( int productId, Func<IQueryable<ProductBlock>, IQueryable<ProductBlock>>? include = null  )
+    {  
+        var querry = _dbSet.OfType<ProductBlock>();
+        if (include != null)
+        {
+            querry = include(querry);
+        }
+        return await querry.Where(pb => pb.ProductId == productId && pb.Status == ProductBlockStatus.InStock).ToListAsync();
     }
     
     
