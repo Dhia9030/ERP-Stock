@@ -278,7 +278,7 @@ namespace StockManagement.Services
                         if (productBlock.Quantity <= remainingQuantity)
                         {
                             productBlock.Quantity = 0;
-                            productBlock.Status = ProductBlockStatus.ProcessSell;
+                            productBlock.Status = ProductBlockStatus.Sold;
                             productBlock.LocationId = null;
                         }
                         await _productBlockRepository.UpdateAsync(productBlock);
