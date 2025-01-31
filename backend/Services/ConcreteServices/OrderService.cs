@@ -209,8 +209,6 @@ namespace StockManagement.Services
                     {
                         productBlocks = await _productBlockRepository.GetAllProductBlockAsync(orderProduct.Product.ProductId,q => q.Include(p => p.ProductItems));
                     }
-                    
-                    productBlocks = productBlocks.Where(p=>p.Status == ProductBlockStatus.InStock).ToList();
 
                     if (!productBlocks.Any())
                         throw new InvalidOperationException(
