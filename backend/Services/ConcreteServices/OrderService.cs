@@ -281,10 +281,12 @@ namespace StockManagement.Services
                             productBlock.Status = ProductBlockStatus.ProcessSell;
                             productBlock.LocationId = null;
                         }
-                        
-
                         await _productBlockRepository.UpdateAsync(productBlock);
                     }
+                    
+                    if (remainingQuantity > 0)
+                        throw new InvalidOperationException(
+                            $"There is a mistake in the calculation of the quantity of the product {orderProduct.Product.Name} by {remainingQuantity} please check the calculation.");
                 }
                 await transaction.CommitAsync();
             }
