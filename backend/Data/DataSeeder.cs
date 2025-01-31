@@ -84,22 +84,22 @@ namespace StockManagement.Data
             // Add 40 additional locations
             for (int i = 1; i <= 10; i++)
             {
-                locations.Add(new Location { Name = $"{warehouseName} - Location A-{i}" });
+                locations.Add(new Location { Name = $"{warehouseName} - Location A-{i}" ,  isEmpty = true});
             }
             
             for (int i = 1; i <= 10; i++)
             {
-                locations.Add(new Location { Name = $"{warehouseName} - Location B-{i}" });
+                locations.Add(new Location { Name = $"{warehouseName} - Location B-{i}" ,  isEmpty = true});
             }
          
             for (int i = 1; i <= 10; i++)
             {
-                locations.Add(new Location { Name = $"{warehouseName} - Location C-{i}" });
+                locations.Add(new Location { Name = $"{warehouseName} - Location C-{i}" ,  isEmpty = true});
             }
             
             for (int i = 1; i <= 10; i++)
             {
-                locations.Add(new Location { Name = $"{warehouseName} - Location D-{i}" });
+                locations.Add(new Location { Name = $"{warehouseName} - Location D-{i}",  isEmpty = true });
             }
             
             return locations;
