@@ -12,7 +12,7 @@ using WebOrder.Models;
 namespace WebOrder.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250130200534_initial")]
+    [Migration("20250131171827_initial")]
     partial class initial
     {
         /// <inheritdoc />

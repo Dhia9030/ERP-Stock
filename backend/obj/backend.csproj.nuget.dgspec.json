@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DELL\\Desktop\\erpgit\\ERP-Stock\\backend\\backend.csproj": {}
+    "C:\\Users\\medini\\OneDrive\\Desktop\\ERP\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DELL\\Desktop\\erpgit\\ERP-Stock\\backend\\backend.csproj": {
+    "C:\\Users\\medini\\OneDrive\\Desktop\\ERP\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DELL\\Desktop\\erpgit\\ERP-Stock\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\medini\\OneDrive\\Desktop\\ERP\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\DELL\\Desktop\\erpgit\\ERP-Stock\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DELL\\Desktop\\erpgit\\ERP-Stock\\backend\\obj\\",
+        "projectPath": "C:\\Users\\medini\\OneDrive\\Desktop\\ERP\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\medini\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\medini\\OneDrive\\Desktop\\ERP\\backend\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\medini\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -42,7 +36,7 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -117,7 +111,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
