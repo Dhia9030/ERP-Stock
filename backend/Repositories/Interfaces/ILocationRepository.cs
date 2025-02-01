@@ -21,4 +21,7 @@ public interface ILocationRepository: IRepository<Location>
         Func<IQueryable<Location>, IQueryable<Location>>? include = null,
         bool asNoTracking = false);
 
+    public Task<Location?> GetLocationByIdForTransfer(int id,
+        Func<IQueryable<Location>, IQueryable<Location>>? include = null, bool asNoTracking = false);
+
 }

@@ -8,11 +8,11 @@ public interface IProductBlockRepository : IRepository<ProductBlock>
     public Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockOrderedByExpirationDateAsync(
         int productId ,Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
 
-    public Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(
-        Expression<Func<FoodProductBlock, bool>> predicate,
-        Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
+    public Task<IEnumerable<ProductBlock>> GetAllProductBlockForProductAsync( 
+        int productId, Func<IQueryable<ProductBlock>, IQueryable<ProductBlock>>? include = null, bool asNoTracking = false  );
 
-    public Task<IEnumerable<ProductBlock>> GetAllProductBlockAsync(int productId,
-        Func<IQueryable<ProductBlock>, IQueryable<ProductBlock>>? include = null);
+    public Task<ProductBlock?> FindProductBlockToTransfer(int productBlockId,
+        Func<IQueryable<ProductBlock>, IQueryable<ProductBlock>>? include = null, bool asNoTracking = false);
+
 
 }

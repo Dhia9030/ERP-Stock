@@ -7,7 +7,8 @@ public enum ProductBlockStatus
     Sold,
     Expired,
     ProcessBuy,
-    ProcessSell
+    ProcessSell,
+    MergedByOtherBlock,
 }
 
 public class ProductBlock

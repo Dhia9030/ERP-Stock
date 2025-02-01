@@ -1,4 +1,6 @@
-﻿namespace StockManagement.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace StockManagement.Repositories;
 using StockManagement.Models;
 using StockManagement.Data;
 
@@ -47,7 +49,16 @@ public class LocationRepository : Repository<Location>, ILocationRepository
         bool asNoTracking = false)
     {
         var results = await FindAsync(x => x.Name == $"{warehouseName} - Expired Products Area" , 
-            query => (include != null ? include(query) : query).Take(1), 
+            query => (include != null ? include(query) : query), 
+            asNoTracking);
+        return results.FirstOrDefault();
+    }
+
+    public async Task<Location?> GetLocationByIdForTransfer(int id,
+        Func<IQueryable<Location>, IQueryable<Location>>? include = null, bool asNoTracking = false)
+    {
+        var results = await FindAsync(x => x.LocationId == id && x.isEmpty == true , 
+            include, 
             asNoTracking);
         return results.FirstOrDefault();
     }

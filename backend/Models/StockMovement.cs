@@ -60,12 +60,12 @@ public class StockMovement
     [Required(ErrorMessage = "L'ID du Location  source est obligatoire")]
     [ForeignKey("SourceLocation")]
     [Display(Name = "ID Location Source")]
-    public int SourceLocationId { get; set; }
+    public int? SourceLocationId { get; set; }
 
     [ValidateNever]
     [Required(ErrorMessage = "Le Location source est obligatoire")]
     [Display(Name = "Location Source")]
-    public Location SourceLocation { get; set; }
+    public Location? SourceLocation { get; set; }
 
     // Relation avec l'emplacement de destination
     [Required(ErrorMessage = "L'ID du Location de destination est obligatoire")]

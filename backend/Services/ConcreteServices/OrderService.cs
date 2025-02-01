@@ -207,7 +207,7 @@ namespace StockManagement.Services
                     }
                     else
                     {
-                        productBlocks = await _productBlockRepository.GetAllProductBlockAsync(orderProduct.Product.ProductId,q => q.Include(p => p.ProductItems));
+                        productBlocks = await _productBlockRepository.GetAllProductBlockForProductAsync(orderProduct.Product.ProductId,q => q.Include(p => p.ProductItems));
                     }
 
                     if (!productBlocks.Any())
