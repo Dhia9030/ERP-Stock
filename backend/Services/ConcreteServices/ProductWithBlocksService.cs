@@ -22,6 +22,7 @@ public class ProductWithBlocksService : IProductWithBlocksService
         var productsWithBlocks = await 
             _productRepository.GetAllAsync(
             include: include => include
+                .Include(p => p.Category)
                 .Include(e => e.ProductBlocks)
                     .ThenInclude(pb =>pb.Location)
                 .Include(e => e.ProductBlocks)
@@ -31,6 +32,7 @@ public class ProductWithBlocksService : IProductWithBlocksService
     productsWithBlocks.Select(p => new ProductWithBlockDto()
 {
     ProductName = p.Name,
+    CategoryName = p.Category?.Name,
     ProductBlocks = p.ProductBlocks?.Select(pb => new BlockDto
     {
         ProductBlockId = pb.ProductBlockId,
@@ -38,7 +40,7 @@ public class ProductWithBlocksService : IProductWithBlocksService
         DiscountPercentage = pb.DiscountPercentage,
         quantity = pb.Quantity,
         Status = pb.Status,
-        ExpirationDate = pb.ExitDate,
+        ExpirationDate = pb is FoodProductBlock fpb ? fpb.ExpirationDate : null,
         ProductItemIds = pb.ProductItems.ToDictionary(pi => pi.ProductItemId, pi => pi.Status)
         //ProductItemIds = pb.ProductItems?.ToDictionary(pi => pi.ProductItemId, pi => pi.Status) ?? new Dictionary<int, ProductItemStatus>()
     }).ToList() ?? new List<BlockDto>()

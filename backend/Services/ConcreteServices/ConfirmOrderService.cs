@@ -147,6 +147,7 @@ public class ConfirmOrderService : IConfirmOrderService
             {   
                 var product = orderProduct.Product;
                 product.StockQuantity -= orderProduct.Quantity;
+                product.SalesQuantity += orderProduct.Quantity;
                 await _productRepository.UpdateAsync(product);
                 
             }

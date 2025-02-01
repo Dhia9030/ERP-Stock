@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using backend.Dtos.TestDto;
 using backend.Services.ServicesContract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -199,6 +200,91 @@ public class TestController : Controller
             
         });
     }
+    
+    [Route("get ItemFrom A specific Buy order and a product")]
+    [HttpGet]
+    public async Task<IActionResult> Index14(int OrderId , int ProductId)
+    {
+        var order = await _stockMovementService.GetItemsForEachProductForSpecificBuyOrder(OrderId, ProductId);
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    [Route("get Item From A specific order for all product")]
+    [HttpGet]
+    
+    public async Task<IActionResult> Index15(int OrderId)
+    {
+        var productlist = await _orderProductsRepository.GetProductsByOrderIdAsync(OrderId);
+        List<ProductWithItemsDto> productWithItemsDtos = new List<ProductWithItemsDto>();
+        
+        foreach (var product in productlist)
+        {
+            var items = await _stockMovementService.GetItemsForEachProductForSpecificBuyOrder(OrderId, product.ProductId);
+            productWithItemsDtos.Add(items);
+        }
+        return Json( productWithItemsDtos ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    [Route("get ItemFrom A specific Sell order and a product")]
+    [HttpGet]
+    public async Task<IActionResult> Index16(int OrderId , int ProductId)
+    {
+        var order = await _stockMovementService.GetItemsForEachProductForSpecificSellOrder(OrderId, ProductId);
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    [Route("get Item From A specific Sell order for all product")]
+    [HttpGet]
+    
+    public async Task<IActionResult> Index17(int OrderId)
+    {
+        var productlist = await _orderProductsRepository.GetProductsByOrderIdAsync(OrderId);
+        List<ProductWithItemsDto> productWithItemsDtos = new List<ProductWithItemsDto>();
+        
+        foreach (var product in productlist)
+        {
+            var items = await _stockMovementService.GetItemsForEachProductForSpecificSellOrder(OrderId, product.ProductId);
+            productWithItemsDtos.Add(items);
+        }
+        return Json( productWithItemsDtos ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    [Route("delete product block")]
+    [HttpPost]
+    public async Task<IActionResult> Index18(int productBlockId)
+    {
+        var order = await _madeStockMovement.DeleteProductBlockAsync(productBlockId);
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    
+    
+    
     
     
     

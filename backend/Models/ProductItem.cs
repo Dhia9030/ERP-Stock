@@ -8,7 +8,8 @@ public enum ProductItemStatus
         PreccessBuy,
         PreccessSale,
         Returned,
-        Expired
+        Expired,
+        Deleted,
 }
 
 namespace StockManagement.Models

@@ -26,7 +26,9 @@ public class GetOrderService : IGetOrderService
     }
     public async Task CancelOrder(int orderId)
     {
-        // Implementation here
+        var order = await _orderRepository.GetByIdAsync("OrderId",orderId);
+        order.Status = OrderStatus.Cancelled;
+        await _orderRepository.UpdateAsync(order);
     }
 
     public async Task<Order> GetOrderDetail(int orderId)
@@ -34,15 +36,7 @@ public class GetOrderService : IGetOrderService
         // Implementation here
         return await _orderRepository.GetByIdAsync("OrderId",orderId,q=>q.Include(e => e.Client).Include(e => e.Warehouse).Include(o => o.OrderProducts).ThenInclude(op => op.Product).ThenInclude(p => p.Category));
     }
-
-    public async Task MarkOrderAsDelivered(int orderId)
-    {
-        // Implementation here
-    }
-
-    public async Task MarkOrderAsProcessing(int orderId)
-    {
-        // Implementation here
-    }
+    
+    
 
 }
