@@ -21,12 +21,14 @@ public class TestController : Controller
     private readonly ILocationService _locationService;
     private readonly IStockMovementService _stockMovementService;
     private readonly IProductWithBlocksService _productWithBlocksService;
+    private readonly IMadeStockMovement _madeStockMovement;
     
     public TestController(AppDbContext db , IOrderRepository orderRepository, 
         IOrderProductsRepository orderProductsRepository , 
         IGetOrderService getOrderService, IGetProductService getProductService
         ,ILocationService locationService , IStockMovementService stockMovementService
-        ,IProductWithBlocksService productWithBlocksService)
+        ,IProductWithBlocksService productWithBlocksService
+        ,IMadeStockMovement madeStockMovement)
     {
         _db = db;
         _orderRepository = orderRepository;
@@ -36,6 +38,7 @@ public class TestController : Controller
         _locationService = locationService;
         _stockMovementService = stockMovementService;
         _productWithBlocksService = productWithBlocksService;
+        _madeStockMovement = madeStockMovement;
         
     }
     
@@ -163,6 +166,32 @@ public class TestController : Controller
     public async Task<IActionResult> Index11()
     {
         var order = await _productWithBlocksService.GetAllProductWithBlocks();
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    [Route("transfer product block")]
+    [HttpPost]
+    public async Task<IActionResult> Index12(int productBlockId , int newLocationId)
+    {
+        var order = await _madeStockMovement.TransferProductBlockAsync(productBlockId, newLocationId);
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
+    [Route("merge product blocks")]
+    [HttpPost]
+    public async Task<IActionResult> Index13(int sourceBlockId , int destinationBlockId)
+    {
+        var order = await _madeStockMovement.MergeProductBlocksAsync(sourceBlockId, destinationBlockId);
         return Json(order ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,

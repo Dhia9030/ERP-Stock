@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using backend.Services.ServicesContract;
+using Microsoft.EntityFrameworkCore;
 using StockManagement.Models;
 using StockManagement.Repositories;
 
 namespace backend.Services.ConcreteServices;
 
-public class MadeStockMovement
+public class MadeStockMovement : IMadeStockMovement
 {
     private readonly IProductBlockRepository _productBlockRepository;
     private readonly ILocationRepository _locationRepository;
@@ -23,9 +24,9 @@ public class MadeStockMovement
     {
         var productBlock = await _productBlockRepository.FindProductBlockToTransfer(productBlockId,asNoTracking : true);
         
-        if ((productBlock == null) && (productBlock.LocationId == newLocationId ))
+        if ((productBlock == null) || (productBlock.LocationId == newLocationId ))
         {
-            throw new ArgumentException("Product block not found.");
+            throw new ArgumentException("Product block not found or already in the same location.");
         }
 
         var newLocation = await _locationRepository.GetLocationByIdForTransfer(newLocationId, asNoTracking: true);
@@ -35,8 +36,7 @@ public class MadeStockMovement
             throw new ArgumentException("New location not found.");
         }
         
-        productBlock.LocationId = newLocationId;
-        await _productBlockRepository.UpdateAsync(productBlock);
+        
         
         var stockMovement = new StockMovement
         {
@@ -51,6 +51,16 @@ public class MadeStockMovement
         };
 
         await _stockMovementRepository.AddAsync(stockMovement);
+        
+        var location = productBlock.Location;
+        location.isEmpty = true;
+        await _locationRepository.UpdateAsync(location);
+        
+        newLocation.isEmpty = false;
+        await _locationRepository.UpdateAsync(newLocation);
+        
+        productBlock.LocationId = newLocationId;
+        await _productBlockRepository.UpdateAsync(productBlock);
         return true;
     }
     
@@ -58,10 +68,13 @@ public class MadeStockMovement
     public async Task<bool> MergeProductBlocksAsync(int sourceBlockId, int destinationBlockId)
     {
         var sourceBlock = await _productBlockRepository.GetByIdAsync(
-            "ProductBlockId", sourceBlockId, q => q.Include(pb => pb.ProductItems),true);
+            "ProductBlockId", sourceBlockId, q => q.Include(pb => pb.ProductItems)
+                .Include(pb =>pb.Location)
+                ,true);
         
         var destinationBlock = await _productBlockRepository.GetByIdAsync(
-            "ProductBlockId", sourceBlockId, q => q.Include(pb => pb.ProductItems),true);
+            "ProductBlockId", sourceBlockId, q => q.Include(pb => pb.ProductItems)
+            ,true);
         
 
         if (sourceBlock == null || destinationBlock == null || sourceBlock.Status != ProductBlockStatus.InStock || destinationBlock.Status != ProductBlockStatus.InStock)
@@ -73,20 +86,25 @@ public class MadeStockMovement
         {
             throw new InvalidOperationException("Cannot merge blocks of different products.");
         }
+
+        if (sourceBlock is FoodProductBlock && ((FoodProductBlock)sourceBlock).ExpirationDate != ((FoodProductBlock)destinationBlock).ExpirationDate)
+        {
+            throw new InvalidOperationException("Cannot merge product blocks with different expiration dates.");
+        }
+        
+        
         
         foreach (var item in sourceBlock.ProductItems.ToList())
         {
             item.ProductBlockId = destinationBlockId;
             await _productItemRepository.UpdateAsync(item);
-            destinationBlock.ProductItems.Add(item);
+            
         }
         
         destinationBlock.Quantity += sourceBlock.Quantity;
         await _productBlockRepository.UpdateAsync(destinationBlock);
         
-        sourceBlock.Quantity -= sourceBlock.Quantity;
-        sourceBlock.Status = ProductBlockStatus.MergedByOtherBlock;
-        await _productBlockRepository.UpdateAsync(sourceBlock);
+        
 
 
         var stockMovement = new StockMovement
@@ -101,8 +119,16 @@ public class MadeStockMovement
             Quantity = sourceBlock.Quantity,
             Product = sourceBlock.Product
         };
-
         await _stockMovementRepository.AddAsync(stockMovement);
+
+        var location = sourceBlock.Location;
+        location.isEmpty = true;
+        await _locationRepository.UpdateAsync(location);
+        
+        sourceBlock.Quantity = 0;
+        sourceBlock.LocationId = null;
+        sourceBlock.Status = ProductBlockStatus.MergedByOtherBlock;
+        await _productBlockRepository.UpdateAsync(sourceBlock);
 
         return true;
     }

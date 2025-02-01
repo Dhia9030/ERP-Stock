@@ -127,6 +127,7 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IStockMovementService, StockMovementService>();
 builder.Services.AddScoped<IProductWithBlocksService, ProductWithBlocksService>();
 builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
+builder.Services.AddScoped<IMadeStockMovement,MadeStockMovement>();
 
 
 builder.Services.AddControllers();
