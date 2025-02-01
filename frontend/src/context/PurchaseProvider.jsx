@@ -11,6 +11,7 @@ const PurchaseProvider = ({ children }) => {
       total: 5000,
       orderDate: "2024-12-05",
       executed: true,
+      received: false,
       products: [
         {
           name: "Phone",
@@ -28,6 +29,7 @@ const PurchaseProvider = ({ children }) => {
       total: 9000,
       orderDate: "2024-12-10",
       executed: false,
+      received: false,
       products: [
         {
           name: "Laptop",
@@ -45,6 +47,7 @@ const PurchaseProvider = ({ children }) => {
       total: 4000,
       orderDate: "2024-12-15",
       executed: true,
+      received: false,
       products: [
         {
           name: "Tablet",
@@ -62,6 +65,7 @@ const PurchaseProvider = ({ children }) => {
       total: 8000,
       orderDate: "2024-12-20",
       executed: false,
+      received: false,
       products: [
         {
           name: "Monitor",
@@ -79,6 +83,7 @@ const PurchaseProvider = ({ children }) => {
       total: 6000,
       orderDate: "2024-12-25",
       executed: true,
+      received: false,
       products: [
         {
           name: "Keyboard",
@@ -129,8 +134,14 @@ const PurchaseProvider = ({ children }) => {
     });
   };
 
+  const markAsReceived = (purchaseId) => {
+    setPurchaseData(prevData => {
+      return prevData.map(purchase => purchase.id === purchaseId ? { ...purchase, received: true } : purchase);
+    });
+  };
+
   return (
-    <purchaseContext.Provider value={{ purchaseData, markAsExecuted }}>
+    <purchaseContext.Provider value={{ purchaseData, markAsExecuted, markAsReceived }}>
       {children}
     </purchaseContext.Provider>
   );

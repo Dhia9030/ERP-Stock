@@ -1,53 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Search } from 'lucide-react';
 import * as SignalR from '@microsoft/signalr';
-
-const lowproducts = [
-  {
-    name: "Phone",
-    quantity: 5,
-    manufacturer: "Microsoft",
-    category: "Electronics"
-  },
-  {
-    name: "Laptop",
-    quantity: 10,
-    manufacturer: "Apple",
-    category: "Electronics"
-  }
-];
+import { useProducts } from '../../context/ProductProvider';
 
 const LowStockTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [lowproducts, setLowStockProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState(lowproducts);
 
+  const ClothingMin = 300;
+  const ElectronicsMin = 300;
+  const FoodMin = 300;
+
+  const PRODUCT_DATA = useProducts();
   useEffect(() => {
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/stockhub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
 
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub for low stock products");
+    if (PRODUCT_DATA && PRODUCT_DATA.length > 0) {
+      const lowStockProducts = PRODUCT_DATA.filter(product => {
+        if (product.category === "Clothing") {
+          return product.stock < ClothingMin;
+        } else if (product.category === "Electronics") {
+          return product.stock < ElectronicsMin;
+        } else if (product.category === "Food") {
+          return product.stock < FoodMin;
+        }
+        return false;
+      });
 
-        connection.on("ReceiveLowStockProducts", (data) => {
-          console.log("Received low stock products:", data);
-          setLowStockProducts(data);
-          setFilteredProducts(data);
-        });
 
-        connection.invoke("GetLowStockProducts")
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
-
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
-    };
-  }, []);
-
+      setLowStockProducts(lowStockProducts);
+      setFilteredProducts(lowStockProducts);
+    }
+  }, [PRODUCT_DATA]);
 
 
   useEffect(() => {
@@ -57,7 +41,7 @@ const LowStockTable = () => {
       product.category.toLowerCase().includes(searchTerm)
     );
     setFilteredProducts(filtered);
-  }, [searchTerm]);
+  }, [searchTerm, lowproducts]); // Include lowproducts in the dependency array
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
@@ -86,7 +70,6 @@ const LowStockTable = () => {
             <tr className="text-gray-100">
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Name</th>
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Quantity</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Manufacturer</th>
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Category</th>
             </tr>
           </thead>
@@ -94,15 +77,9 @@ const LowStockTable = () => {
             {filteredProducts.map((product, index) => (
               <tr key={index} className="cursor-pointer text-gray-100 hover:bg-gray-800 border-b-[1px] border-gray-700">
                 <td className="flex items-center px-6 py-4 text-sm">
-                  <img
-                    src="https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww"
-                    alt="Product img"
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
                   {product.name}
                 </td>
-                <td className="px-6 py-4 text-sm">{product.quantity}</td>
-                <td className="px-6 py-4 text-sm">{product.manufacturer}</td>
+                <td className="px-6 py-4 text-sm">{product.stock}</td>
                 <td className="px-6 py-4 text-sm">{product.category}</td>
               </tr>
             ))}

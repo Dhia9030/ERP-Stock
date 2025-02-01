@@ -27,36 +27,58 @@ function App() {
 
 	const {notificationOn} = useNotification();
 
+	const [lowproducts, setLowStockProducts] = useState([]);
+	
+	const ClothingMin = 300;
+	const ElectronicsMin = 300;
+	const FoodMin = 300;
+	
+	const PRODUCT_DATA = useProducts();
+	useEffect(() => {
+		console.log('PRODUCT_DATA m loul', PRODUCT_DATA);
+	
+		if (PRODUCT_DATA && PRODUCT_DATA.length > 0) {
+		const lowStockProducts = PRODUCT_DATA.filter(product => {
+			if (product.category === "Clothing") {
+			return product.stock < ClothingMin;
+			} else if (product.category === "Electronics") {
+			return product.stock < ElectronicsMin;
+			} else if (product.category === "Food") {
+			return product.stock < FoodMin;
+			}
+			return false;
+		});
+	
+		console.log('Filtered low stock products:', lowStockProducts);
+	
+		setLowStockProducts(lowStockProducts);
+		}
+	}, [PRODUCT_DATA]);
+
 	
 // Low Stock Notifications
 const notifiedProducts = useRef(new Set());
 
-const products = useProducts();
-console.log("products:", products); // Debugging log
-const memorizedProducts = useMemo(() => products, [products]);
-console.log("memorizedProducts:", memorizedProducts); // Debugging log
 
 
   useEffect(() => {
     console.log("notifiedProducts (before):", notifiedProducts.current); // Debugging log
 
 
-    if (memorizedProducts && memorizedProducts.length > 0) {
-      memorizedProducts.forEach((product) => {
-        if (product.stock <= 5 ) {
+    if (lowproducts && lowproducts.length > 0) {
+      lowproducts.forEach((product) => {
           //console.log(`Low stock: ${product.name}`); // Debugging log
           toast.warn(`Low stock: ${product.name}`, {
             position: "top-right",
             autoClose: 5000, // Auto close after 5 seconds
           });
           notifiedProducts.current.add(product.id);
-          console.log("notifiedProducts (after):", notifiedProducts.current); // Debugging log
-
-        }
+          console.log("notifiedProducts (after):", notifiedProducts.current); // Debugging lo
+        
       });
 
     }
-  }, [memorizedProducts]);
+  }, [lowproducts]);
   //-----------------------------------------------
 
 

@@ -12,9 +12,7 @@ import { useProducts } from "../context/ProductProvider";
 
 const ProductsPage = () => {
 
-	const ClothingMin = 50;
-	const ElectronicsMin = 20;
-	const FoodMin = 100;
+	
 
 	const [selectedList, setSelectedList] = useState("all");
 	const PRODUCT_DATA = useProducts();

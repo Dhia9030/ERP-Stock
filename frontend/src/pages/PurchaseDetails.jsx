@@ -5,21 +5,27 @@ import { CheckCircle, X } from 'lucide-react';
 import { usePurchase } from '../context/PurchaseProvider';
 
 const PurchaseDetails = () => {
-  const { purchaseData, markAsExecuted } = usePurchase();
+  const { purchaseData, markAsExecuted, markAsReceived } = usePurchase();
   const { purchaseId } = useParams();
   console.log("orderId:", purchaseId);
 
   const purchase = purchaseData.find(p => p.id === purchaseId);
   const [selectedProduct, setSelectedProduct] = useState(purchase ? purchase.products[0] : null);
+  const [isReceived, setIsReceived] = useState(purchase ? purchase.received : false);
 
   if (!purchase) {
     return <div>Purchase not found</div>;
   }
 
-  const purchaseStatus = purchase.executed ? "Executed" : "Not Executed";
+  const purchaseStatus = isReceived ? "Received" : (purchase.executed ? "Executed" : "Not Executed");
 
   const handleProductClick = (product) => {
     setSelectedProduct(selectedProduct === product ? null : product);
+  };
+
+  const handleMarkAsReceived = () => {
+    markAsReceived(purchase.id);
+    setIsReceived(true);
   };
 
   return (
@@ -73,9 +79,9 @@ const PurchaseDetails = () => {
         )}
         <p className='text-2xl text-violet-300'><span className='font-semibold text-violet-300'>Status:</span> <span
           className={`ml-5 p-4 inline-flex text-xl leading-5 font-semibold rounded-full ${
-            purchase.executed
-              ? "bg-green-100 text-green-800"
-              : "bg-yellow-100 text-yellow-800"
+            isReceived
+              ? "bg-blue-100 text-blue-800"
+              : (purchase.executed ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800")
           }`}
         >
           {purchaseStatus}
@@ -85,9 +91,16 @@ const PurchaseDetails = () => {
             markAsExecuted(purchase.id);
           }}
           disabled={purchase.executed}
-          className={`absolute bottom-4 right-4 px-4 py-2 ${!purchase.executed ? `bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
+          className={`absolute bottom-4 right-52 px-4 py-2 ${!purchase.executed ? `bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
         >
           Mark as Executed
+        </button>
+        <button
+          onClick={handleMarkAsReceived}
+          disabled={!purchase.executed || isReceived}
+          className={`absolute bottom-4 right-4 px-4 py-2 ${purchase.executed && !isReceived ? `bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
+        >
+          Mark as Received
         </button>
       </div>
     </div>
