@@ -17,9 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        connectionString
-        ));
+    options.UseMySql(
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)));
+        
 
 //add Identity db context
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -127,8 +128,9 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IStockMovementService, StockMovementService>();
 builder.Services.AddScoped<IProductWithBlocksService, ProductWithBlocksService>();
 builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
-builder.Services.AddScoped<IMadeStockMovement,MadeStockMovement>();
 builder.Services.AddScoped<IConfirmOrderService, ConfirmOrderService>();
+
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
