@@ -12,15 +12,19 @@ public class MadeStockMovement : IMadeStockMovement
     private readonly IStockMovementRepository _stockMovementRepository;
     private readonly IProductItemRepository _productItemRepository;
     private readonly IStockMovementItemsRepository _stockMovementItemRepository;
+    private readonly IProductRepository _productRepository;
 
     public MadeStockMovement(IProductBlockRepository productBlockRepository, ILocationRepository locationRepository, IStockMovementRepository stockMovementRepository , 
-        IProductItemRepository productItemRepository, IStockMovementItemsRepository stockMovementItemRepository)
+        IProductItemRepository productItemRepository, IStockMovementItemsRepository stockMovementItemRepository,
+        IProductRepository productRepository)
     {
         _productBlockRepository = productBlockRepository;
         _locationRepository = locationRepository;
         _stockMovementRepository = stockMovementRepository;
         _productItemRepository = productItemRepository;
         _stockMovementItemRepository = stockMovementItemRepository;
+        _productRepository = productRepository;
+        
     }
 
     public async Task<bool> TransferProductBlockAsync(int productBlockId, int newLocationId)
@@ -195,6 +199,23 @@ public class MadeStockMovement : IMadeStockMovement
             throw new Exception("Product block not found.");
         }
         
+        if (productBlock.Status != ProductBlockStatus.InStock)
+        {
+            throw new InvalidOperationException("Cannot delete product block that is not in stock.");
+        }
+
+        if (productBlock is not FoodProductBlock )
+        {
+            throw new InvalidOperationException("Cannot delete product block that is not a food product.");
+        }
+        
+        var foodProductBlock = (FoodProductBlock) productBlock;
+        
+        if(foodProductBlock.ExpirationDate > DateTime.UtcNow)
+        {
+            throw new InvalidOperationException("Cannot delete product block that is not expired.");
+        }
+        
         var stockMovement = new StockMovement
         {
             MovementType = StockMovementStatus.Delete,
@@ -202,18 +223,18 @@ public class MadeStockMovement : IMadeStockMovement
             MovementDate = DateTime.UtcNow,
             SourceProductBlockId = productBlockId,
             DestinationProductBlockId = productBlockId,
-            SourceLocationId = productBlock.LocationId,
+            SourceLocationId = productBlock.LocationId ?? 3,
             DestinationLocationId = 3, // 3 is the id of the Expired location
             Quantity = productBlock.Quantity,
-            Product = productBlock.Product
+            Product = productBlock.Product,
         };
         await _stockMovementRepository.AddAsync(stockMovement);
         
+        productBlock.Status = ProductBlockStatus.Expired;
+        await _productBlockRepository.UpdateAsync(productBlock);
         
         if(productBlock.Quantity == 0)
         {
-            productBlock.Status = ProductBlockStatus.Deleted;
-            await _productBlockRepository.UpdateAsync(productBlock);
             return true;
         }
 
@@ -233,8 +254,8 @@ public class MadeStockMovement : IMadeStockMovement
         foreach (var item in productBlock.ProductItems.ToList())
         {
             
-            item.ProductBlockId = null;
-            item.Status = ProductItemStatus.Deleted;
+           
+            item.Status = ProductItemStatus.Expired;
             await _productItemRepository.UpdateAsync(item);
         }
         
@@ -242,9 +263,12 @@ public class MadeStockMovement : IMadeStockMovement
         location.isEmpty = true;
         await _locationRepository.UpdateAsync(location);
         
+        productBlock.LocationId = 3; // 3 is the id of the Expired location
+        
         
         var product = productBlock.Product;
         product.StockQuantity -= productBlock.Quantity;
+        await _productRepository.UpdateAsync(product);
         await _productBlockRepository.UpdateAsync(productBlock);
 
         return true;
