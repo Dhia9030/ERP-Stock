@@ -26,7 +26,9 @@ public class GetOrderService : IGetOrderService
     }
     public async Task CancelOrder(int orderId)
     {
-        // Implementation here
+        var order = await _orderRepository.GetByIdAsync("OrderId",orderId);
+        order.Status = OrderStatus.Cancelled;
+        await _orderRepository.UpdateAsync(order);
     }
 
     public async Task<Order> GetOrderDetail(int orderId)
@@ -36,16 +38,5 @@ public class GetOrderService : IGetOrderService
     }
     
     
-    
-
-    public async Task MarkOrderAsDelivered(int orderId)
-    {
-        // Implementation here
-    }
-
-    public async Task MarkOrderAsProcessing(int orderId)
-    {
-        // Implementation here
-    }
 
 }
