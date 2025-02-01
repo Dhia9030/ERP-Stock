@@ -11,18 +11,21 @@ public class MadeStockMovement : IMadeStockMovement
     private readonly ILocationRepository _locationRepository;
     private readonly IStockMovementRepository _stockMovementRepository;
     private readonly IProductItemRepository _productItemRepository;
+    private readonly IStockMovementItemsRepository _stockMovementItemRepository;
 
-    public MadeStockMovement(IProductBlockRepository productBlockRepository, ILocationRepository locationRepository, IStockMovementRepository stockMovementRepository , IProductItemRepository productItemRepository)
+    public MadeStockMovement(IProductBlockRepository productBlockRepository, ILocationRepository locationRepository, IStockMovementRepository stockMovementRepository , 
+        IProductItemRepository productItemRepository, IStockMovementItemsRepository stockMovementItemRepository)
     {
         _productBlockRepository = productBlockRepository;
         _locationRepository = locationRepository;
         _stockMovementRepository = stockMovementRepository;
         _productItemRepository = productItemRepository;
+        _stockMovementItemRepository = stockMovementItemRepository;
     }
 
     public async Task<bool> TransferProductBlockAsync(int productBlockId, int newLocationId)
     {
-        var productBlock = await _productBlockRepository.FindProductBlockToTransfer(productBlockId,asNoTracking : true);
+        var productBlock = await _productBlockRepository.FindProductBlockToTransfer(productBlockId,q => q.Include(pb => pb.ProductItems),  true);
         
         if ((productBlock == null) || (productBlock.LocationId == newLocationId ))
         {
@@ -36,8 +39,6 @@ public class MadeStockMovement : IMadeStockMovement
             throw new ArgumentException("New location not found.");
         }
         
-        
-        
         var stockMovement = new StockMovement
         {
             MovementType = StockMovementStatus.Transfer,
@@ -49,8 +50,22 @@ public class MadeStockMovement : IMadeStockMovement
             DestinationLocationId = newLocationId,
             Quantity = productBlock.Quantity,
         };
-
         await _stockMovementRepository.AddAsync(stockMovement);
+
+        foreach (var productItem in productBlock.ProductItems)
+        {
+            productItem.ProductBlockId = productBlockId;
+            await _productItemRepository.UpdateAsync(productItem);
+            
+            var stockMovementItem = new StockMovementItems
+            {
+                ProductItemId = productItem.ProductItemId,
+                StockMovementId = stockMovement.StockMovementId
+            };
+
+            await _stockMovementItemRepository.AddAsync(stockMovementItem);
+            
+        }
         
         var location = productBlock.Location;
         location.isEmpty = true;
@@ -120,7 +135,21 @@ public class MadeStockMovement : IMadeStockMovement
             Product = sourceBlock.Product
         };
         await _stockMovementRepository.AddAsync(stockMovement);
+        
+        foreach (var productItem in sourceBlock.ProductItems)
+        {
+            productItem.ProductBlockId = destinationBlockId;
+            await _productItemRepository.UpdateAsync(productItem);
+            
+            var stockMovementItem = new StockMovementItems
+            {
+                ProductItemId = productItem.ProductItemId,
+                StockMovementId = stockMovement.StockMovementId
+            };
 
+            await _stockMovementItemRepository.AddAsync(stockMovementItem);
+        }
+        
         var location = sourceBlock.Location;
         location.isEmpty = true;
         await _locationRepository.UpdateAsync(location);
