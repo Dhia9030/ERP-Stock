@@ -25,7 +25,10 @@ public class MadeStockMovement : IMadeStockMovement
 
     public async Task<bool> TransferProductBlockAsync(int productBlockId, int newLocationId)
     {
-        var productBlock = await _productBlockRepository.FindProductBlockToTransfer(productBlockId,q => q.Include(pb => pb.ProductItems),  true);
+        var productBlock = await _productBlockRepository.FindProductBlockToTransfer(productBlockId,q => q
+            .Include(pb => pb.ProductItems)
+            .Include(pb => pb.Location )
+            ,  true);
         
         if ((productBlock == null) || (productBlock.LocationId == newLocationId ))
         {
@@ -54,9 +57,10 @@ public class MadeStockMovement : IMadeStockMovement
 
         foreach (var productItem in productBlock.ProductItems)
         {
+            /*
             productItem.ProductBlockId = productBlockId;
             await _productItemRepository.UpdateAsync(productItem);
-            
+            */
             var stockMovementItem = new StockMovementItems
             {
                 ProductItemId = productItem.ProductItemId,
@@ -83,13 +87,14 @@ public class MadeStockMovement : IMadeStockMovement
     public async Task<bool> MergeProductBlocksAsync(int sourceBlockId, int destinationBlockId)
     {
         var sourceBlock = await _productBlockRepository.GetByIdAsync(
-            "ProductBlockId", sourceBlockId, q => q.Include(pb => pb.ProductItems)
+            "ProductBlockId", sourceBlockId, q => q
+                .Include(pb => pb.ProductItems)
                 .Include(pb =>pb.Location)
-                ,true);
+                );
         
         var destinationBlock = await _productBlockRepository.GetByIdAsync(
-            "ProductBlockId", sourceBlockId, q => q.Include(pb => pb.ProductItems)
-            ,true);
+            "ProductBlockId", destinationBlockId, q => q.Include(pb => pb.ProductItems)
+            );
         
 
         if (sourceBlock == null || destinationBlock == null || sourceBlock.Status != ProductBlockStatus.InStock || destinationBlock.Status != ProductBlockStatus.InStock)
@@ -104,19 +109,29 @@ public class MadeStockMovement : IMadeStockMovement
 
         if (sourceBlock is FoodProductBlock && ((FoodProductBlock)sourceBlock).ExpirationDate != ((FoodProductBlock)destinationBlock).ExpirationDate)
         {
+            
             throw new InvalidOperationException("Cannot merge product blocks with different expiration dates.");
         }
         
         
-        
+
+        /*
         foreach (var item in sourceBlock.ProductItems.ToList())
         {
             item.ProductBlockId = destinationBlockId;
             await _productItemRepository.UpdateAsync(item);
             
         }
+        */ //this code is false
+        
+        Console.WriteLine("*********************");
+        Console.WriteLine(sourceBlock.Quantity);
+        Console.WriteLine(destinationBlock.Quantity);
+        
         
         destinationBlock.Quantity += sourceBlock.Quantity;
+        Console.WriteLine(destinationBlock.Quantity);
+        Console.WriteLine("*********************");
         await _productBlockRepository.UpdateAsync(destinationBlock);
         
         
@@ -136,7 +151,9 @@ public class MadeStockMovement : IMadeStockMovement
         };
         await _stockMovementRepository.AddAsync(stockMovement);
         
-        foreach (var productItem in sourceBlock.ProductItems)
+        var productItemList = sourceBlock.ProductItems.ToList();
+        
+        foreach (var productItem in productItemList)
         {
             productItem.ProductBlockId = destinationBlockId;
             await _productItemRepository.UpdateAsync(productItem);
