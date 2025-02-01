@@ -1,8 +1,13 @@
 using System.Collections.Immutable;
+using System.Text;
+using backend.JWTBearerConfig;
 using backend.Services.ConcreteServices;
 using backend.Services.ServicesContract;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StockManagement.Data;
 using StockManagement.Repositories;
 using StockManagement.Services;
@@ -14,6 +19,70 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+//add Identity db context
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+
+// Add JWT Bearer Authentication
+var jwtSection = builder.Configuration.GetSection("JwtBearerTokenSettings");
+builder.Services.Configure<JWTBearerTokenSettings>(jwtSection);
+var jwtBearerTokenSettings = jwtSection.Get<JWTBearerTokenSettings>();
+var key = Encoding.ASCII.GetBytes(jwtBearerTokenSettings.SecretKey);
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false; // Set to true in production for secure connections
+        options.SaveToken = true;
+
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtBearerTokenSettings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtBearerTokenSettings.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero, // Set clock skew to 0 to immediately reject expired tokens
+            //RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                var claims = context.Principal.Claims.Select(c => $"{c.Type}: {c.Value}");
+                Console.WriteLine("Token validated. Claims:");
+                foreach (var claim in claims)
+                {
+                    Console.WriteLine(claim);
+                }
+                return Task.CompletedTask;
+            }
+        };
+
+    });
+
+// Add Authorization
+builder.Services.AddAuthorization();
+
+
+
+
+
+// Add Cors services
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -53,6 +122,10 @@ builder.Services.AddScoped<IGetOrderService, GetOrderService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IGetProductService, GetProductService>();
 builder.Services.AddScoped<IConfirmOrderService, ConfirmOrderService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IStockMovementService, StockMovementService>();
+builder.Services.AddScoped<IProductWithBlocksService, ProductWithBlocksService>();
+builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
 
 
 builder.Services.AddControllers();
@@ -84,6 +157,11 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred seeding the DB.");
     }
 }
+
+app.UseAuthentication();  // Ensure that JWT middleware is before Authorization
+app.UseAuthorization();   // Ensure that authorization middleware is after authentication
+
+
 
 app.MapControllers();
 

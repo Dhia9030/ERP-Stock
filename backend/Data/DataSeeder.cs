@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Common;
 using StockManagement.Models;
 
 namespace StockManagement.Data
@@ -10,7 +12,72 @@ namespace StockManagement.Data
             using (var context = new AppDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
             {
+                
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                // Define role names
+                var roles = new List<string> { "Admin", "SaleManager" };
+
+                // Create roles if they do not exist
+                foreach (var roleName in roles)
+                {
+                    if (!roleManager.RoleExistsAsync(roleName).Result)
+                    {
+                        var role = new IdentityRole(roleName);
+                        roleManager.CreateAsync(role).Wait();
+                    }
+                }
+
+                // Create the admin user
+                string adminEmail = "admin@gmail.com";
+                var adminUser = userManager.FindByEmailAsync(adminEmail).Result;
+                if (adminUser == null)
+                {
+                    adminUser = new IdentityUser
+                    {
+                        UserName = "admin",
+                        Email = adminEmail
+                    };
+
+                    var result = userManager.CreateAsync(adminUser, "Admin2003*").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(adminUser, "Admin").Wait();
+                    }
+                }
+
+                // Create the sale manager user
+                string saleManagerEmail = "salemanager@gmail.com";
+                var saleManagerUser = userManager.FindByEmailAsync(saleManagerEmail).Result;
+                if (saleManagerUser == null)
+                {
+                    saleManagerUser = new IdentityUser
+                    {
+                        UserName = "salemanager",
+                        Email = saleManagerEmail
+                    };
+
+                    var result = userManager.CreateAsync(saleManagerUser, "SaleManager2003*").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(saleManagerUser, "SaleManager").Wait();
+                    }
+                }
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 // Look for any existing data.
+                
+                
+                
                 if (context.Clients.Any() || context.Categories.Any() || context.Manufacturers.Any() || context.Suppliers.Any() || context.Products.Any() || context.Warehouses.Any())
                 {
                     return;   // DB has been seeded

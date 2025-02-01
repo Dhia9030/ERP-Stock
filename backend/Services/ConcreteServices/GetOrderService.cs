@@ -20,6 +20,10 @@ public class GetOrderService : IGetOrderService
         return await _orderRepository.GetAllSellOrdersAsync(q => q.Include(e => e.Client));
     }
 
+    public async Task<IEnumerable<Order>> GetAllBuyOrders()
+    {
+        return await _orderRepository.GetAllBuyOrdersAsync(q => q.Include(e => e.Client));
+    }
     public async Task CancelOrder(int orderId)
     {
         // Implementation here

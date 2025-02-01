@@ -6,10 +6,13 @@ namespace StockManagement.Repositories;
 public interface IProductBlockRepository : IRepository<ProductBlock>
 {
     public Task<IEnumerable<FoodProductBlock>> GetAllFoodProductBlockOrderedByExpirationDateAsync(
-        Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
+        int productId ,Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
 
     public Task<IEnumerable<FoodProductBlock>> FindFoodProductBlockAsync(
         Expression<Func<FoodProductBlock, bool>> predicate,
         Func<IQueryable<FoodProductBlock>, IQueryable<FoodProductBlock>>? include = null);
+
+    public Task<IEnumerable<ProductBlock>> GetAllProductBlockAsync(int productId,
+        Func<IQueryable<ProductBlock>, IQueryable<ProductBlock>>? include = null);
 
 }
