@@ -107,6 +107,8 @@ public class MadeStockMovement : IMadeStockMovement
             throw new InvalidOperationException("Cannot merge blocks of different products.");
         }
 
+        
+        
         if (sourceBlock is FoodProductBlock && ((FoodProductBlock)sourceBlock).ExpirationDate != ((FoodProductBlock)destinationBlock).ExpirationDate)
         {
             

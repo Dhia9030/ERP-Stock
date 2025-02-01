@@ -203,11 +203,13 @@ namespace StockManagement.Services
                     {
                         productBlocks = (IEnumerable<ProductBlock>)await _productBlockRepository
                             .GetAllFoodProductBlockOrderedByExpirationDateAsync(orderProduct.Product.ProductId,
-                                q => q.Include(p => p.ProductItems) );
+                                q => q.Include(p => p.ProductItems)
+                                    .Include(pb => pb.Location));
                     }
                     else
                     {
-                        productBlocks = await _productBlockRepository.GetAllProductBlockForProductAsync(orderProduct.Product.ProductId,q => q.Include(p => p.ProductItems));
+                        productBlocks = await _productBlockRepository.GetAllProductBlockForProductAsync(orderProduct.Product.ProductId,q => q.Include(p => p.ProductItems)
+                            .Include(pb => pb.Location));
                     }
 
                     if (!productBlocks.Any())
@@ -277,12 +279,21 @@ namespace StockManagement.Services
                         
                         if (productBlock.Quantity <= remainingQuantity)
                         {
+                            //update location to empty
+                            var location = productBlock.Location;
+                            location.isEmpty = true;
+                            await _locationRepository.UpdateAsync(location);
+                            //update product block
                             productBlock.Quantity = 0;
                             productBlock.Status = ProductBlockStatus.Sold;
                             productBlock.LocationId = null;
                         }
                         await _productBlockRepository.UpdateAsync(productBlock);
+                        
+                        
                     }
+                    
+                    
                     
                     if (remainingQuantity > 0)
                         throw new InvalidOperationException(
