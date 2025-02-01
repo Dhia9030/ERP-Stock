@@ -9,6 +9,7 @@ public enum ProductBlockStatus
     ProcessBuy,
     ProcessSell,
     MergedByOtherBlock,
+    Deleted,
 }
 
 public class ProductBlock

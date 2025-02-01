@@ -180,4 +180,74 @@ public class MadeStockMovement : IMadeStockMovement
 
         return true;
     }
+
+    public async Task<bool> DeleteProductBlockAsync(int productBlockId)
+    {
+        var productBlock = await _productBlockRepository.GetByIdAsync("ProductBlockId", productBlockId, 
+            q => q
+                .Include(pb => pb.ProductItems)
+                .Include(pb => pb.Location)
+                .Include (pb => pb.Product)    
+            );
+
+        if (productBlock == null)
+        {
+            throw new Exception("Product block not found.");
+        }
+        
+        var stockMovement = new StockMovement
+        {
+            MovementType = StockMovementStatus.Delete,
+            CreatedBy = "System", // or get the current user
+            MovementDate = DateTime.UtcNow,
+            SourceProductBlockId = productBlockId,
+            DestinationProductBlockId = productBlockId,
+            SourceLocationId = productBlock.LocationId,
+            DestinationLocationId = 3, // 3 is the id of the Expired location
+            Quantity = productBlock.Quantity,
+            Product = productBlock.Product
+        };
+        await _stockMovementRepository.AddAsync(stockMovement);
+        
+        
+        if(productBlock.Quantity == 0)
+        {
+            productBlock.Status = ProductBlockStatus.Deleted;
+            await _productBlockRepository.UpdateAsync(productBlock);
+            return true;
+        }
+
+        
+       foreach (var item in productBlock.ProductItems.ToList())
+        {
+            var stockMovementItem = new StockMovementItems
+            {
+                ProductItemId = item.ProductItemId,
+                StockMovementId = stockMovement.StockMovementId
+            };
+            await _stockMovementItemRepository.AddAsync(stockMovementItem);
+        
+        }
+       
+        
+        foreach (var item in productBlock.ProductItems.ToList())
+        {
+            
+            item.ProductBlockId = null;
+            item.Status = ProductItemStatus.Deleted;
+            await _productItemRepository.UpdateAsync(item);
+        }
+        
+        var location = productBlock.Location;
+        location.isEmpty = true;
+        await _locationRepository.UpdateAsync(location);
+        
+        
+        var product = productBlock.Product;
+        product.StockQuantity -= productBlock.Quantity;
+        await _productBlockRepository.UpdateAsync(productBlock);
+
+        return true;
+    }
+    
 }

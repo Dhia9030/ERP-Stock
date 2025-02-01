@@ -269,6 +269,19 @@ public class TestController : Controller
         });
     }
     
+    [Route("delete product block")]
+    [HttpPost]
+    public async Task<IActionResult> Index18(int productBlockId)
+    {
+        var order = await _madeStockMovement.DeleteProductBlockAsync(productBlockId);
+        return Json(order ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
+    
     
     
     

@@ -132,6 +132,8 @@ builder.Services.AddScoped<IStockMovementService, StockMovementService>();
 builder.Services.AddScoped<IConfirmOrderService,ConfirmOrderService>();
 
 
+
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
