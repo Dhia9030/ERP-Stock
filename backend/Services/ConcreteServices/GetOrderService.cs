@@ -34,6 +34,9 @@ public class GetOrderService : IGetOrderService
         // Implementation here
         return await _orderRepository.GetByIdAsync("OrderId",orderId,q=>q.Include(e => e.Client).Include(e => e.Warehouse).Include(o => o.OrderProducts).ThenInclude(op => op.Product).ThenInclude(p => p.Category));
     }
+    
+    
+    
 
     public async Task MarkOrderAsDelivered(int orderId)
     {
