@@ -42,12 +42,12 @@ namespace StockManagement.Models
         
         [DataType(DataType.DateTime)]
         [Display(Name = "les Dates de retard de la commande")]
-        public string? DelayedDates { get; set; }
+        public DateTime? DelayedDates { get; set; }
         
-        [Required(ErrorMessage = "La date d'execution reel de la commande est obligatoire")]
+        //[Required(ErrorMessage = "La date d'execution reel de la commande est obligatoire")]
         [DataType(DataType.DateTime)]
         [Display(Name = "Date d'execution reel de la commande")]
-        public DateTime RealExecutionDate { get; set; } 
+        public DateTime? RealExecutionDate { get; set; } 
 
         [Required(ErrorMessage = "The discount percentage is required.")]
         [Range(0, 100, ErrorMessage = "The discount percentage must be between 0 and 100.")]
