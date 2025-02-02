@@ -189,6 +189,15 @@ public class TestController : Controller
     public async Task<IActionResult> Index8()
     {
         var locations = await _locationService.GetAllLocations();
+        
+        foreach(var location in locations)
+        {
+            if(location.Warehouse != null)
+            {
+                location.Warehouse.Locations = null;
+            }
+        }
+        
         return Json(locations ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
@@ -202,6 +211,15 @@ public class TestController : Controller
     public async Task<IActionResult> Index9()
     {
         var locations = await _locationService.GetFreeLocations();
+        
+        foreach(var location in locations)
+        {
+            if(location.Warehouse != null)
+            {
+                location.Warehouse.Locations = null;
+            }
+        }
+        
         return Json(locations ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,

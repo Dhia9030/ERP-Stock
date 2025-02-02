@@ -1,4 +1,5 @@
 using backend.Services.ServicesContract;
+using Microsoft.EntityFrameworkCore;
 using StockManagement.Models;
 using StockManagement.Repositories;
 
@@ -15,7 +16,7 @@ public class LocationService : ILocationService
     
     public async Task<IEnumerable<Location>> GetAllLocations()
     {
-        var locations = await _locationRepository.GetAllAsync();
+        var locations = await _locationRepository.GetAllAsync(q => q.Include(l => l.Warehouse));
         return locations;
     }
 
