@@ -282,6 +282,8 @@ public class TransferRequest
     [HttpPost]
     public async Task<IActionResult> Index18(int productBlockId)
     {
+        try
+        {
         var order = await _madeStockMovement.DeleteProductBlockAsync(productBlockId);
         return Json(order ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
@@ -289,6 +291,11 @@ public class TransferRequest
            
             
         });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     

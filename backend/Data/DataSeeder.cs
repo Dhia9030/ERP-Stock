@@ -17,7 +17,7 @@ namespace StockManagement.Data
                 var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
                 // Define role names
-                var roles = new List<string> { "Admin", "SaleManager" };
+                var roles = new List<string> { "Admin", "StockManager" };
 
                 // Create roles if they do not exist
                 foreach (var roleName in roles)
@@ -48,20 +48,20 @@ namespace StockManagement.Data
                 }
 
                 // Create the sale manager user
-                string saleManagerEmail = "salemanager@gmail.com";
+                string saleManagerEmail = "stockmanager@gmail.com";
                 var saleManagerUser = userManager.FindByEmailAsync(saleManagerEmail).Result;
                 if (saleManagerUser == null)
                 {
                     saleManagerUser = new IdentityUser
                     {
-                        UserName = "salemanager",
+                        UserName = "stockmanager",
                         Email = saleManagerEmail
                     };
 
-                    var result = userManager.CreateAsync(saleManagerUser, "SaleManager2003*").Result;
+                    var result = userManager.CreateAsync(saleManagerUser, "StockManager2003*").Result;
                     if (result.Succeeded)
                     {
-                        userManager.AddToRoleAsync(saleManagerUser, "SaleManager").Wait();
+                        userManager.AddToRoleAsync(saleManagerUser, "StockManager").Wait();
                     }
                 }
                 
