@@ -101,8 +101,17 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Index5()
     {
-        var order = await _getProductService.GetAllProductsAsync();
-        return Json(order ,new JsonSerializerOptions{
+        var products = await _getProductService.GetAllProductsAsync();
+        
+        foreach (var product in products)
+        {
+            if (product.Category != null)
+            {
+                product.Category.Products = null;
+            }
+        }
+        
+        return Json(products ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -114,8 +123,15 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Index6()
     {
-        var order = await _getProductService.GetAllClothingProduct();
-        return Json(order ,new JsonSerializerOptions{
+        var products = await _getProductService.GetAllClothingProduct();
+        foreach (var product in products)
+        {
+            if (product.Category != null)
+            {
+                product.Category.Products = null;
+            }
+        }
+        return Json(products ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
           
@@ -123,12 +139,57 @@ public class TestController : Controller
         });
     }
     
+    [Route("get All Electronique  Product")]
+    [HttpGet]
+    public async Task<IActionResult> Index19()
+    {
+        var products = await _getProductService.GetAllElectronicProduct();
+        
+        foreach (var product in products)
+        {
+            if (product.Category != null)
+            {
+                product.Category.Products = null;
+            }
+        }
+        
+        return Json(products ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+          
+            
+        });
+    }
+    
+    [Route("get All food Product")]
+    [HttpGet]
+    public async Task<IActionResult> Index20()
+    {
+        var products = await _getProductService.GetAllFoodProduct();
+        
+        foreach (var product in products)
+        {
+            if (product.Category != null)
+            {
+                product.Category.Products = null;
+            }
+        }
+        return Json(products ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+          
+            
+        });
+    }
+    
+    
+    
     [Route("get all location")]
     [HttpGet]
     public async Task<IActionResult> Index8()
     {
-        var order = await _locationService.GetAllLocations();
-        return Json(order ,new JsonSerializerOptions{
+        var locations = await _locationService.GetAllLocations();
+        return Json(locations ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
             
@@ -140,8 +201,8 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Index9()
     {
-        var order = await _locationService.GetFreeLocations();
-        return Json(order ,new JsonSerializerOptions{
+        var locations = await _locationService.GetFreeLocations();
+        return Json(locations ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -153,8 +214,8 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Index10()
     {
-        var order = await _stockMovementService.GetAllStockMovements();
-        return Json(order ,new JsonSerializerOptions{
+        var stockMovements = await _stockMovementService.GetAllStockMovements();
+        return Json(stockMovements ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -166,8 +227,8 @@ public class TestController : Controller
     [HttpGet]
     public async Task<IActionResult> Index11()
     {
-        var order = await _productWithBlocksService.GetAllProductWithBlocks();
-        return Json(order ,new JsonSerializerOptions{
+        var products = await _productWithBlocksService.GetAllProductWithBlocks();
+        return Json(products ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -178,13 +239,19 @@ public class TestController : Controller
 [Route("transferproductblock")]
 [HttpPost]
 public async Task<IActionResult> Index12([FromBody] TransferRequest request)
-{
-    var order = await _madeStockMovement.TransferProductBlockAsync(request.ProductBlockId, request.NewLocationId);
-    return Json(order, new JsonSerializerOptions
+{ 
+    try{
+    var transferresult = await _madeStockMovement.TransferProductBlockAsync(request.ProductBlockId, request.NewLocationId);
+    return Json(transferresult, new JsonSerializerOptions
     {
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
         WriteIndented = false,
     });
+    }
+    catch (Exception e)
+    {
+        return BadRequest(e.Message);
+    }
 }
 
 public class TransferRequest
@@ -197,12 +264,20 @@ public class TransferRequest
     [HttpPost]
     public async Task<IActionResult> Index13([FromBody] MergeRequest request)
     {
-        var order = await _madeStockMovement.MergeProductBlocksAsync(request.SourceBlockId, request.DestinationBlockId);
-        return Json(order, new JsonSerializerOptions
+        try
+        {
+            
+        var mergeresult = await _madeStockMovement.MergeProductBlocksAsync(request.SourceBlockId, request.DestinationBlockId);
+        return Json(mergeresult, new JsonSerializerOptions
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
         });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     public class MergeRequest
 {
@@ -214,8 +289,8 @@ public class TransferRequest
     [HttpGet]
     public async Task<IActionResult> Index14(int OrderId , int ProductId)
     {
-        var order = await _stockMovementService.GetItemsForEachProductForSpecificBuyOrder(OrderId, ProductId);
-        return Json(order ,new JsonSerializerOptions{
+        var productWithItems = await _stockMovementService.GetItemsForEachProductForSpecificBuyOrder(OrderId, ProductId);
+        return Json(productWithItems ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -228,10 +303,10 @@ public class TransferRequest
     
     public async Task<IActionResult> Index15(int OrderId)
     {
-        var productlist = await _orderProductsRepository.GetProductsByOrderIdAsync(OrderId);
+        var productsWithItems = await _orderProductsRepository.GetProductsByOrderIdAsync(OrderId);
         List<ProductWithItemsDto> productWithItemsDtos = new List<ProductWithItemsDto>();
         
-        foreach (var product in productlist)
+        foreach (var product in productsWithItems)
         {
             var items = await _stockMovementService.GetItemsForEachProductForSpecificBuyOrder(OrderId, product.ProductId);
             productWithItemsDtos.Add(items);
@@ -248,8 +323,8 @@ public class TransferRequest
     [HttpGet]
     public async Task<IActionResult> Index16(int OrderId , int ProductId)
     {
-        var order = await _stockMovementService.GetItemsForEachProductForSpecificSellOrder(OrderId, ProductId);
-        return Json(order ,new JsonSerializerOptions{
+        var productWithItems = await _stockMovementService.GetItemsForEachProductForSpecificSellOrder(OrderId, ProductId);
+        return Json(productWithItems ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -278,14 +353,14 @@ public class TransferRequest
         });
     }
     
-    [Route("delete product block")]
+    [Route("deleteproductblock")]
     [HttpPost]
-    public async Task<IActionResult> Index18(int productBlockId)
+    public async Task<IActionResult> Index18(deleteRequest request)
     {
         try
         {
-        var order = await _madeStockMovement.DeleteProductBlockAsync(productBlockId);
-        return Json(order ,new JsonSerializerOptions{
+        var deleteresult = await _madeStockMovement.DeleteProductBlockAsync(request.ProductBlockId);
+        return Json(deleteresult ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
            
@@ -297,6 +372,12 @@ public class TransferRequest
             return BadRequest(e.Message);
         }
     }
+    
+    public class deleteRequest
+    {
+        public int ProductBlockId { get; set; }
+    }
+    
     
     
     

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace backend.Services.ConcreteServices;
 
-public class StockManagerService : ServicesContract.IStockManagerService
+public class StockManagerService : IStockManagerService
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
