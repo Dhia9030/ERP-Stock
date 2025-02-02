@@ -54,10 +54,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(
-        connectionString,
-        ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
 
 // builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
 //builder.Services.AddDbContext<AppDbContext>(options =>options.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString)));  
@@ -171,6 +168,8 @@ builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
 builder.Services.AddScoped<IMadeStockMovement,MadeStockMovement>();
 builder.Services.AddScoped<IStockMovementService, StockMovementService>();
 builder.Services.AddScoped<IConfirmOrderService,ConfirmOrderService>();
+builder.Services.AddScoped<IStockManagerService,StockManagerService>();
+
 
 
 
