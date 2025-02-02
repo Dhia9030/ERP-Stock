@@ -179,26 +179,39 @@ public class TestController : Controller
     [HttpPost]
     public async Task<IActionResult> Index12(int productBlockId , int newLocationId)
     {
-        var order = await _madeStockMovement.TransferProductBlockAsync(productBlockId, newLocationId);
-        return Json(order ,new JsonSerializerOptions{
-            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-           
-            
-        });
+        try
+        {
+            var order = await _madeStockMovement.TransferProductBlockAsync(productBlockId, newLocationId);
+            return Json(order, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = false,
+
+
+            });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     [Route("merge product blocks")]
     [HttpPost]
     public async Task<IActionResult> Index13(int sourceBlockId , int destinationBlockId)
     {
+        try
+        {
         var order = await _madeStockMovement.MergeProductBlocksAsync(sourceBlockId, destinationBlockId);
         return Json(order ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
-           
-            
         });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     [Route("get ItemFrom A specific Buy order and a product")]
@@ -273,6 +286,8 @@ public class TestController : Controller
     [HttpPost]
     public async Task<IActionResult> Index18(int productBlockId)
     {
+        try
+        {
         var order = await _madeStockMovement.DeleteProductBlockAsync(productBlockId);
         return Json(order ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
@@ -280,6 +295,11 @@ public class TestController : Controller
            
             
         });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     
