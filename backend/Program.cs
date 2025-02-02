@@ -55,10 +55,7 @@ builder.Services.AddSwaggerGen(c =>
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
-
-// builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
-//builder.Services.AddDbContext<AppDbContext>(options =>options.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString)));  
-
+ 
 //add Identity db context
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AppDbContext>()
