@@ -20,7 +20,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         connectionString,
         ServerVersion.AutoDetect(connectionString)));
-        
+
+// builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<AppDbContext>(options =>options.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString)));  
 
 //add Identity db context
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -129,6 +131,8 @@ builder.Services.AddScoped<IStockMovementService, StockMovementService>();
 builder.Services.AddScoped<IProductWithBlocksService, ProductWithBlocksService>();
 builder.Services.AddScoped<IAuthentificationService, AuthentificationService>();
 builder.Services.AddScoped<IConfirmOrderService, ConfirmOrderService>();
+builder.Services.AddScoped<IMadeStockMovement, MadeStockMovement>();
+
 
 
 builder.Services.AddControllers();

@@ -35,7 +35,7 @@ function App() {
 	
 	const PRODUCT_DATA = useProducts();
 	useEffect(() => {
-		console.log('PRODUCT_DATA m loul', PRODUCT_DATA);
+		//console.log('PRODUCT_DATA m loul', PRODUCT_DATA);
 	
 		if (PRODUCT_DATA && PRODUCT_DATA.length > 0) {
 		const lowStockProducts = PRODUCT_DATA.filter(product => {
@@ -49,7 +49,7 @@ function App() {
 			return false;
 		});
 	
-		console.log('Filtered low stock products:', lowStockProducts);
+		//console.log('Filtered low stock products:', lowStockProducts);
 	
 		setLowStockProducts(lowStockProducts);
 		}
@@ -62,7 +62,7 @@ const notifiedProducts = useRef(new Set());
 
 
   useEffect(() => {
-    console.log("notifiedProducts (before):", notifiedProducts.current); // Debugging log
+    //console.log("notifiedProducts (before):", notifiedProducts.current); // Debugging log
 
 
     if (lowproducts && lowproducts.length > 0) {
@@ -70,10 +70,10 @@ const notifiedProducts = useRef(new Set());
           //console.log(`Low stock: ${product.name}`); // Debugging log
           toast.warn(`Low stock: ${product.name}`, {
             position: "top-right",
-            autoClose: 5000, // Auto close after 5 seconds
+            autoClose: 1000, // Auto close after 5 seconds
           });
           notifiedProducts.current.add(product.id);
-          console.log("notifiedProducts (after):", notifiedProducts.current); // Debugging lo
+          //console.log("notifiedProducts (after):", notifiedProducts.current); // Debugging lo
         
       });
 

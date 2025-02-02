@@ -11,40 +11,13 @@ const PurchasesTable = () => {
   const [filteredPurchases, setFilteredPurchases] = useState(purchaseData);
   const navigate = useNavigate();
 
-  console.log('PurchasesTable purchaseData:', purchaseData);
+  //console.log('PurchasesTable purchaseData:', purchaseData);
 
   useEffect(() => {
     setFilteredPurchases(purchaseData);
   }, [purchaseData]);
 
-  useEffect(() => {
-    // Create a connection to the SignalR hub
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/purchasehub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
-
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub");
-
-        // Listen for updates from the server
-        connection.on("ReceivePurchases", (data) => {
-          console.log("Received purchases:", data);
-          setPurchaseData(data);
-        });
-
-        // Optionally, you can invoke a method on the server to request initial purchases
-        connection.invoke("GetInitialPurchases")
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
-
-    // Clean up the connection when the component unmounts
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
-    };
-  }, [setPurchaseData]);
+ 
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();

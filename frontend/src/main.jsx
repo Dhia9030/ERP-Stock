@@ -6,6 +6,7 @@ import { ProductProvider } from "./context/ProductProvider.jsx";
 import { OrderProvider } from "./context/OrderProvider.jsx";
 import { NotificationProvider } from "./context/NotificationProvider.jsx";
 import { PurchaseProvider } from "./context/PurchaseProvider.jsx";
+import {TransferProvider} from "./context/TransferProvider.jsx";
 
 
 import { BrowserRouter } from "react-router-dom";
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 			<PurchaseProvider>
 		<OrderProvider>
 			<ProductProvider>
+				<TransferProvider>
 				<App />
+				</TransferProvider>
 			</ProductProvider>
 		</OrderProvider>
 		</PurchaseProvider>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 import * as SignalR from '@microsoft/signalr';
+import {useTransfer} from '../../context/TransferProvider';
 
 const mergedBlocks = [
   {
@@ -29,6 +30,10 @@ const MergedBlocksTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBlocks, setFilteredBlocks] = useState(mergedBlocks);
   const [expandedRow, setExpandedRow] = useState(null);
+
+
+  const {transfers} = useTransfer();
+  //console.log("transfer wa : ", transfers)
 
   useEffect(() => {
     // Uncomment the following code to fetch data from SignalR

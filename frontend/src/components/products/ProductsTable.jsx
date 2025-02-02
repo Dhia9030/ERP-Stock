@@ -13,6 +13,7 @@ const capitalize = (str) => {
 const ProductsTable = ({selectedList}) => {
 
   const PRODUCT_DATA = useProducts();
+  console.log("salem", PRODUCT_DATA);
   const [selectedProducts, setSelectedProducts] =useState(PRODUCT_DATA);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);

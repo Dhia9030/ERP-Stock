@@ -12,8 +12,8 @@ using WebOrder.Models;
 namespace WebOrder.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250131171827_initial")]
-    partial class initial
+    [Migration("20250201221116_identity")]
+    partial class identity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

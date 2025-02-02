@@ -1,33 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import * as SignalR from '@microsoft/signalr';
-
-
-const products = [
-  {
-    name: "Phone",
-    productId: 1,
-    blocks: [
-      { productBlockId: 1, location: "Aisle1", warehouse: "Main Warehouse", quantity: 10 },
-      { productBlockId: 2, location: "Aisle2", warehouse: "Main Warehouse", quantity: 5 },
-    ]
-  },
-  {
-    name: "Laptop",
-    productId: 2,
-    blocks: [
-      { productBlockId: 3, location: "Aisle3", warehouse: "Main Warehouse", quantity: 8 },
-      { productBlockId: 4, location: "Aisle4", warehouse: "Main Warehouse", quantity: 12 },
-    ]
-  }
-];
-
-const freeLocations = [
-  { locationId: 1, name: "Aisle5", warehouse: "Main Warehouse" },
-  { locationId: 2, name: "Aisle6", warehouse: "Main Warehouse" },
-  { locationId: 3, name: "Aisle7", warehouse: "Secondary Warehouse" },
-  { locationId: 4, name: "Aisle8", warehouse: "Secondary Warehouse" }
-];
+import { toast } from 'react-toastify';
+import debounce from 'lodash.debounce';
 
 const InternalTransfer = () => {
   const [operation, setOperation] = useState("transfer");
@@ -38,119 +13,122 @@ const InternalTransfer = () => {
   const [productBlocks, setProductBlocks] = useState([]);
   const [freeLocations, setFreeLocations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/producthub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
-
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub for products");
-
-        connection.on("ReceiveProducts", (data) => {
-          console.log("Received products:", data);
-          setProducts(data);
-        });
-
-        connection.invoke("GetInitialProducts")
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
-
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    const fetchLocation = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:5188/Test/get free location');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setFreeLocations(data);
+      } catch (error) {
+        console.error('Failed to fetch free locations:', error);
+        toast.error('Failed to fetch free locations');
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchLocation();
+  }, []);
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:5188/Test/get all product with blocks');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+      toast.error('Failed to fetch products');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/locationhub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
-
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub for locations");
-
-        connection.on("ReceiveFreeLocations", (data) => {
-          console.log("Received free locations:", data);
-          setFreeLocations(data);
-        });
-
-        connection.invoke("GetFreeLocations")
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
-
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
-    };
-  }, []);
-
-
-
+    fetchProducts();
+  }, [fetchProducts]);
 
   useEffect(() => {
     if (selectedProduct) {
-      const product = products.find(p => p.productId === parseInt(selectedProduct));
-      setProductBlocks(product ? product.blocks : []);
+      const product = products.find(p => p.ProductName === selectedProduct);
+      setProductBlocks(product ? product.ProductBlocks : []);
     }
-  }, [selectedProduct,products]);
+  }, [selectedProduct, products]);
+
+  const debouncedSearch = useMemo(() => debounce((value) => {
+    setSearchTerm(value.toLowerCase());
+  }, 300), []);
 
   const handleSearch = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
+    debouncedSearch(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let requestData = {
-      operation,
-      productId: selectedProduct,
-    };
+    let requestData = {};
+    let endpoint = '';
 
     if (operation === "transfer") {
-      requestData = {
-        ...requestData,
-        sourceBlockId: sourceBlock,
-        destinationLocation
-      };
+        requestData = {
+            productBlockId: parseInt(sourceBlock, 10),
+            newLocationId: parseInt(destinationLocation, 10)
+        };
+        endpoint = 'http://localhost:5188/Test/transferproductblock';
     } else if (operation === "merge") {
-      requestData = {
-        ...requestData,
-        sourceBlockId: sourceBlock,
-        destinationBlockId: destinationLocation
-      };
+        requestData = {
+            sourceBlockId: parseInt(sourceBlock, 10),
+            destinationBlockId: parseInt(destinationLocation, 10)
+        };
+        endpoint = 'http://localhost:5188/Test/mergeproductblocks';
     } else if (operation === "delete") {
-      requestData = {
-        ...requestData,
-        sourceBlockId: sourceBlock
-      };
+        requestData = {
+            productBlockId: parseInt(sourceBlock, 10)
+        };
+        endpoint = 'http://localhost:5188/Test/delete product block';
     }
 
-    console.log("Request Data:", requestData);
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            },
+            body: JSON.stringify(requestData)
+        });
 
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/transferhub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Request failed with status ${response.status}: ${errorText}`);
+        }
 
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub for transfer");
+        const data = await response.json();
+        console.log('Success:', data);
+        toast.success('Operation completed successfully');
+    } catch (error) {
+        console.error('Error:', error);
+        toast.error('Failed to execute operation');
+    }
+};
 
-        connection.invoke("ExecuteTransfer", requestData)
-          .then(response => console.log(response))
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
+  const filteredProducts = useMemo(() => {
+    return (operation === "merge"
+      ? products.filter(product => product.CategoryName !== "Food")
+      : products).filter(product =>
+        product.ProductName.toLowerCase().includes(searchTerm)
+      );
+  }, [products, searchTerm, operation]);
 
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
-    };
-  };
-
+  const selectedProductCategory = products.find(p => p.ProductName === selectedProduct)?.CategoryName;
 
   return (
     <motion.div
@@ -180,8 +158,8 @@ const InternalTransfer = () => {
             className="w-full p-2 rounded-xl bg-gray-800 text-white"
           >
             <option value="">Select Product</option>
-            {products.map(product => (
-              <option key={product.productId} value={product.productId}>{product.name}</option>
+            {filteredProducts.map(product => (
+              <option key={product.ProductName} value={product.ProductName}>{product.ProductName}</option>
             ))}
           </select>
         </div>
@@ -196,8 +174,8 @@ const InternalTransfer = () => {
               >
                 <option value="">Select Product Block</option>
                 {productBlocks.map(block => (
-                  <option key={block.productBlockId} value={block.productBlockId}>
-                    {block.productBlockId} - {block.location} - {block.warehouse}
+                  <option key={block.ProductBlockId} value={block.ProductBlockId}>
+                    {block.ProductBlockId} - {block.LocationName}
                   </option>
                 ))}
               </select>
@@ -211,15 +189,15 @@ const InternalTransfer = () => {
               >
                 <option value="">Select Destination Location</option>
                 {freeLocations.map(location => (
-                  <option key={location.locationId} value={`${location.name} - ${location.warehouse}`}>
-                    {location.name} - {location.warehouse}
+                  <option key={location.LocationId} value={location.LocationId}>
+                    {location.Name}
                   </option>
                 ))}
               </select>
             </div>
           </>
         )}
-        {operation === "merge" && (
+        {operation === "merge" && selectedProductCategory !== "Food" && (
           <>
             <div className="mb-4">
               <label className="block text-white text-sm font-bold mb-2">Source Product Block</label>
@@ -230,8 +208,8 @@ const InternalTransfer = () => {
               >
                 <option value="">Select Source Product Block</option>
                 {productBlocks.map(block => (
-                  <option key={block.productBlockId} value={block.productBlockId}>
-                    {block.productBlockId} - {block.location} - {block.warehouse} - Quantity: {block.quantity}
+                  <option key={block.ProductBlockId} value={block.ProductBlockId}>
+                    {block.ProductBlockId} - {block.LocationName} - Quantity: {block.quantity}
                   </option>
                 ))}
               </select>
@@ -244,9 +222,9 @@ const InternalTransfer = () => {
                 className="w-full p-2 rounded-xl bg-gray-800 text-white"
               >
                 <option value="">Select Destination Product Block</option>
-                {productBlocks.filter(block => block.productBlockId !== parseInt(sourceBlock)).map(block => (
-                  <option key={block.productBlockId} value={block.productBlockId}>
-                    {block.productBlockId} - {block.location} - {block.warehouse} - Quantity: {block.quantity}
+                {productBlocks.filter(block => block.ProductBlockId !== parseInt(sourceBlock)).map(block => (
+                  <option key={block.ProductBlockId} value={block.ProductBlockId}>
+                    {block.ProductBlockId} - {block.LocationName} - Quantity: {block.quantity}
                   </option>
                 ))}
               </select>
@@ -263,8 +241,8 @@ const InternalTransfer = () => {
             >
               <option value="">Select Product Block</option>
               {productBlocks.map(block => (
-                <option key={block.productBlockId} value={block.productBlockId}>
-                  {block.productBlockId} - {block.location} - {block.warehouse}
+                <option key={block.ProductBlockId} value={block.ProductBlockId}>
+                  {block.ProductBlockId} - {block.LocationName}
                 </option>
               ))}
             </select>

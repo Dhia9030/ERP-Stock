@@ -1,17 +1,115 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../components/common/Header';
 import { CheckCircle, X } from 'lucide-react';
-import { usePurchase } from '../context/PurchaseProvider';
 
 const PurchaseDetails = () => {
-  const { purchaseData, markAsExecuted, markAsReceived } = usePurchase();
   const { purchaseId } = useParams();
-  console.log("orderId:", purchaseId);
+  const [purchase, setPurchase] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isReceived, setIsReceived] = useState(false);
 
-  const purchase = purchaseData.find(p => p.id === purchaseId);
-  const [selectedProduct, setSelectedProduct] = useState(purchase ? purchase.products[0] : null);
-  const [isReceived, setIsReceived] = useState(purchase ? purchase.received : false);
+  useEffect(() => {
+    const fetchPurchaseDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:5188/Test/detailof an order?id=${purchaseId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setPurchase({
+          id: data.OrderId,
+          supplier: data.Supplier ? data.Supplier.Name : 'N/A',
+          total: data.TotalAmount,
+          status: data.Status,
+          orderDate: new Date(data.CreationDate).toLocaleDateString(),
+          executed: data.Status === 1, // Assuming status 1 means executed
+          received: data.Status === 5, // Assuming status 5 means received
+          products: data.OrderProducts ? data.OrderProducts.map(orderProduct => ({
+            id: orderProduct.Product.ProductId, // Correctly accessing ProductId
+            name: orderProduct.Product.Name,
+            quantity: orderProduct.Quantity,
+            price: orderProduct.Product.Price,
+            details: [] // Details will be populated when marked as executed
+          })) : []
+        });
+        setIsReceived(data.Status === 5);
+        setSelectedProduct(data.OrderProducts ? data.OrderProducts[0] : null);
+      } catch (error) {
+        console.error('Failed to fetch purchase details:', error);
+      }
+    };
+
+    fetchPurchaseDetails();
+  }, [purchaseId]);
+
+  const fetchProductDetails = async (orderId, productId) => {
+    try {
+      const url = `http://localhost:5188/Test/get%20ItemFrom%20A%20specific%20Buy%20order%20and%20a%20product?OrderId=${orderId}&ProductId=${productId}`;
+      console.log('Fetching product details from URL:', url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('Product details:', data);
+      return data.items.map(item => ({
+        productItemId: item.ItemId,
+        warehouse: item.warehouseName,
+        location: item.locationName
+      }));
+    } catch (error) {
+      console.error('Failed to fetch product details:', error);
+      return [];
+    }
+  };
+
+  const handleMarkAsExecuted = async () => {
+    try {
+      const response = await fetch(`http://localhost:5188/api/Order/executeBuyOrder/${purchaseId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: ''
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log('Order executed successfully');
+
+      // Update the executed status
+      setPurchase(prevPurchase => ({ ...prevPurchase, executed: true }));
+
+      // Fetch the details for each product from the new endpoint
+      const updatedProducts = await Promise.all(purchase.products.map(async (product) => {
+        console.log('Fetching details for product:', product);
+        const details = await fetchProductDetails(purchaseId, product.id);
+        return { ...product, details };
+      }));
+
+      setPurchase(prevPurchase => ({ ...prevPurchase, products: updatedProducts }));
+      console.log('Updated products:', updatedProducts);
+    } catch (error) {
+      console.error('Failed to execute order:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (purchase && purchase.executed) {
+      const updateProductDetails = async () => {
+        const updatedProducts = await Promise.all(purchase.products.map(async (product) => {
+          const details = await fetchProductDetails(purchaseId, product.id);
+          return { ...product, details };
+        }));
+
+        setPurchase(prevPurchase => ({ ...prevPurchase, products: updatedProducts }));
+        console.log('Updated products:', updatedProducts);
+      };
+
+      updateProductDetails();
+    }
+  }, [purchase && purchase.executed]);
 
   if (!purchase) {
     return <div>Purchase not found</div>;
@@ -23,9 +121,25 @@ const PurchaseDetails = () => {
     setSelectedProduct(selectedProduct === product ? null : product);
   };
 
-  const handleMarkAsReceived = () => {
-    markAsReceived(purchase.id);
-    setIsReceived(true);
+  const handleMarkAsReceived = async () => {
+    try {
+      const response = await fetch(`http://localhost:5188/api/Order/ConfirmBuy/${purchaseId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: ''
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log('Order marked as received successfully');
+
+      // Update the received status
+      setIsReceived(true);
+    } catch (error) {
+      console.error('Failed to mark order as received:', error);
+    }
   };
 
   return (
@@ -54,7 +168,7 @@ const PurchaseDetails = () => {
             ))}
           </ul>
         </div>
-        {selectedProduct && (
+        {selectedProduct && selectedProduct.details && (
           <div className='max-h-48 overflow-y-scroll mt-4'>
             <h3 className='text-xl font-semibold text-violet-300 mb-2'><span className='underline text-2xl'>{selectedProduct.name}</span> Details</h3>
             <table className='min-w-full border-spacing-y-4'>
@@ -87,11 +201,9 @@ const PurchaseDetails = () => {
           {purchaseStatus}
         </span></p>
         <button
-          onClick={() => {
-            markAsExecuted(purchase.id);
-          }}
-          disabled={purchase.executed}
-          className={`absolute bottom-4 right-52 px-4 py-2 ${!purchase.executed ? `bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
+          onClick={handleMarkAsExecuted}
+          disabled={purchase.executed || isReceived}
+          className={`absolute bottom-4 right-52 px-4 py-2 ${!purchase.executed && !isReceived ? `bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75` : `bg-gray-500 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}`}
         >
           Mark as Executed
         </button>

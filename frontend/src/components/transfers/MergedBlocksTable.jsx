@@ -2,32 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 import * as SignalR from '@microsoft/signalr';
+import { useTransfer } from '../../context/TransferProvider';
 
-const mergedBlocks = [
-  {
-    sourceBlockId: 1,
-    sourceQuantity: 5,
-    destinationBlockId: 2,
-    destinationQuantity: 10,
-    location: "Aisle1",
-    warehouse: "Main Warehouse",
-    newQuantity: 15
-  },
-  {
-    sourceBlockId: 3,
-    sourceQuantity: 8,
-    destinationBlockId: 4,
-    destinationQuantity: 12,
-    location: "Aisle2",
-    warehouse: "Secondary Warehouse",
-    newQuantity: 20
-  }
-];
+
 
 const MergedBlocksTable = () => {
-  const [blocks, setBlocks] = useState(mergedBlocks);
+  const { useMerge } = useTransfer();
+  const mergedBlocks = useMerge();
+  console.log('Merged Blocks mn 3nd si sahbi:', mergedBlocks);
+
+  const [blocks, setBlocks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredBlocks, setFilteredBlocks] = useState(mergedBlocks);
+  const [filteredBlocks, setFilteredBlocks] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
 
   useEffect(() => {

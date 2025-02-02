@@ -17,7 +17,6 @@ appsettings.json
 bin/
 obj/
 
-Program.cs
 appsettings.json
 
 Migrations/

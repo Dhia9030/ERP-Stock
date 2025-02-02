@@ -32,7 +32,7 @@ public class MadeStockMovement : IMadeStockMovement
         var productBlock = await _productBlockRepository.FindProductBlockToTransfer(productBlockId,q => q
             .Include(pb => pb.ProductItems)
             .Include(pb => pb.Location )
-            ,  true);
+            ,  false);
         
         if ((productBlock == null) || (productBlock.LocationId == newLocationId ))
         {

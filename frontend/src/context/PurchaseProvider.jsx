@@ -5,140 +5,63 @@ import useSignalR from '../SignalR';
 const purchaseContext = createContext();
 
 const PurchaseProvider = ({ children }) => {
-  const initialPurchaseData = [
-    {
-      id: "PUR001",
-      supplier: "Supplier A",
-      total: 5000,
-      orderDate: "2024-12-05",
-      executed: true,
-      received: false,
-      products: [
-        {
-          name: "Phone",
-          quantity: 50,
-          price: 100,
-          details: [
-            { productItemId: "P001", warehouse: "Main Warehouse", location: "Aisle1" }
-          ]
-        }
-      ]
-    },
-    {
-      id: "PUR002",
-      supplier: "Supplier B",
-      total: 9000,
-      orderDate: "2024-12-10",
-      executed: false,
-      received: false,
-      products: [
-        {
-          name: "Laptop",
-          quantity: 30,
-          price: 300,
-          details: [
-            { productItemId: "P002", warehouse: "Main Warehouse", location: "Aisle2" }
-          ]
-        }
-      ]
-    },
-    {
-      id: "PUR003",
-      supplier: "Supplier C",
-      total: 4000,
-      orderDate: "2024-12-15",
-      executed: true,
-      received: false,
-      products: [
-        {
-          name: "Tablet",
-          quantity: 20,
-          price: 200,
-          details: [
-            { productItemId: "P003", warehouse: "Secondary Warehouse", location: "Aisle3" }
-          ]
-        }
-      ]
-    },
-    {
-      id: "PUR004",
-      supplier: "Supplier D",
-      total: 8000,
-      orderDate: "2024-12-20",
-      executed: false,
-      received: false,
-      products: [
-        {
-          name: "Monitor",
-          quantity: 40,
-          price: 200,
-          details: [
-            { productItemId: "P004", warehouse: "Main Warehouse", location: "Aisle4" }
-          ]
-        }
-      ]
-    },
-    {
-      id: "PUR005",
-      supplier: "Supplier E",
-      total: 6000,
-      orderDate: "2024-12-25",
-      executed: true,
-      received: false,
-      products: [
-        {
-          name: "Keyboard",
-          quantity: 60,
-          price: 100,
-          details: [
-            { productItemId: "P005", warehouse: "Secondary Warehouse", location: "Aisle5" }
-          ]
-        }
-      ]
-    }
-  ];
+  
 
-  const [purchaseData, setPurchaseData] = useState(initialPurchaseData);
+  const [purchaseData, setPurchaseData] = useState([]);
 
+  
   useEffect(() => {
-    // Create a connection to the SignalR hub
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/purchasehub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
-
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub");
-
-        // Listen for updates from the server
-        connection.on("ReceivePurchases", (data) => {
-          console.log("Received purchases:", data);
-          setPurchaseData(data);
-        });
-
-        // Optionally, you can invoke a method on the server to request initial purchases
-        connection.invoke("GetInitialPurchases")
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
-
-    // Clean up the connection when the component unmounts
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
+    const fetchPurchases = async () => {
+      try {
+        const response = await fetch('http://localhost:5188/Test/getall buy order');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        // Filter out orders with status different from 0 (pending) or 1 (processing) and format the data
+        const filteredData = data
+          .filter(order => order.Status === 0 || order.Status === 1)
+          .map(order => ({
+            id: order.OrderId,
+            supplier: order.Supplier ? order.Supplier.Name : 'N/A',
+            total: order.TotalAmount,
+            status: order.Status,
+            orderDate: new Date(order.CreationDate).toLocaleDateString(),
+            executed: order.Status === 1, // Assuming status 1 means executed
+            received: order.Status === 5, // Assuming status 5 means received
+            products: order.OrderProducts ? order.OrderProducts.map(orderProduct => ({
+              name: orderProduct.Product.Name,
+              quantity: orderProduct.Quantity,
+              price: orderProduct.Product.Price,
+              details: [] // Details will be populated when marked as executed
+            })) : []
+          }));
+        setPurchaseData(filteredData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
     };
+
+    const intervalId = setInterval(fetchPurchases, 5000);
+    return () => clearInterval(intervalId);
+
   }, []);
 
+
   const markAsExecuted = (purchaseId) => {
-    setPurchaseData(prevData => {
-      return prevData.map(purchase => purchase.id === purchaseId ? { ...purchase, executed: true } : purchase);
-    });
+    setPurchaseData(prevData =>
+      prevData.map(purchase =>
+        purchase.id === purchaseId ? { ...purchase, executed: true } : purchase
+      )
+    );
   };
 
   const markAsReceived = (purchaseId) => {
-    setPurchaseData(prevData => {
-      return prevData.map(purchase => purchase.id === purchaseId ? { ...purchase, received: true } : purchase);
-    });
+    setPurchaseData(prevData =>
+      prevData.map(purchase =>
+        purchase.id === purchaseId ? { ...purchase, received: true } : purchase
+      )
+    );
   };
 
   return (

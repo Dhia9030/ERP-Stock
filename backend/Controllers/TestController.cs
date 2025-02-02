@@ -175,31 +175,40 @@ public class TestController : Controller
         });
     }
     
-    [Route("transfer product block")]
-    [HttpPost]
-    public async Task<IActionResult> Index12(int productBlockId , int newLocationId)
+[Route("transferproductblock")]
+[HttpPost]
+public async Task<IActionResult> Index12([FromBody] TransferRequest request)
+{
+    var order = await _madeStockMovement.TransferProductBlockAsync(request.ProductBlockId, request.NewLocationId);
+    return Json(order, new JsonSerializerOptions
     {
-        var order = await _madeStockMovement.TransferProductBlockAsync(productBlockId, newLocationId);
-        return Json(order ,new JsonSerializerOptions{
-            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
-            WriteIndented = false,
-           
-            
-        });
-    }
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        WriteIndented = false,
+    });
+}
+
+public class TransferRequest
+{
+    public int ProductBlockId { get; set; }
+    public int NewLocationId { get; set; }
+}
     
-    [Route("merge product blocks")]
+    [Route("mergeproductblocks")]
     [HttpPost]
-    public async Task<IActionResult> Index13(int sourceBlockId , int destinationBlockId)
+    public async Task<IActionResult> Index13([FromBody] MergeRequest request)
     {
-        var order = await _madeStockMovement.MergeProductBlocksAsync(sourceBlockId, destinationBlockId);
-        return Json(order ,new JsonSerializerOptions{
-            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+        var order = await _madeStockMovement.MergeProductBlocksAsync(request.SourceBlockId, request.DestinationBlockId);
+        return Json(order, new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
-           
-            
         });
     }
+    public class MergeRequest
+{
+    public int SourceBlockId { get; set; }
+    public int DestinationBlockId { get; set; }
+}
     
     [Route("get ItemFrom A specific Buy order and a product")]
     [HttpGet]
