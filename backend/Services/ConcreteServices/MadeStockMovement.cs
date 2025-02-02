@@ -39,7 +39,7 @@ public class MadeStockMovement : IMadeStockMovement
             throw new ArgumentException("Product block not found or already in the same location.");
         }
 
-        var newLocation = await _locationRepository.GetLocationByIdForTransfer(newLocationId, asNoTracking: true);
+        var newLocation = await _locationRepository.GetLocationByIdForTransfer(newLocationId);
         
         if (newLocation == null)
         {

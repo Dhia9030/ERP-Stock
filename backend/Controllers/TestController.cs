@@ -178,13 +178,19 @@ public class TestController : Controller
 [Route("transferproductblock")]
 [HttpPost]
 public async Task<IActionResult> Index12([FromBody] TransferRequest request)
-{
+{ 
+    try{
     var order = await _madeStockMovement.TransferProductBlockAsync(request.ProductBlockId, request.NewLocationId);
     return Json(order, new JsonSerializerOptions
     {
         ReferenceHandler = ReferenceHandler.IgnoreCycles,
         WriteIndented = false,
     });
+    }
+    catch (Exception e)
+    {
+        return BadRequest(e.Message);
+    }
 }
 
 public class TransferRequest
@@ -197,12 +203,20 @@ public class TransferRequest
     [HttpPost]
     public async Task<IActionResult> Index13([FromBody] MergeRequest request)
     {
+        try
+        {
+            
         var order = await _madeStockMovement.MergeProductBlocksAsync(request.SourceBlockId, request.DestinationBlockId);
         return Json(order, new JsonSerializerOptions
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
         });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     public class MergeRequest
 {
@@ -278,13 +292,13 @@ public class TransferRequest
         });
     }
     
-    [Route("delete product block")]
+    [Route("deleteproductblock")]
     [HttpPost]
-    public async Task<IActionResult> Index18(int productBlockId)
+    public async Task<IActionResult> Index18(deleteRequest request)
     {
         try
         {
-        var order = await _madeStockMovement.DeleteProductBlockAsync(productBlockId);
+        var order = await _madeStockMovement.DeleteProductBlockAsync(request.ProductBlockId);
         return Json(order ,new JsonSerializerOptions{
             ReferenceHandler =  ReferenceHandler.IgnoreCycles,
             WriteIndented = false,
@@ -297,6 +311,12 @@ public class TransferRequest
             return BadRequest(e.Message);
         }
     }
+    
+    public class deleteRequest
+    {
+        public int ProductBlockId { get; set; }
+    }
+    
     
     
     
