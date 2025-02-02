@@ -11,6 +11,7 @@ const TransferTable = ({ type }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTransfers, setFilteredTransfers] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (type === "IN") {
@@ -40,6 +41,12 @@ const TransferTable = ({ type }) => {
     setExpandedRow(expandedRow === index ? null : index);
   };
 
+  const handleShowAllClick = () => {
+    setShowAll(!showAll);
+  };
+
+  const displayedTransfers = showAll ? filteredTransfers : filteredTransfers.slice(0, 7);
+
   return (
     <motion.div
       className="ml-14 mt-2 w-11/12 bg-gradient-to-br from-sky-800 to-sky-900 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border mb-8"
@@ -67,7 +74,7 @@ const TransferTable = ({ type }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredTransfers.map((transfer, index) => (
+            {displayedTransfers.map((transfer, index) => (
               <React.Fragment key={index}>
                 <motion.tr
                   onClick={() => handleRowClick(index)}
@@ -119,6 +126,16 @@ const TransferTable = ({ type }) => {
             ))}
           </tbody>
         </table>
+        {filteredTransfers.length > 7 && (
+          <div className="text-center mt-4">
+            <button
+              onClick={handleShowAllClick}
+              className="px-4 py-2 bg-blue-400 text-white rounded-lg"
+            >
+              {showAll ? 'Show Less' : 'See All'}
+            </button>
+          </div>
+        )}
       </div>
     </motion.div>
   );

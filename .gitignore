@@ -111,6 +111,6 @@ testhost.*
 .idea/
 
 backend/appsettings.Development.json
-backend/appsettings.json
+
 
 backend/Migrations

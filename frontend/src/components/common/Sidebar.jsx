@@ -67,7 +67,7 @@ const Sidebar = () => {
 				<Link className="flex  mb-12 justify-center items-center min-w-full" key="/add" to="/add" >
 				
 				<button className=" mb-[40px] ml-auto max-h-12  min-w-[60px] group cursor-pointer outline-none " title="Add New">
-					{isSidebarOpen && <span className=" text-lg w-96 ">Add Admin</span>}
+					{isSidebarOpen && <span className=" text-lg w-96 ">Add Stock Manager</span>}
 				<svg className="ml-auto mr-auto stroke-sky-500 fill-none hover:rotate-90 duration-300 group-hover:fill-white group-active:stroke-sky-200 group-active:fill-sky-600 group-active:duration-0 duration-300" viewBox="0 0 24 24" height="60px" width="60px" xmlns="http://www.w3.org/2000/svg">
 					<path strokeWidth="1.5" d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" />
 					<path strokeWidth="1.5" d="M8 12H16" />

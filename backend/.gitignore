@@ -17,6 +17,5 @@ appsettings.json
 bin/
 obj/
 
-appsettings.json
 
 Migrations/

@@ -11,20 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-<<<<<<< HEAD
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.UseMySql(
         connectionString,
         ServerVersion.AutoDetect(connectionString)));
     //UseSqlServer(connectionString));
     //UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-=======
-builder.Services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServer(connectionString));
-
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServer(connectionString));
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>options.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString)));  
-
->>>>>>> 2ab2d8906cbdea1775efaedcfbc9ee6a0e4803b8
 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

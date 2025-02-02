@@ -69,9 +69,9 @@ const Form = () => {
   };
 
   return (
-    <StyledWrapper>
-      <form className="form" onSubmit={handleSubmit}>
-        <p className="text-center title">Add admin</p>
+    <StyledWrapper >
+      <form className="form " onSubmit={handleSubmit}>
+        <p className="text-center title">Add Stock Manager</p>
         <div className="flex">
           <label>
             <input className="input" type="text" value={firstName} onChange={handleFirstName} placeholder="" required />

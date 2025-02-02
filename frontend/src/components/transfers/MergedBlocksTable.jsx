@@ -1,55 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
-import * as SignalR from '@microsoft/signalr';
 import { useTransfer } from '../../context/TransferProvider';
-
-
 
 const MergedBlocksTable = () => {
   const { useMerge } = useTransfer();
   const mergedBlocks = useMerge();
   console.log('Merged Blocks mn 3nd si sahbi:', mergedBlocks);
 
-  const [blocks, setBlocks] = useState([]);
+  const [blocks, setBlocks] = useState(mergedBlocks);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBlocks, setFilteredBlocks] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
 
   useEffect(() => {
-    // Uncomment the following code to fetch data from SignalR
-    /*
-    const connection = new SignalR.HubConnectionBuilder()
-      .withUrl("https://localhost:5001/transferhub")
-      .configureLogging(SignalR.LogLevel.Information)
-      .build();
-
-    connection.start()
-      .then(() => {
-        console.log("Connected to SignalR hub for merged blocks");
-
-        connection.on("ReceiveMergedBlocks", (data) => {
-          console.log("Received merged blocks:", data);
-          setBlocks(data);
-          setFilteredBlocks(data);
-        });
-
-        connection.invoke("GetInitialMergedBlocks")
-          .catch(err => console.error(err.toString()));
-      })
-      .catch(err => console.error("Error connecting to SignalR hub:", err));
-
-    return () => {
-      connection.stop().then(() => console.log("Disconnected from SignalR hub"));
-    };
-    */
-  }, []);
+    setBlocks(mergedBlocks);
+    setFilteredBlocks(mergedBlocks);
+  }, [mergedBlocks]);
 
   useEffect(() => {
-    const filtered = blocks.filter((block) =>
-      block.location.toLowerCase().includes(searchTerm) ||
-      block.warehouse.toLowerCase().includes(searchTerm)
-    );
+    const filtered = blocks.filter((block) => {
+      if (!block || !block.sourceLocation || !block.destinationLocation || !block.productName) return false;
+      return (
+        block.sourceLocation.toLowerCase().includes(searchTerm) ||
+        block.destinationLocation.toLowerCase().includes(searchTerm) ||
+        block.productName.toLowerCase().includes(searchTerm)
+      );
+    });
     setFilteredBlocks(filtered);
   }, [searchTerm, blocks]);
 
@@ -81,13 +58,14 @@ const MergedBlocksTable = () => {
         <table className="min-w-full border-spacing-y-4">
           <thead>
             <tr className="text-gray-100">
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Source Block ID</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Source Quantity</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Destination Block ID</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Destination Quantity</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Location</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Warehouse</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">New Quantity</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">ID</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Product Name</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Category</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Quantity</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Source Location</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Destination Location</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Date</th>
+              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Created By</th>
             </tr>
           </thead>
           <tbody>
@@ -100,17 +78,18 @@ const MergedBlocksTable = () => {
                   transition={{ duration: 0.3 }}
                   className="cursor-pointer text-gray-100 hover:bg-gray-800 border-b-[1px] border-gray-700"
                 >
-                  <td className="px-6 py-4 text-sm">{block.sourceBlockId}</td>
-                  <td className="px-6 py-4 text-sm">{block.sourceQuantity}</td>
-                  <td className="px-6 py-4 text-sm">{block.destinationBlockId}</td>
-                  <td className="px-6 py-4 text-sm">{block.destinationQuantity}</td>
-                  <td className="px-6 py-4 text-sm">{block.location}</td>
-                  <td className="px-6 py-4 text-sm">{block.warehouse}</td>
-                  <td className="px-6 py-4 text-sm">{block.newQuantity}</td>
+                  <td className="px-6 py-4 text-sm">{block.id}</td>
+                  <td className="px-6 py-4 text-sm">{block.productName}</td>
+                  <td className="px-6 py-4 text-sm">{block.categoryName}</td>
+                  <td className="px-6 py-4 text-sm">{block.quantity}</td>
+                  <td className="px-6 py-4 text-sm">{block.sourceLocation}</td>
+                  <td className="px-6 py-4 text-sm">{block.destinationLocation}</td>
+                  <td className="px-6 py-4 text-sm">{block.date}</td>
+                  <td className="px-6 py-4 text-sm">{block.createdBy}</td>
                 </motion.tr>
                 {expandedRow === index && (
                   <tr>
-                    <td colSpan="7" className="px-6 py-4">
+                    <td colSpan="8" className="px-6 py-4">
                       <AnimatePresence>
                         <motion.div
                           initial={{ opacity: 0 }}
@@ -119,13 +98,15 @@ const MergedBlocksTable = () => {
                           className="bg-gray-800 p-4 rounded-lg"
                         >
                           <h3 className="text-lg font-bold mb-2">Details</h3>
-                          <p className="text-gray-100">Source Block ID: {block.sourceBlockId}</p>
-                          <p className="text-gray-100">Source Quantity: {block.sourceQuantity}</p>
-                          <p className="text-gray-100">Destination Block ID: {block.destinationBlockId}</p>
-                          <p className="text-gray-100">Destination Quantity: {block.destinationQuantity}</p>
-                          <p className="text-gray-100">Location: {block.location}</p>
-                          <p className="text-gray-100">Warehouse: {block.warehouse}</p>
-                          <p className="text-gray-100">New Quantity: {block.newQuantity}</p>
+                          <p className="text-gray-100">ID: {block.id}</p>
+                          <p className="text-gray-100">Product Name: {block.productName}</p>
+                          <p className="text-gray-100">Category: {block.categoryName}</p>
+                          <p className="text-gray-100">Quantity: {block.quantity}</p>
+                          <p className="text-gray-100">Source Location: {block.sourceLocation}</p>
+                          <p className="text-gray-100">Destination Location: {block.destinationLocation}</p>
+                          <p className="text-gray-100">Date: {block.date}</p>
+                          <p className="text-gray-100">Created By: {block.createdBy}</p>
+                          <p className="text-gray-100">Product Item IDs: {block.productItemIds.join(', ')}</p>
                         </motion.div>
                       </AnimatePresence>
                     </td>
