@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { div } from "framer-motion/client";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
-
+import { useProducts } from "../../context/ProductProvider";
 const categoryData = [
 	{ name: "Electronics", value: 4500 },
 	{ name: "Clothing", value: 3200 },
@@ -13,6 +13,22 @@ const categoryData = [
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
 const CategoryDistributionChart = () => {
+
+	const products = useProducts();
+	const categoryData =products.reduce((acc, product) => {
+		const category = product.category;
+		const existingCategory = acc.find(item => item.name === category);
+	
+		if (existingCategory) {
+			existingCategory.value += product.stock;
+		} else {
+			acc.push({ name: category, value: product.stock });
+		}
+	
+		return acc;
+	}, []);
+
+
 	return (
 		
 		<motion.div

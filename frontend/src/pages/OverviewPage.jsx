@@ -19,6 +19,14 @@ const OverviewPage = () => {
 
 
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const PRODUCT_DATA = useProducts();
+	
+	const [productsLength, setProductsLength] = useState(0);
+	useEffect(() => {
+		if (PRODUCT_DATA.length > 0) {
+			setProductsLength(PRODUCT_DATA.length);
+		}
+	}, [PRODUCT_DATA]);
 
   // 
 
@@ -35,8 +43,7 @@ const OverviewPage = () => {
           transition={{ duration: 0.5 }}
         >
           <div className="mr-52 h-96 flex flex-col justify-center align-center gap-4">
-          <StatCard name='Total Sales' icon={Zap} value='$12,345' color='#6366F1' />
-          <StatCard name='Total Products' icon={ShoppingBag} value='567' color='#EC4899' />
+          <StatCard name='Total Products' icon={ShoppingBag} value={productsLength} color='#EC4899' />
           </div>
           
           <Category

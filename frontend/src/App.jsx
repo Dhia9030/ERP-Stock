@@ -19,17 +19,19 @@ import "react-toastify/dist/ReactToastify.css";
 import Purchases from "./pages/Purchases";
 import { useNotification } from "./context/NotificationProvider";
 import { useContext } from "react";
-
+import { getToken } from './utility/storage';
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const token = getToken();
+    if (!token && location.pathname !== '/login') {
       navigate('/login');
+    } else if (token && location.pathname === '/login') {
+      navigate('/'); // Redirect to home or any other default page if already authenticated
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   const { notificationOn } = useNotification();
 
@@ -75,6 +77,7 @@ function App() {
 
   return (
     <div>
+      <ToastContainer containerId="login" />
       {!isLoginPage && notificationOn && <ToastContainer />}
       <div className="area"></div>
       <div className='bg-fiber-carbon flex h-screen text-gray-100 overflow-hidden'>

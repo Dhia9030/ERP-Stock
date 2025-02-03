@@ -23,7 +23,7 @@ const ProductsPage = () => {
 			setProductsLength(PRODUCT_DATA.length);
 		}
 	}, [PRODUCT_DATA]);
-	console.log('mawjouda', productsLength);
+	//console.log('mawjouda', productsLength);
 	return (
 		<div className='flex-1 overflow-auto relative z-10'>
 			<Header  title='Products' />

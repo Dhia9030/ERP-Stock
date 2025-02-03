@@ -2,6 +2,9 @@ import { BarChart2, Receipt ,Clock, Menu, Settings, ShoppingBag, ShoppingCart, T
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { getUserRole } from "../../utility/storage";
+
+
 
 const SIDEBAR_ITEMS = [
 	{
@@ -23,6 +26,10 @@ const SIDEBAR_ITEMS = [
 ];
 
 const Sidebar = () => {
+
+	const role = getUserRole();
+	console.log("role mt3i: ", role);
+
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 	return (
@@ -63,7 +70,7 @@ const Sidebar = () => {
 						</Link>
 					))}
 				</nav>
-				<div className="flex justify-center items-center">
+				{role==="Admin" && <div className="flex justify-center items-center">
 				<Link className="flex  mb-12 justify-center items-center min-w-full" key="/add" to="/add" >
 				
 				<button className=" mb-[40px] ml-auto max-h-12  min-w-[60px] group cursor-pointer outline-none " title="Add New">
@@ -75,7 +82,7 @@ const Sidebar = () => {
 				</svg>
 				</button>
 				</Link>
-				</div>
+				</div>}
 				
 				
 	

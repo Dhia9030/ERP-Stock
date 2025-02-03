@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
+import { getToken } from '../utility/storage';
 const TransferContext = createContext();
 
 export const TransferProvider = ({ children }) => {
@@ -12,8 +12,18 @@ export const TransferProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchTransfers = async () => {
+      const token = getToken();
+      if (!token) {
+        console.log('User is not authenticated. Skipping fetch.');
+        return;
+      }
+
       try {
-        const response = await fetch('http://localhost:5188/Test/get all stock movement');
+        const response = await fetch('http://localhost:5188/Test/get all stock movement', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -32,7 +42,7 @@ export const TransferProvider = ({ children }) => {
           productItemIds: transfer.productItemIds
         }));
         setTransfers(formattedData);
-        console.log('Transfers lkol:', formattedData);
+        console.log('Transfers:', formattedData);
       } catch (error) {
         console.error('Error fetching transfers:', error);
       }
@@ -47,12 +57,6 @@ export const TransferProvider = ({ children }) => {
     setDeletedTransfers(transfers.filter(transfer => transfer.type === 4));
     setInternalTransfers(transfers.filter(transfer => transfer.type === 2));
     setMergeTransfers(transfers.filter(transfer => transfer.type === 3));
-    // console.log( transfers);
-    // console.log("Imported Transfers tawa:", importTransfers);
-    // console.log("Exported Transfers:", exportTransfers);
-    // console.log("Deleted Transfers:", deletedTransfers);
-    // console.log("Internal Transfers:", internalTransfers);
-    // console.log("Merge Transfers:", mergeTransfers);
   }, [transfers]);
 
   const useImport = () => {

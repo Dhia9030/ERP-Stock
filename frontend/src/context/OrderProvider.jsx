@@ -1,19 +1,32 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import * as SignalR from '@microsoft/signalr';
 import useSignalR from '../SignalR';
+import { getToken } from '../utility/storage';
 
 
 const orderContext = createContext();
 
 const OrderProvider = ({ children }) => {
+  
 
   //fetching orders
 
   const [orderData, setOrderData] = useState([]);
   useEffect(() => {
     const fetchOrderData = async () => {
+      const token = getToken();
+      if (!token) {
+        console.log('User is not authenticated. Skipping fetch.');
+        return;
+      }
       try {
-        const response = await fetch('http://localhost:5188/Test/getall sells order');
+        const response = await fetch('http://localhost:5188/Test/getall sells order',
+          // {
+          //   headers: {
+          //     'Authorization': `Bearer ${token}`
+          //   }
+          // }
+        );
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

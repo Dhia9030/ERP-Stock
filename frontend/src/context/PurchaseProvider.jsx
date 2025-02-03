@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import * as SignalR from '@microsoft/signalr';
 import useSignalR from '../SignalR';
+import { getToken } from '../utility/storage';
 
 const purchaseContext = createContext();
 
@@ -12,6 +13,11 @@ const PurchaseProvider = ({ children }) => {
   
   useEffect(() => {
     const fetchPurchases = async () => {
+      const token = getToken();
+            if (!token) {
+              console.log('User is not authenticated. Skipping fetch.');
+              return;
+            }
       try {
         const response = await fetch('http://localhost:5188/Test/getall buy order');
         if (!response.ok) {

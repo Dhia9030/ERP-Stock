@@ -5,8 +5,20 @@ import InternalTransfer from "../components/transfers/InternalTransfer.jsx"
 import InternalTransferTable from "../components/transfers/InternalTransferTable.jsx"
 import MergedBlocksTable from "../components/transfers/MergedBlocksTable.jsx"
 import DeletedBlocksTable from "../components/transfers/DeletedBlocksTable.jsx"
-
+import { useNavigate , useLocation } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { getToken } from "../utility/storage.jsx"
 const Transfers = ()=>{
+    const navigate = useNavigate();
+      const location = useLocation();
+    
+      
+        const token = getToken();
+        if (!token && location.pathname !== '/login') {
+          navigate('/login');
+          return;
+        } 
+      
     return (
         <div className="flex-1 overflow-auto relative z-10">
             <Header title="Transfers"/>

@@ -1,6 +1,7 @@
 import {createContext , useContext , useEffect , useState} from 'react';
 import * as SignalR from '@microsoft/signalr';
 import useSignalR from '../SignalR';
+import { getToken } from '../utility/storage';
 
 const productContext = createContext();
 
@@ -8,8 +9,17 @@ const ProductProvider=({children})=>{
     const [products, setProducts] = useState([]);
     useEffect(() => {
         const fetchProducts = async () => {
+            const token = getToken();
+                  if (!token) {
+                    console.log('User is not authenticated. Skipping fetch.');
+                    return;
+                  }
             try {
-                const response = await fetch('http://localhost:5188/Test/getAllProduct'); // Replace with your API endpoint
+                const response = await fetch('http://localhost:5188/Test/getAllProduct',{
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                      }
+                }); 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

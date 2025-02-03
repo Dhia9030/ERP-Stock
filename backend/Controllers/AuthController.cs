@@ -15,9 +15,19 @@ public class AuthController : Controller
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginCredentials loginCredentials)
-    {
-        var result = await _authentificationService.Login(loginCredentials);
-        return Ok(result);
-    }
+        public async Task<IActionResult> Login([FromBody] LoginCredentials loginCredentials)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authentificationService.Login(loginCredentials);
+            if (result == null)
+            {
+                return Unauthorized(new { message = "Invalid credentials" });
+            }
+
+            return Ok(result);
+        }
 }
