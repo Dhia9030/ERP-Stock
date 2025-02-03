@@ -23,13 +23,15 @@ public class TestController : Controller
     private readonly IStockMovementService _stockMovementService;
     private readonly IProductWithBlocksService _productWithBlocksService;
     private readonly IMadeStockMovement _madeStockMovement;
+    private readonly IWarehouseService _warehouseService;
     
     public TestController(AppDbContext db , IOrderRepository orderRepository, 
         IOrderProductsRepository orderProductsRepository , 
         IGetOrderService getOrderService, IGetProductService getProductService
         ,ILocationService locationService , IStockMovementService stockMovementService
         ,IProductWithBlocksService productWithBlocksService
-        ,IMadeStockMovement madeStockMovement)
+        ,IMadeStockMovement madeStockMovement
+        ,IWarehouseService warehouseService)
     {
         _db = db;
         _orderRepository = orderRepository;
@@ -40,6 +42,7 @@ public class TestController : Controller
         _stockMovementService = stockMovementService;
         _productWithBlocksService = productWithBlocksService;
         _madeStockMovement = madeStockMovement;
+        _warehouseService = warehouseService;
         
     }
     
@@ -396,6 +399,18 @@ public class TransferRequest
         public int ProductBlockId { get; set; }
     }
     
+    [Route("getWarehouseWithLocations")]
+    [HttpGet]
+    public async Task<IActionResult> Index21(int warehouseId)
+    {
+        var warehouseWithLocations = await _warehouseService.getWarehouseWithLocations(warehouseId);
+        return Json(warehouseWithLocations ,new JsonSerializerOptions{
+            ReferenceHandler =  ReferenceHandler.IgnoreCycles,
+            WriteIndented = false,
+           
+            
+        });
+    }
     
     
     
