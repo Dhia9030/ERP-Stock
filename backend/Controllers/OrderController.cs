@@ -1,4 +1,6 @@
-﻿using backend.Services.ServicesContract;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using backend.Services.ServicesContract;
 using Microsoft.AspNetCore.Mvc;
 using StockManagement.Services;
 
@@ -10,12 +12,16 @@ namespace StockManagement.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IConfirmOrderService _confirmOrderService;
+        
+        
 
         public OrderController(IOrderService orderService , IConfirmOrderService confirmOrderService)
         {
             _orderService = orderService;
             _confirmOrderService = confirmOrderService;
         }
+        
+        
         
         [HttpPost("executeBuyOrder/{orderId}")]
         public async Task<IActionResult> ExecuteBuyOrderAsync(int orderId)

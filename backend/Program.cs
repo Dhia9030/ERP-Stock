@@ -169,6 +169,7 @@ builder.Services.AddScoped<IMadeStockMovement,MadeStockMovement>();
 builder.Services.AddScoped<IStockMovementService, StockMovementService>();
 builder.Services.AddScoped<IConfirmOrderService,ConfirmOrderService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IOrderProductServices, OrderProductService>();
 
 
 
