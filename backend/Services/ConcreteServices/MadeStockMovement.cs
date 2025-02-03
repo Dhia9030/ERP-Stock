@@ -263,7 +263,7 @@ public class MadeStockMovement : IMadeStockMovement
         location.isEmpty = true;
         await _locationRepository.UpdateAsync(location);
         
-        productBlock.LocationId = 3; // 3 is the id of the Expired location
+        productBlock.LocationId = 3; // 3 is the id of the Expired location , this we will remove it later
         
         
         var product = productBlock.Product;

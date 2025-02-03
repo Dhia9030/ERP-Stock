@@ -16,6 +16,8 @@ namespace StockManagement.Models
         public Warehouse Warehouse { get; set; }
         
         public Boolean isEmpty { get; set; }
+        
+        
 
     }
 }
