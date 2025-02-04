@@ -16,5 +16,11 @@ public interface IOrderRepository : IRepository<Order>
 
     public Task<IEnumerable<SellOrder>> FindSellOrdersAsync(Expression<Func<SellOrder, bool>> predicate,
         Func<IQueryable<SellOrder>, IQueryable<SellOrder>>? include = null);
+    
+    public Task<int> GetAddedQuantityForASpecificProductPerDayAsync(int productId, DateTime date);
+    
+    public Task<int> GetSoldQuantityForASpecificProductPerDayAsync(int productId, DateTime date);
+    
+    
 
 }

@@ -26,7 +26,7 @@ const PurchaseProvider = ({ children }) => {
         const data = await response.json();
         // Filter out orders with status different from 0 (pending) or 1 (processing) and format the data
         const filteredData = data
-          .filter(order => order.Status === 0 || order.Status === 1)
+          .filter(order => order.Status === 0 || order.Status === 1 || order.Status === 5)
           .map(order => ({
             id: order.OrderId,
             supplier: order.Supplier ? order.Supplier.Name : 'N/A',

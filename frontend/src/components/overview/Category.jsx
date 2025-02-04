@@ -3,7 +3,7 @@ import './Category.css';
 
 const Category = ({selectedCategory, setSelectedCategory}) => {
   const [activeButton, setActiveButton] = useState(null);
-  const categories = ['all', 'furniture', 'electronics', 'food', 'clothing', 'beauty'];
+  const categories = ['all', 'electronics', 'food', 'clothing'];
 
   const handleButtonClick = (index ) => {
     
