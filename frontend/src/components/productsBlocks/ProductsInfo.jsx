@@ -7,7 +7,7 @@ const ProductsInfo = () => {
   const [loading, setLoading] = useState(true);
   const [expandedCategories, setExpandedCategories] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("available");
 
   useEffect(() => {
     fetch("http://localhost:5188/Test/get all product with blocks", {

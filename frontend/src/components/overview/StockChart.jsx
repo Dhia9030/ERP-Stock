@@ -15,7 +15,7 @@ const StockChart = ({ selectedCategory }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://localhost:7073/api/Prediction/PredictionForAllCategories');
+        const response = await fetch('http://localhost:5188/api/Prediction/PredictionForAllCategories');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         

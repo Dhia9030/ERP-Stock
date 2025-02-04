@@ -1,31 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from "framer-motion";
-import { Search, Eye, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import * as SignalR from '@microsoft/signalr';
+import { debounce } from 'lodash';
 import { usePurchase } from "../../context/PurchaseProvider";
 
 const PurchasesTable = () => {
-  const { purchaseData, setPurchaseData } = usePurchase();
+  const { purchaseData } = usePurchase();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPurchases, setFilteredPurchases] = useState(purchaseData);
   const navigate = useNavigate();
-
-  //console.log('PurchasesTable purchaseData:', purchaseData);
 
   useEffect(() => {
     setFilteredPurchases(purchaseData);
   }, [purchaseData]);
 
- 
+  const handleSearch = useCallback(
+    debounce((term) => {
+      const filtered = purchaseData.filter(
+        (purchase) =>
+          purchase.id.toLowerCase().includes(term) ||
+          purchase.supplier.toLowerCase().includes(term)
+      );
+      setFilteredPurchases(filtered);
+    }, 300),
+    [purchaseData]
+  );
 
-  const handleSearch = (e) => {
+  const onSearchChange = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-    const filtered = purchaseData.filter(
-      (purchase) => purchase.id.toLowerCase().includes(term) || purchase.supplier.toLowerCase().includes(term)
-    );
-    setFilteredPurchases(filtered);
+    handleSearch(term);
   };
 
   const handleViewPurchase = (purchaseId) => {
@@ -48,7 +53,7 @@ const PurchasesTable = () => {
             placeholder='Search purchases...'
             className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
             value={searchTerm}
-            onChange={handleSearch}
+            onChange={onSearchChange}
           />
           <Search className='absolute left-3 top-2.5 text-gray-400' size={18} />
         </div>
@@ -72,9 +77,6 @@ const PurchasesTable = () => {
               </th>
               <th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
                 Date
-              </th>
-              <th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-                Actions
               </th>
             </tr>
           </thead>
@@ -101,18 +103,24 @@ const PurchasesTable = () => {
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      purchase.executed ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                      purchase.status === 1
+                        ? "bg-green-100 text-green-800"
+                        : purchase.status === 0
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-blue-100 text-blue-800"
                     }`}
                   >
-                    {purchase.executed ? "Executed" : "Not Executed"}
+                    {purchase.status === 1
+                      ? "Executed"
+                      : purchase.status === 0
+                      ? "Not Executed"
+                      : "Received"}
                   </span>
                 </td>
-                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{purchase.orderDate}</td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-                  <button className='text-indigo-400 hover:text-indigo-300 mr-2'>
-                    <Eye size={18} />
-                  </button>
+                  {purchase.orderDate}
                 </td>
+                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'></td>
               </motion.tr>
             ))}
           </tbody>

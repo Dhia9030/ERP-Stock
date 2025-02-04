@@ -6,7 +6,7 @@ import { useTransfer } from '../../context/TransferProvider';
 const MergedBlocksTable = () => {
   const { useMerge } = useTransfer();
   const mergedBlocks = useMerge();
-  console.log('Merged Blocks mn 3nd si sahbi:', mergedBlocks);
+  //console.log('Merged Blocks mn 3nd si sahbi:', mergedBlocks);
 
   const [blocks, setBlocks] = useState(mergedBlocks);
   const [searchTerm, setSearchTerm] = useState("");

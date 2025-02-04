@@ -37,6 +37,7 @@ const OrderProvider = ({ children }) => {
           return {
             id: order.OrderId,
             customer: `${order.Client.FirstName} ${order.Client.LastName}`,
+            previousTotal : order.TotalAmount,
             total: discountedTotal,
             status: order.Status === 0 ? "Pending" : order.Status === 1 ? "Processing" : order.Status === 2 ? "Delivered" : "Cancelled",
             date: new Date(order.CreationDate).toLocaleDateString(),

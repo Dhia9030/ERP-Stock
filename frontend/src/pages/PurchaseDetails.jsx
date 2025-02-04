@@ -34,7 +34,6 @@ const PurchaseDetails = () => {
           })) : []
         });
         setIsReceived(data.Status === 5);
-        setSelectedProduct(data.OrderProducts ? data.OrderProducts[0] : null);
       } catch (error) {
         console.error('Failed to fetch purchase details:', error);
       }
@@ -61,6 +60,15 @@ const PurchaseDetails = () => {
     } catch (error) {
       console.error('Failed to fetch product details:', error);
       return [];
+    }
+  };
+
+  const handleProductClick = async (product) => {
+    if (selectedProduct && selectedProduct.id === product.id) {
+      setSelectedProduct(null);
+    } else {
+      const details = await fetchProductDetails(purchaseId, product.id);
+      setSelectedProduct({ ...product, details });
     }
   };
 
@@ -95,31 +103,11 @@ const PurchaseDetails = () => {
     }
   };
 
-  useEffect(() => {
-    if (purchase && purchase.executed) {
-      const updateProductDetails = async () => {
-        const updatedProducts = await Promise.all(purchase.products.map(async (product) => {
-          const details = await fetchProductDetails(purchaseId, product.id);
-          return { ...product, details };
-        }));
-
-        setPurchase(prevPurchase => ({ ...prevPurchase, products: updatedProducts }));
-        console.log('Updated products:', updatedProducts);
-      };
-
-      updateProductDetails();
-    }
-  }, [purchase && purchase.executed]);
-
   if (!purchase) {
     return <div>Purchase not found</div>;
   }
 
   const purchaseStatus = isReceived ? "Received" : (purchase.executed ? "Executed" : "Not Executed");
-
-  const handleProductClick = (product) => {
-    setSelectedProduct(selectedProduct === product ? null : product);
-  };
 
   const handleMarkAsReceived = async () => {
     try {
@@ -143,7 +131,7 @@ const PurchaseDetails = () => {
   };
 
   return (
-    <div className='flex-1 flex-col items-center justify-center min-h-96 w-full bg-blue-100'>
+    <div className='overflow-y-scroll flex-1 flex-col items-center justify-center min-h-96 w-full bg-blue-100'>
       <Header title={`Purchase : ${purchase.id}`} />
       <div className='relative space-y-4 m-7 w-full max-w-6xl bg-gradient-to-br from-sky-800 to-sky-900 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border'>
         <h1 className='text-center text-4xl font-bold text-white mb-4'>Purchase Details</h1>

@@ -93,7 +93,7 @@ const InternalTransfer = () => {
         requestData = {
             productBlockId: parseInt(sourceBlock, 10)
         };
-        endpoint = 'http://localhost:5188/Test/delete product block';
+        endpoint = 'http://localhost:5188/Test/deleteproductblock';
     }
 
     try {

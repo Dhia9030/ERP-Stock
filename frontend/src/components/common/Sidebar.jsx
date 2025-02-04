@@ -17,7 +17,7 @@ const SIDEBAR_ITEMS = [
 	{name: "Products Blocks", icon: Package, color: "#8B5CF6", href: "/productsBlocks" },
 
 	{ name: "Low Stock", icon: AlertTriangle, color: "#F59E0B", href: "/lowstock" },
-	{ name: "Expiration", icon: Clock, color: "red", href: "/delay" },
+	//{ name: "Expiration", icon: Clock, color: "red", href: "/delay" },
 	{ name: "Purchases", icon: Receipt, color: "#F59E0B", href: "/purchases" },
 	{ name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
 	{ name: "Transfers", icon: ArrowRightLeft, color: "#6EE7B7", href: "/transfers" },

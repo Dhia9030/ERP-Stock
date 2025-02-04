@@ -12,7 +12,6 @@ const OrdersTable = () => {
     const [filteredOrders, setFilteredOrders] = useState(orderData);
     const navigate = useNavigate();
 
-	console.log('OrdersPage orderData:', orderData); 
 
     useEffect(() => {
         setFilteredOrders(orderData);
@@ -75,15 +74,13 @@ const OrdersTable = () => {
                             <th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
                                 Date
                             </th>
-                            <th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-                                Actions
-                            </th>
+                            
                         </tr>
                     </thead>
 
                     <tbody className='divide divide-gray-700'>
                         {filteredOrders.map((order) => (
-                            order.status!='Delivered' && <motion.tr
+                             <motion.tr
                                 key={order.id}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -98,7 +95,7 @@ const OrdersTable = () => {
                                     {order.customer}
                                 </td>
                                 <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100'>
-                                    ${order.total.toFixed(2)}
+                                    ${order.previousTotal.toFixed(2)}
                                 </td>
                                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
                                     <span
@@ -116,11 +113,7 @@ const OrdersTable = () => {
                                     </span>
                                 </td>
                                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{order.date}</td>
-                                <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-                                    <button className='text-indigo-400 hover:text-indigo-300 mr-2'>
-                                        <Eye size={18} />
-                                    </button>
-                                </td>
+                                
                             </motion.tr>
                         ))}
                     </tbody>
