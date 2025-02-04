@@ -1,4 +1,17 @@
-import { BarChart2, Receipt ,Clock, Menu, Settings, ShoppingBag, ShoppingCart,Package ,TrendingUp, AlertTriangle , ArrowRightLeft} from "lucide-react";
+import {
+	BarChart2,
+	Receipt,
+	Clock,
+	Menu,
+	Settings,
+	ShoppingBag,
+	ShoppingCart,
+	Package,
+	TrendingUp,
+	AlertTriangle,
+	ArrowRightLeft,
+	Warehouse
+} from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -15,7 +28,7 @@ const SIDEBAR_ITEMS = [
 	},
 	{ name: "Products", icon: ShoppingBag, color: "#8B5CF6", href: "/products" },
 	{name: "Products Blocks", icon: Package, color: "#8B5CF6", href: "/productsBlocks" },
-
+	{name: "Warehouse", icon: Warehouse, color: "#8B5CF6", href: "/warehouse" },
 	{ name: "Low Stock", icon: AlertTriangle, color: "#F59E0B", href: "/lowstock" },
 	//{ name: "Expiration", icon: Clock, color: "red", href: "/delay" },
 	{ name: "Purchases", icon: Receipt, color: "#F59E0B", href: "/purchases" },

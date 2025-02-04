@@ -15,6 +15,7 @@ import Transfers from "./pages/Transfers";
 import DelayPage from "./pages/DelayPage";
 import PurchaseDetails from "./pages/PurchaseDetails";
 import ProductsBlocks from "./pages/ProductsBlocks"
+import Warehouse from "./pages/Warehouse";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Purchases from "./pages/Purchases";
@@ -90,7 +91,7 @@ function App() {
         <Routes>
           <Route path='/' element={<OverviewPage />} />
           <Route path='/productsBlocks' element={<ProductsBlocks />} />
-
+          <Route path='/Warehouse' element={<Warehouse />} />
           <Route path='/products' element={<ProductsPage />} />
           <Route path='/orders' element={<OrdersPage />} />
           <Route path='/orders/:orderId' element={<CustomerOrder />} />
