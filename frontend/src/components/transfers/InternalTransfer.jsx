@@ -173,11 +173,17 @@ const InternalTransfer = () => {
                 className="w-full p-2 rounded-xl bg-gray-800 text-white"
               >
                 <option value="">Select Product Block</option>
-                {productBlocks.map(block => (
+                {productBlocks.map(block => {
+                  if (block.LocationName){
+                  return(
                   <option key={block.ProductBlockId} value={block.ProductBlockId}>
                     {block.ProductBlockId} - {block.LocationName}
                   </option>
-                ))}
+                  )
+                }
+                })}
+                  
+                
               </select>
             </div>
             <div className="mb-4">

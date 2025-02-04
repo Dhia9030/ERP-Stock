@@ -14,6 +14,7 @@ import LowStock from "./pages/LowStock";
 import Transfers from "./pages/Transfers";
 import DelayPage from "./pages/DelayPage";
 import PurchaseDetails from "./pages/PurchaseDetails";
+import ProductsBlocks from "./pages/ProductsBlocks"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Purchases from "./pages/Purchases";
@@ -41,10 +42,10 @@ function App() {
   const ElectronicsMin = 300;
   const FoodMin = 300;
 
-  const PRODUCT_DATA = useProducts();
+  const {products} = useProducts();
   useEffect(() => {
-    if (PRODUCT_DATA && PRODUCT_DATA.length > 0) {
-      const lowStockProducts = PRODUCT_DATA.filter(product => {
+    if (products && products.length > 0) {
+      const lowStockProducts = products.filter(product => {
         if (product.category === "Clothing") {
           return product.stock < ClothingMin;
         } else if (product.category === "Electronics") {
@@ -57,11 +58,12 @@ function App() {
 
       setLowStockProducts(lowStockProducts);
     }
-  }, [PRODUCT_DATA]);
+  }, [products]);
 
   const notifiedProducts = useRef(new Set());
 
   useEffect(() => {
+    setTimeout(()=>{
     if (lowproducts && lowproducts.length > 0) {
       lowproducts.forEach((product) => {
         toast.warn(`Low stock: ${product.name}`, {
@@ -71,6 +73,8 @@ function App() {
         notifiedProducts.current.add(product.id);
       });
     }
+
+  },2000)
   }, [lowproducts]);
 
   const isLoginPage = location.pathname === '/login';
@@ -78,13 +82,15 @@ function App() {
   return (
     <div>
       <ToastContainer containerId="login" />
-      {!isLoginPage && notificationOn && <ToastContainer />}
+      {notificationOn && <ToastContainer />}
       <div className="area"></div>
       <div className='bg-fiber-carbon flex h-screen text-gray-100 overflow-hidden'>
         
         {!isLoginPage && <Sidebar />}
         <Routes>
           <Route path='/' element={<OverviewPage />} />
+          <Route path='/productsBlocks' element={<ProductsBlocks />} />
+
           <Route path='/products' element={<ProductsPage />} />
           <Route path='/orders' element={<OrdersPage />} />
           <Route path='/orders/:orderId' element={<CustomerOrder />} />

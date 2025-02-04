@@ -20,7 +20,7 @@ const Transfers = ()=>{
         } 
       
     return (
-        <div className="flex-1 overflow-auto relative z-10">
+        <div className="flex-1  overflow-auto overflow-x-hidden relative z-10">
             <Header title="Transfers"/>
             <InternalTransfer/>
 

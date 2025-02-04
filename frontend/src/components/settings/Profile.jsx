@@ -1,25 +1,36 @@
 import { User } from "lucide-react";
 import SettingSection from "./SettingSection";
+import { jwtDecode } from "jwt-decode";
+import { getToken } from "../../utility/storage";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+
+	const navigate = useNavigate();
+
+	const [token, setToken] = useState(getToken());
+
+	if(!token){
+		navigate("/login");
+		return null ;
+	}
+
+	const decodedToken = jwtDecode(token);
+    const { unique_name, email } = decodedToken;
+
 	return (
 		<SettingSection icon={User} title={"Profile"}>
 			<div className='flex flex-col sm:flex-row items-center mb-6'>
-				<img
-					src='https://randomuser.me/api/portraits/men/3.jpg'
-					alt='Profile'
-					className='rounded-full w-20 h-20 object-cover mr-4'
-				/>
+				
 
 				<div>
-					<h3 className='text-lg font-semibold text-gray-100'>John Doe</h3>
-					<p className='text-gray-400'>john.doe@example.com</p>
+					<h3 className='text-2xl font-semibold text-gray-100'><span className="text-blue-400">Username : </span>{unique_name}</h3>
+					<p className='mt-9 text-xl text-gray-100'><span className="text-2xl text-blue-400 ">Email : </span>{email}</p>
 				</div>
 			</div>
 
-			<button className='bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 w-full sm:w-auto'>
-				Edit Profile
-			</button>
+			
 		</SettingSection>
 	);
 };

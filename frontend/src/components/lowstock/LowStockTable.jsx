@@ -8,15 +8,15 @@ const LowStockTable = () => {
   const [lowproducts, setLowStockProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState(lowproducts);
 
-  const ClothingMin = 300;
-  const ElectronicsMin = 300;
-  const FoodMin = 300;
+  const ClothingMin = 100;
+  const ElectronicsMin = 40;
+  const FoodMin = 75;
 
-  const PRODUCT_DATA = useProducts();
+  const {products} = useProducts();
   useEffect(() => {
 
-    if (PRODUCT_DATA && PRODUCT_DATA.length > 0) {
-      const lowStockProducts = PRODUCT_DATA.filter(product => {
+    if (products && products.length > 0) {
+      const lowStockProducts = products.filter(product => {
         if (product.category === "Clothing") {
           return product.stock < ClothingMin;
         } else if (product.category === "Electronics") {
@@ -31,7 +31,7 @@ const LowStockTable = () => {
       setLowStockProducts(lowStockProducts);
       setFilteredProducts(lowStockProducts);
     }
-  }, [PRODUCT_DATA]);
+  }, [products]);
 
 
   useEffect(() => {

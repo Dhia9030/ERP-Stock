@@ -7,9 +7,9 @@ const productContext = createContext();
 
 const ProductProvider=({children})=>{
     const [products, setProducts] = useState([]);
+    const [token, setToken] = useState(getToken());
     useEffect(() => {
         const fetchProducts = async () => {
-            const token = getToken();
                   if (!token) {
                     console.log('User is not authenticated. Skipping fetch.');
                     return;
@@ -24,7 +24,6 @@ const ProductProvider=({children})=>{
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                // Map the API response to the expected structure
                 const mappedProducts = data.map(product => ({
                     id: product.ProductId,
                     name: product.Name,
@@ -41,7 +40,12 @@ const ProductProvider=({children})=>{
         };
 
         fetchProducts();
-    }, []);
+    }, [token]);
+
+    const updateToken = (newToken) => {
+        setToken(newToken);
+    };
+
         
 
     // const products = [
@@ -53,7 +57,7 @@ const ProductProvider=({children})=>{
     // ];
 
     return(
-        <productContext.Provider value={products}>
+        <productContext.Provider value={{products , updateToken}}>
             {children}
         </productContext.Provider>
     )

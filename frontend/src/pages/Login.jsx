@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { setToken } from '../utility/storage' // Import the utility function
+import { useProducts } from '../context/ProductProvider';
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+
+  const { updateToken } = useProducts();
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -28,8 +32,12 @@ export default function Login() {
 
       const data = await response.json();
 
-      if (response.ok) {
+      console.log('Response Status:', response.status); // Log the response status
+  console.log('Response Data:', data);
+
+      if (response.ok  && data.token) {
         setToken(data.token, rememberMe); // Use the utility function to set the token
+        updateToken(data.token);
         toast.success('Login successful', { autoClose: 3000, containerId: 'login' });
         setTimeout(() => {
           navigate('/');

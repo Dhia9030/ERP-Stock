@@ -5,68 +5,57 @@ import { useProducts } from "../../context/ProductProvider";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-const ProductsTable = ({selectedList}) => {
-
-  const PRODUCT_DATA = useProducts();
-  console.log("salem", PRODUCT_DATA);
-  const [selectedProducts, setSelectedProducts] =useState(PRODUCT_DATA);
+const ProductsTable = ({ selectedList }) => {
+  const { products } = useProducts();
+  console.log("salem", products);
+  const [selectedProducts, setSelectedProducts] = useState(products);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);
+  const [filteredProducts, setFilteredProducts] = useState(products);
   const notifiedProducts = useRef(new Set());
 
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
 
   useEffect(() => {
-    setFilteredProducts(PRODUCT_DATA);
-  }, [PRODUCT_DATA]);
+    let filteredProducts;
+    if (selectedList !== "all") {
+      filteredProducts = products.filter((product) => product.category.toLowerCase() === selectedList.toLowerCase());
+    } else {
+      filteredProducts = products;
+    }
+    const filtered = filteredProducts.filter(
+      (product) => product.name.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [selectedList, searchTerm, products]);
 
+  const handleSearch = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+  };
 
-//Notification
+  console.log('filteredProducts', filteredProducts);
 
-
-  //console.log(selectedList);
-  //console.log();
-useEffect(()=>{
-  let products;
-  if(selectedList != "all"){
-   products = PRODUCT_DATA.filter((product)=>product.category.toLowerCase()===selectedList.toLowerCase());
-}
-else{
-  products = PRODUCT_DATA;
-}
-  const filtred = products.filter(
-    (product)=>product.name.toLowerCase().includes(searchTerm)||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-  setFilteredProducts(filtred);
-},[selectedList,searchTerm,selectedProducts])
-
-const handleSearch = (e) => {
-  const term = e.target.value.toLowerCase();
-  setSearchTerm(term);
-  
-};
-
-console.log('filteredProducts',filteredProducts);
-
-  if(!selectedProducts){
-    return <div>Loading...</div>
+  if (!filteredProducts) {
+    return <div>Loading...</div>;
   }
 
   return (
     <motion.div
       className="mt-4 bg-gradient-to-br from-sky-800 to-sky-900 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border mb-8"
       initial={{ opacity: 0, y: 0 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
     >
       <div className="flex justify-between items-center mb-6">
-      <ShoppingBag size={50} style={{ color: "#8B5CF6", minWidth: "50px" }} />
-        <h2 className="text-4xl font-semibold text-gray-100">{selectedList.toLowerCase()==="all"? 'All Products' : capitalize(selectedList)+' Products'}</h2>
+        <ShoppingBag size={50} style={{ color: "#8B5CF6", minWidth: "50px" }} />
+        <h2 className="text-4xl font-semibold text-gray-100">{selectedList.toLowerCase() === "all" ? 'All Products' : capitalize(selectedList) + ' Products'}</h2>
         <div className="relative">
           <input
             type="text"
@@ -80,7 +69,7 @@ console.log('filteredProducts',filteredProducts);
       </div>
 
       <div className="overflow-x-auto">
-        <table  className="min-w-full border-spacing-y-4">
+        <table className="min-w-full border-spacing-y-4">
           <thead>
             <tr className="text-gray-100">
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Name</th>
@@ -97,16 +86,9 @@ console.log('filteredProducts',filteredProducts);
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
-               
-                className="  text-gray-100 hover:bg-gray-800 border-b-[1px] border-gray-700"
+                className="text-gray-100 hover:bg-gray-800 border-b-[1px] border-gray-700"
               >
-                <td  className="flex  items-center px-6 py-4  text-sm">
-                  
-                  <img
-                    src="https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww"
-                    alt="Product img"
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
+                <td className="flex items-center px-6 py-4 text-sm">
                   {product.name}
                 </td>
                 <td className="px-6 py-4 text-sm">{capitalize(product.category)}</td>

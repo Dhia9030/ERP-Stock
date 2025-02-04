@@ -19,14 +19,14 @@ const OverviewPage = () => {
 
 
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const PRODUCT_DATA = useProducts();
+  const {products} = useProducts();
 	
 	const [productsLength, setProductsLength] = useState(0);
 	useEffect(() => {
-		if (PRODUCT_DATA.length > 0) {
-			setProductsLength(PRODUCT_DATA.length);
+		if (products.length > 0) {
+			setProductsLength(products.length);
 		}
-	}, [PRODUCT_DATA]);
+	}, [products]);
 
   // 
 
