@@ -100,6 +100,7 @@ public class TestController : Controller
             
         });
     }
+    
     [Route("getAllProduct")]
     [HttpGet]
     public async Task<IActionResult> Index5()
@@ -243,6 +244,7 @@ public class TestController : Controller
             
         });
     }
+    
     
     [Route("get all product with blocks")]
     [HttpGet]
