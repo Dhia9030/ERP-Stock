@@ -10,7 +10,6 @@ using StockManagement.Repositories;
 
 namespace backend.Controllers;
 [ApiController]
-
 [Route("[controller]")]
 public class TestController : Controller
 {
@@ -24,6 +23,7 @@ public class TestController : Controller
     private readonly IProductWithBlocksService _productWithBlocksService;
     private readonly IMadeStockMovement _madeStockMovement;
     private readonly IWarehouseService _warehouseService;
+    private readonly IPredectionService _predectionService;
     
     public TestController(AppDbContext db , IOrderRepository orderRepository, 
         IOrderProductsRepository orderProductsRepository , 
@@ -31,7 +31,8 @@ public class TestController : Controller
         ,ILocationService locationService , IStockMovementService stockMovementService
         ,IProductWithBlocksService productWithBlocksService
         ,IMadeStockMovement madeStockMovement
-        ,IWarehouseService warehouseService)
+        ,IWarehouseService warehouseService
+        ,IPredectionService predectionService)
     {
         _db = db;
         _orderRepository = orderRepository;
@@ -43,6 +44,7 @@ public class TestController : Controller
         _productWithBlocksService = productWithBlocksService;
         _madeStockMovement = madeStockMovement;
         _warehouseService = warehouseService;
+        _predectionService = predectionService;
         
     }
     
@@ -412,6 +414,21 @@ public class TransferRequest
            
             
         });
+    }
+    
+    [HttpGet]
+    [Route("getPredection")]
+    public async Task<IActionResult> GetPredection()
+    {
+        var predections = await _predectionService.GetPredection();
+        return Json(predections);
+    }
+    
+    [HttpGet("PredictionForAllCategories")]
+    public async Task<IActionResult> GetPredectionForAllCategories()
+    {
+        var predections = await _predectionService.GetPredectionForAllCategories();
+        return Json(predections);
     }
     
     

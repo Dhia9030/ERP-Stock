@@ -9,7 +9,7 @@ namespace StockManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, StockManager")]
+    //[Authorize(Roles = "Admin, StockManager")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
