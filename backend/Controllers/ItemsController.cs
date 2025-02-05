@@ -2,10 +2,14 @@
 using System.Text.Json.Serialization;
 using backend.Dtos.TestDto;
 using backend.Services.ServicesContract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "Admin, StockManager")]
 public class ItemsController : Controller
 {
     private readonly IStockMovementService _stockMovementService;

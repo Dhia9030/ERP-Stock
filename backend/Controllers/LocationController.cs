@@ -1,10 +1,14 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using backend.Services.ServicesContract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "Admin, StockManager")]
 public class LocationController : Controller
 {
     private readonly ILocationService _locationService;

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using backend.Services.ServicesContract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockManagement.Services;
 
@@ -8,6 +9,7 @@ namespace StockManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin, StockManager")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
