@@ -76,7 +76,6 @@ const ProductsTable = ({ selectedList }) => {
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Category</th>
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Price</th>
               <th className="px-6 py-3 text-left text-sm font-medium uppercase">Stock</th>
-              <th className="px-6 py-3 text-left text-sm font-medium uppercase">Sales</th>
             </tr>
           </thead>
           <tbody>
@@ -94,7 +93,6 @@ const ProductsTable = ({ selectedList }) => {
                 <td className="px-6 py-4 text-sm">{capitalize(product.category)}</td>
                 <td className="px-6 py-4 text-sm">${product.price.toFixed(2)}</td>
                 <td className="px-6 py-4 text-sm">{product.stock}</td>
-                <td className="px-6 py-4 text-sm">{product.sales}</td>
               </motion.tr>
             ))}
           </tbody>

@@ -13,8 +13,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.
-       //UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-    UseSqlServer(connectionString));
+       UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    //UseSqlServer(connectionString));
     //UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 
