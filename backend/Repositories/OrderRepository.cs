@@ -57,7 +57,7 @@ public class OrderRepository : Repository<Order>, IOrderRepository
     {
         var BuyOrdersInASpecificDay = await _dbSet.OfType<BuyOrder>()
             .Include(o => o.OrderProducts)
-            .Where( o =>o.ExecutionDate.Day == date.Day && o.ExecutionDate.Month == date.Month && o.ExecutionDate.Year == date.Year).ToListAsync();
+            .Where( o =>o.ExecutionDate.Day == date.Day && o.ExecutionDate.Month == date.Month && o.ExecutionDate.Year == date.Year && (o.RealExecutionDate==DateTime.MinValue || o.RealExecutionDate ==null)).ToListAsync();
         if(BuyOrdersInASpecificDay == null)
         {
             return 0;
@@ -83,7 +83,7 @@ public class OrderRepository : Repository<Order>, IOrderRepository
     {
         var SellOrdersInASpecificDay = await _dbSet.OfType<SellOrder>()
             .Include(o => o.OrderProducts)
-            .Where(o => o.ExecutionDate.Day == date.Day && o.ExecutionDate.Month == date.Month && o.ExecutionDate.Year == date.Year)
+            .Where(o => o.ExecutionDate.Day == date.Day && o.ExecutionDate.Month == date.Month && o.ExecutionDate.Year == date.Year && (o.RealExecutionDate==DateTime.MinValue || o.RealExecutionDate ==null))
             .ToListAsync();
         if (SellOrdersInASpecificDay == null)
         {
