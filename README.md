@@ -1,6 +1,4 @@
 
----
-
 # ERP-Stock
 
 **ERP-Stock** is a full-featured Enterprise Resource Planning (ERP) system focused on inventory and order management. Built with C# and a modern frontend stack, it helps businesses efficiently handle their stock levels, warehouse operations, and customer orders through a responsive and user-friendly web interface.
