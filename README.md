@@ -8,16 +8,16 @@
 Access the live application here: [erp-stock-front-3j3i.vercel.app](https://erp-stock-front-3j3i.vercel.app
 
 ## 📁 Project Structure
-
-```bash
+
+```
 ERP-Stock/
 ├── backend/     # Backend API built with C#
 ├── frontend/    # Frontend application built with JavaScript
 ├── WebOrder/    # Additional project components or modules
 ├── ERP.sln      # Visual Studio solution file
 └── package-lock.json
-``
-
+```
+
 
 ## 🛠️ Technologies Used
 
@@ -43,18 +43,18 @@ ERP-Stock/
 
    ```bash
    git clone https://github.com/Dhia9030/ERP-Stock.git
-   cd ERP-Stock
-   ``
-
+   cd ERP-Sock
+   ```
+
 
 2. **Setup Frontend:**
 
    ```bash
    cd frontend
    npm install
-   npm start
-   ``
-
+   npm sart
+   ```
+
 
 3. **Setup Backend:**
 
