@@ -1,6 +1,4 @@
-The GitHub repository [Dhia9030/ERP-Stock](https://github.com/Dhia9030/ERP-Stock) currently does not include a `README.md` file. However, based on the repository's structure and available information, here's a proposed README to help you understand and navigate the project:
 
----
 
 # ERP-Stock
 
